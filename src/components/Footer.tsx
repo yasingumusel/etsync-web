@@ -67,10 +67,11 @@ export default function Footer() {
             © {new Date().getFullYear()} ETSYNC. All rights reserved.
           </p>
           <p className="max-w-xl text-center text-xs text-muted sm:text-right">
-            ETSYNC is an independent, single-developer software product and
-            is not affiliated with, sponsored by, or endorsed by Etsy, Inc.
-            or Wix.com Ltd. Etsy and Wix are trademarks of their respective
-            owners.
+            The term &ldquo;Etsy&rdquo; is a trademark of Etsy, Inc. This
+            application uses the Etsy API but is not endorsed or certified
+            by Etsy, Inc. Wix is a trademark of Wix.com Ltd. ETSYNC is an
+            independent, single-developer software product not affiliated
+            with either company.
           </p>
         </div>
       </div>
