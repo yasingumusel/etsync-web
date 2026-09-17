@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
 import SyncHistory from "@/components/SyncHistory";
+import SyncSettings from "@/components/SyncSettings";
 
 type TargetStore = {
   platform: string;
@@ -298,6 +299,7 @@ export default function DashboardPage() {
           </div>
         )}
 
+        <SyncSettings />
         <SyncHistory refreshKey={historyKey} />
       </main>
     </div>

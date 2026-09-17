@@ -8,18 +8,28 @@ export async function getSessionUserId(): Promise<string | null> {
   return payload?.userId ?? null;
 }
 
+type SyncPath = "status" | "run" | "history" | "settings";
+
 /** Calls the Etsy integrator backend's /sync/:userId/* routes with the shared secret. */
-export async function callSyncBackend(userId: string, path: "status" | "run" | "history") {
+export async function callSyncBackend(
+  userId: string,
+  path: SyncPath,
+  options: { method?: "GET" | "POST" | "PUT"; body?: unknown } = {}
+) {
   const baseUrl = process.env.SYNC_BACKEND_URL;
   const secret = process.env.SYNC_API_SECRET;
   if (!baseUrl || !secret) {
     throw new Error("SYNC_BACKEND_URL / SYNC_API_SECRET not configured");
   }
 
-  const method = path === "run" ? "POST" : "GET";
+  const method = options.method ?? (path === "run" ? "POST" : "GET");
   const res = await fetch(`${baseUrl}/sync/${userId}/${path}`, {
     method,
-    headers: { "X-Sync-Secret": secret },
+    headers: {
+      "X-Sync-Secret": secret,
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+    },
+    ...(options.body ? { body: JSON.stringify(options.body) } : {}),
     cache: "no-store",
   });
 
