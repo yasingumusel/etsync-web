@@ -9,14 +9,14 @@ type Mode = "login" | "signup";
 const copy: Record<Mode, { title: string; subtitle: string; cta: string; loadingCta: string; endpoint: string }> = {
   login: {
     title: "Log in",
-    subtitle: "Etsy → Wix senkronunu yönet.",
+    subtitle: "Manage your Etsy → Wix sync.",
     cta: "Log in",
     loadingCta: "Logging in…",
     endpoint: "/api/login",
   },
   signup: {
     title: "Sign up",
-    subtitle: "Yeni bir hesap oluştur.",
+    subtitle: "Create a new account.",
     cta: "Sign up",
     loadingCta: "Creating account…",
     endpoint: "/api/signup",
@@ -96,7 +96,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
                 className="mt-1.5 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-accent-violet"
               />
               {mode === "signup" && (
-                <p className="mt-1 text-xs text-muted">En az 8 karakter.</p>
+                <p className="mt-1 text-xs text-muted">At least 8 characters.</p>
               )}
             </div>
           </div>
@@ -116,14 +116,14 @@ export default function AuthForm({ mode }: { mode: Mode }) {
           <p className="mt-5 text-center text-sm text-muted">
             {mode === "login" ? (
               <>
-                Hesabın yok mu?{" "}
+                Don&apos;t have an account?{" "}
                 <a href="/signup" className="font-medium text-foreground hover:underline">
                   Sign up
                 </a>
               </>
             ) : (
               <>
-                Zaten hesabın var mı?{" "}
+                Already have an account?{" "}
                 <a href="/login" className="font-medium text-foreground hover:underline">
                   Log in
                 </a>

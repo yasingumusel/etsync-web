@@ -41,6 +41,7 @@ export default function DashboardPage() {
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [justFinished, setJustFinished] = useState(false);
   const [runResult, setRunResult] = useState<RunResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +64,7 @@ export default function DashboardPage() {
 
   function handleSync() {
     setSyncing(true);
+    setJustFinished(false);
     setError(null);
     setRunResult(null);
 
@@ -86,6 +88,8 @@ export default function DashboardPage() {
         if (!res.ok) setError(body.error || "Sync failed");
         else setRunResult(body);
         setSyncing(false);
+        setJustFinished(true);
+        loadStatus();
       })
       .catch(() => {
         // Swallowed - the polling loop below is the fallback completion signal.
@@ -102,6 +106,7 @@ export default function DashboardPage() {
         finished.current = true;
         if (pollRef.current) clearInterval(pollRef.current);
         setSyncing(false);
+        setJustFinished(true);
       }
     }, 1500);
   }
@@ -131,14 +136,14 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-muted">
-          Etsy &rarr; Wix ürün senkronu.
+          Etsy &rarr; Wix product sync.
         </p>
 
         <div className="mt-8 card-glass rounded-2xl p-6">
           {loadingStatus ? (
-            <p className="text-sm text-muted">Durum yükleniyor…</p>
+            <p className="text-sm text-muted">Loading status&hellip;</p>
           ) : !status ? (
-            <p className="text-sm text-red-500">Durum alınamadı.</p>
+            <p className="text-sm text-red-500">Could not load status.</p>
           ) : (
             <>
               <div className="flex flex-wrap items-center gap-3">
@@ -150,11 +155,11 @@ export default function DashboardPage() {
                   }`}
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                  Etsy {status.etsyConnected ? "bağlı" : "bağlı değil"}
+                  Etsy {status.etsyConnected ? "connected" : "not connected"}
                 </span>
                 {!status.isPremium && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-600">
-                    Premium değil
+                    Not premium
                   </span>
                 )}
               </div>
@@ -179,15 +184,15 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-muted">
                             {store.isSyncing
-                              ? `Senkronize ediliyor: ${progress.current} / ${progress.total}`
+                              ? `Syncing: ${progress.current} / ${progress.total}`
                               : store.lastSyncAt
-                                ? `Son senkron: ${new Date(store.lastSyncAt).toLocaleString("tr-TR")}`
-                                : "Henüz senkronize edilmedi"}
+                                ? `Last synced: ${new Date(store.lastSyncAt).toLocaleString("en-US")}`
+                                : "Not synced yet"}
                           </p>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="text-xs text-muted">
-                            {store.syncedProductCount} ürün
+                            {store.syncedProductCount} products
                           </span>
                           <span
                             className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${
@@ -196,7 +201,7 @@ export default function DashboardPage() {
                                 : statusColor[store.lastSyncStatus]
                             }`}
                           >
-                            {store.isSyncing ? "senkronize ediliyor" : store.lastSyncStatus}
+                            {store.isSyncing ? "syncing" : store.lastSyncStatus}
                           </span>
                         </div>
                       </div>
@@ -227,10 +232,10 @@ export default function DashboardPage() {
                     <svg className="animate-sync-spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
                       <path d="M2 12h20M16 5l7 7-7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    Senkronize ediliyor…
+                    Syncing&hellip;
                   </span>
                 ) : (
-                  "Senkronize Et"
+                  "Sync Now"
                 )}
               </button>
 
@@ -244,6 +249,21 @@ export default function DashboardPage() {
                   <p className="mt-1 text-amber-700">
                     Please don&apos;t close this tab until the sync finishes.
                   </p>
+                </div>
+              )}
+
+              {justFinished && !error && (
+                <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-400/5 p-4 text-sm font-medium text-emerald-700">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 6L9 17l-5-5"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Sync finished.
                 </div>
               )}
             </>
@@ -266,7 +286,7 @@ export default function DashboardPage() {
                 <div key={key} className="rounded-xl border border-border bg-surface px-4 py-3 text-sm">
                   <p className="font-medium text-foreground">{key}</p>
                   <p className="mt-1 text-xs text-muted">
-                    {r.total} üründen {r.created} oluşturuldu, {r.updated} güncellendi, {r.failed} hata
+                    {r.total} products: {r.created} created, {r.updated} updated, {r.failed} failed
                   </p>
                 </div>
               ))}
