@@ -33,6 +33,13 @@ export default function PrivacyPage() {
             MirrorStock Wix application. We do not create or distribute API
             credentials on behalf of any other person, company, or app.
           </p>
+          <p>
+            In respect of any information relating to Etsy members that we
+            access through the Etsy API, we act as a service provider to
+            you, the seller. We process that information only to provide the
+            synchronization described in these policies and in our{" "}
+            <a href="/terms">Terms of Service</a>, and for no other purpose.
+          </p>
 
           <h2>2. Data Accessed via the Etsy API (Read-Only)</h2>
           <p>
@@ -70,11 +77,23 @@ export default function PrivacyPage() {
             <li>Read the products and variations in your active Etsy listings</li>
             <li>Create or update the matching products in your connected store</li>
             <li>Convert prices when your two stores use different currencies</li>
-            <li>Show you the progress and outcome of a sync you started</li>
+            <li>Hide a product in your store once its Etsy listing is no longer active</li>
+            <li>Show you the progress, history and outcome of each sync</li>
             <li>Maintain the security and reliability of the Service</li>
           </ul>
 
-          <h2>5. What MirrorStock Does Not Do</h2>
+          <h2>5. When Data Is Read</h2>
+          <p>
+            Once your shops are connected, MirrorStock re-reads your active
+            listings automatically, roughly every four hours, and applies any
+            changes it finds. You can also start a sync yourself at any time
+            from your dashboard. Etsy&rsquo;s API Terms require that listing
+            content displayed outside Etsy is never significantly staler than
+            Etsy itself, which is why this runs on a schedule rather than only
+            when you ask for it.
+          </p>
+
+          <h2>6. What MirrorStock Does Not Do</h2>
           <ul>
             <li>Does not sell, license, rent, or otherwise transfer your Etsy or Wix shop data to any third party.</li>
             <li>Does not read Etsy sales, order, receipt, or transaction data.</li>
@@ -83,7 +102,7 @@ export default function PrivacyPage() {
             <li>Does not provide your API credentials, access tokens, or shop data to any other application, company, or third party.</li>
           </ul>
 
-          <h2>6. Data Retention</h2>
+          <h2>7. Data Retention</h2>
           <p>
             Listing and product data is retained only for as long as your
             account is active and your shops remain connected, so that a
@@ -93,7 +112,7 @@ export default function PrivacyPage() {
             anonymized within a reasonable period.
           </p>
 
-          <h2>7. Revoking Access</h2>
+          <h2>8. Revoking Access</h2>
           <p>
             You can disconnect your Etsy or Wix shop from MirrorStock at any
             time, either by contacting us or from your Etsy or Wix
@@ -103,7 +122,7 @@ export default function PrivacyPage() {
             not removed.
           </p>
 
-          <h2>8. Security</h2>
+          <h2>9. Security</h2>
           <p>
             Access tokens are stored encrypted at rest. All data in transit
             between MirrorStock, Etsy, and Wix is encrypted using TLS.
@@ -111,21 +130,21 @@ export default function PrivacyPage() {
             to operate the Service.
           </p>
 
-          <h2>9. Your Rights</h2>
+          <h2>10. Your Rights</h2>
           <p>
             Depending on your location, you may have the right to access,
             correct, export, or delete the personal data held about you. To
             exercise these rights, contact us using the details below.
           </p>
 
-          <h2>10. Changes to This Policy</h2>
+          <h2>11. Changes to This Policy</h2>
           <p>
             This Privacy Policy may be updated from time to time. Material
             changes will be reflected by updating the date at the top of
             this page.
           </p>
 
-          <h2>11. Contact</h2>
+          <h2>12. Contact</h2>
           <p>
             Questions about this Privacy Policy or how MirrorStock handles
             your data can be sent to{" "}

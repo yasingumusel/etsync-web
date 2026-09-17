@@ -68,7 +68,7 @@ export default function Footer() {
             © {new Date().getFullYear()} MirrorStock. All rights reserved.
           </p>
           <p className="max-w-xl text-center text-xs text-muted sm:text-right">
-            The term &ldquo;Etsy&rdquo; is a trademark of Etsy, Inc. This
+            The term &lsquo;Etsy&rsquo; is a trademark of Etsy, Inc. This
             Application uses Etsy&rsquo;s API, but is not endorsed or
             certified by Etsy. Wix is a trademark of Wix.com Ltd.
             MirrorStock is an independent software product not affiliated
