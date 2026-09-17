@@ -9,6 +9,7 @@ type Run = {
   created: number;
   updated: number;
   failed: number;
+  hidden: number;
   durationMs?: number;
   errors: { sku?: string; message?: string }[];
 };
@@ -91,12 +92,21 @@ export default function SyncHistory({ refreshKey }: { refreshKey: number }) {
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="min-w-0">
                             <p className="text-sm text-foreground">
-                              {run.created > 0 && `${run.created} created`}
-                              {run.created > 0 && run.updated > 0 && " · "}
-                              {run.updated > 0 && `${run.updated} updated`}
-                              {run.failed > 0 &&
-                                `${run.created || run.updated ? " · " : ""}${run.failed} failed`}
+                              {[
+                                run.created > 0 && `${run.created} created`,
+                                run.updated > 0 && `${run.updated} updated`,
+                                run.hidden > 0 && `${run.hidden} hidden`,
+                                run.failed > 0 && `${run.failed} failed`,
+                              ]
+                                .filter(Boolean)
+                                .join(" · ") || "no changes"}
                             </p>
+                            {run.hidden > 0 && (
+                              <p className="mt-0.5 text-[11px] text-amber-700">
+                                Hidden because the Etsy listing is no longer
+                                active. Nothing was deleted.
+                              </p>
+                            )}
                             <p className="mt-0.5 text-xs text-muted">
                               {new Date(run.at).toLocaleString("en-US")}
                               {duration(run.durationMs) && ` · took ${duration(run.durationMs)}`}
