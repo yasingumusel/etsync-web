@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
+import SyncHistory from "@/components/SyncHistory";
 
 type TargetStore = {
   platform: string;
@@ -44,6 +45,7 @@ export default function DashboardPage() {
   const [justFinished, setJustFinished] = useState(false);
   const [runResult, setRunResult] = useState<RunResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [historyKey, setHistoryKey] = useState(0);
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -89,6 +91,7 @@ export default function DashboardPage() {
         else setRunResult(body);
         setSyncing(false);
         setJustFinished(true);
+        setHistoryKey((k) => k + 1);
         loadStatus();
       })
       .catch(() => {
@@ -107,6 +110,7 @@ export default function DashboardPage() {
         if (pollRef.current) clearInterval(pollRef.current);
         setSyncing(false);
         setJustFinished(true);
+        setHistoryKey((k) => k + 1);
       }
     }, 1500);
   }
@@ -293,6 +297,8 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+        <SyncHistory refreshKey={historyKey} />
       </main>
     </div>
   );

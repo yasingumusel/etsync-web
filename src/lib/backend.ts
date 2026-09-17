@@ -9,7 +9,7 @@ export async function getSessionUserId(): Promise<string | null> {
 }
 
 /** Calls the Etsy integrator backend's /sync/:userId/* routes with the shared secret. */
-export async function callSyncBackend(userId: string, path: "status" | "run") {
+export async function callSyncBackend(userId: string, path: "status" | "run" | "history") {
   const baseUrl = process.env.SYNC_BACKEND_URL;
   const secret = process.env.SYNC_API_SECRET;
   if (!baseUrl || !secret) {
