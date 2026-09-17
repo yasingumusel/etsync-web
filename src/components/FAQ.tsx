@@ -4,32 +4,32 @@ import { useState } from "react";
 
 const faqs = [
   {
-    q: "Exactly what does ETSYNC read from Etsy?",
-    a: "Only my shop's active listings and basic shop info, using Etsy's listings_r and shops_r scopes. That's it — no receipts, no transactions, no buyer or order data.",
+    q: "Exactly what does MirrorStock read from my Etsy shop?",
+    a: "Only your shop's active listings and basic shop info, using Etsy's listings_r and shops_r scopes. That's it — no receipts, no transactions, no buyer, order or payment data.",
   },
   {
-    q: "Does ETSYNC ever write anything to Etsy?",
-    a: "No. Access is strictly read-only. ETSYNC never edits, creates, or uploads listings, never changes shop settings, and never sends email or messages through Etsy.",
+    q: "Does MirrorStock ever write anything to my Etsy shop?",
+    a: "No. Access is strictly read-only. MirrorStock never edits, creates, deletes, or uploads listings, never changes shop settings, and never sends email or messages through Etsy.",
   },
   {
     q: "Does the sync work the other way, from Wix back to Etsy?",
-    a: "No. Sync runs one direction only: Etsy listing data flows to Wix. Nothing flows from Wix back to Etsy.",
+    a: "Not today. Sync currently runs one direction only: listing data flows from Etsy to Wix, and nothing flows back. Two-way sync is on the roadmap, and it would require write access that we do not request today.",
   },
   {
-    q: "Who can connect their Etsy shop to ETSYNC?",
-    a: "Only me. ETSYNC was built for my own Etsy shop and my own Wix store. There's no sign-up, no invite system, and no other seller's account connected to it.",
+    q: "Will running a sync twice create duplicate products?",
+    a: "No. Each product is matched by a stable identifier derived from its Etsy listing, so a second sync updates the product that is already there instead of creating another copy.",
   },
   {
-    q: "Do you share Etsy shop data with any third party?",
-    a: "No. Data read through the Etsy API is used only to update inventory on my own connected Wix store. It's never sold, licensed, or shared with any other company or app.",
+    q: "What happens if my two stores use different currencies?",
+    a: "Prices are converted at the live exchange rate before they are written to your store, rather than copied across as raw numbers. A Wix site has a single site-wide currency, so this matters more than it sounds.",
   },
   {
-    q: "Is it safe for a reviewer to see how this works?",
-    a: "Yes — that's the point of this page. Connections go through Etsy's and Wix's official OAuth 2.0 login, credentials are never stored in plain text, and access can be revoked at any time from Etsy's own account settings.",
+    q: "Do you share my shop data with any third party?",
+    a: "No. Data read through the Etsy API is used only to update the products in your own connected store. It is never sold, licensed, or shared with any other company or app.",
   },
   {
-    q: "Will ETSYNC ever be offered to other sellers?",
-    a: "Not currently, and there's no timeline for that. If it changes, this page and the underlying Etsy API access request will be updated to match before anyone else is connected.",
+    q: "Who can connect a shop today?",
+    a: "MirrorStock is in early access while we complete Etsy's commercial API review. Until that review is finished, Etsy's access rules mean the app can only connect its own developer's shop. Once approved, any Etsy seller will be able to connect their own shop through Etsy's standard authorization screen.",
   },
 ];
 

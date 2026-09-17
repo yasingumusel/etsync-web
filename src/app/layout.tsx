@@ -14,9 +14,9 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "ETSYNC — Etsy & Wix Inventory Sync",
+  title: "MirrorStock — Keep Your Storefronts in Sync",
   description:
-    "ETSYNC reads a seller's own active Etsy listings (read-only) and keeps their connected Wix store's inventory in sync. Private beta, single developer.",
+    "MirrorStock reads your active Etsy listings — products, variants, images and prices — and keeps the matching products in your Wix store up to date.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

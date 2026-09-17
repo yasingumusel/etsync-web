@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-const COOKIE_NAME = "etsync_session";
+const COOKIE_NAME = "mirrorstock_session";
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days, matches the backend JWT's own expiry
 
 type SessionPayload = { userId: string; exp: number };

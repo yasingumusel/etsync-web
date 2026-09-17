@@ -25,7 +25,7 @@ export default function Logo({ className = "" }: { className?: string }) {
         </svg>
       </div>
       <span className="font-display text-lg font-bold tracking-tight text-foreground">
-        ETSYNC
+        MirrorStock
       </span>
     </div>
   );

@@ -1,32 +1,32 @@
 const features = [
   {
-    title: "Read-Only Etsy Access",
-    desc: "ETSYNC connects to Etsy using only the listings_r and shops_r scopes — enough to read my shop's active listings. Nothing more is requested.",
+    title: "Read-Only Access",
+    desc: "MirrorStock connects to Etsy using only the listings_r and shops_r scopes — enough to read your shop's active listings. Nothing more is requested.",
     icon: LockIcon,
   },
   {
-    title: "One-Way Inventory Updates",
-    desc: "When a listing's quantity changes on Etsy, ETSYNC updates the matching product's stock on Wix automatically — so my Wix store never oversells.",
-    icon: SyncIcon,
-  },
-  {
-    title: "Nothing Written Back to Etsy",
-    desc: "ETSYNC never edits, creates, or uploads anything to my Etsy shop, never reads my sales or order data, and never sends email through Etsy.",
-    icon: BanIcon,
-  },
-  {
-    title: "Low-Stock Alerts",
-    desc: "I get notified the moment a listing's stock runs low or a sync fails, before it affects a customer on Wix.",
-    icon: BellIcon,
-  },
-  {
-    title: "Secure OAuth Connection",
-    desc: "I connect my own Etsy shop and my own Wix store directly through each platform's official login. ETSYNC never sees or stores my password, and there's no other seller's credentials involved.",
+    title: "Variations, Not Just Products",
+    desc: "Size and colour variations become real Wix product options, each with its own price and SKU — not a single flattened product with one price.",
     icon: StoreIcon,
   },
   {
-    title: "Sync Activity Log",
-    desc: "A timestamped log of exactly what was read from Etsy and what was updated on Wix, for every listing.",
+    title: "Nothing Written Back to Etsy",
+    desc: "MirrorStock never edits, creates, or uploads anything to your Etsy shop, never reads your sales or order data, and never sends email through Etsy.",
+    icon: BanIcon,
+  },
+  {
+    title: "Automatic Currency Conversion",
+    desc: "If your Etsy shop prices in one currency and your Wix site in another, prices are converted at the live rate instead of being copied across as raw numbers.",
+    icon: CurrencyIcon,
+  },
+  {
+    title: "Secure OAuth Connection",
+    desc: "You connect your Etsy shop and your Wix store through each platform's own official login. MirrorStock never sees or stores your password.",
+    icon: ShieldIcon,
+  },
+  {
+    title: "Live Sync Progress",
+    desc: "Start a sync from your dashboard and watch it work through your catalogue product by product, so you always know where it got to.",
     icon: ChartIcon,
   },
 ];
@@ -40,12 +40,13 @@ export default function Features() {
             Features
           </span>
           <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            A small, focused tool —{" "}
-            <span className="text-gradient">not a full platform</span>
+            One job,{" "}
+            <span className="text-gradient">done properly</span>
           </h2>
           <p className="mt-4 text-balance text-lg text-muted">
-            ETSYNC does one thing: it reads my Etsy listings and keeps my
-            Wix inventory accurate. That narrow scope is intentional.
+            MirrorStock reads your listings and keeps your storefront
+            accurate — variations, images, prices and all. The narrow scope
+            is intentional.
           </p>
         </div>
 
@@ -94,14 +95,6 @@ function LockIcon() {
   );
 }
 
-function SyncIcon() {
-  return (
-    <svg {...iconProps()}>
-      <path d="M4 12h13M13 6l7 6-7 6" />
-    </svg>
-  );
-}
-
 function BanIcon() {
   return (
     <svg {...iconProps()}>
@@ -111,11 +104,21 @@ function BanIcon() {
   );
 }
 
-function BellIcon() {
+function CurrencyIcon() {
   return (
     <svg {...iconProps()}>
-      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+      <circle cx="12" cy="12" r="9" />
+      <path d="M15 9.5a3 3 0 0 0-3-1.5c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5" />
+      <path d="M12 6.5v11" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg {...iconProps()}>
+      <path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z" />
+      <path d="M9 12l2 2 4-4" />
     </svg>
   );
 }

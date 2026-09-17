@@ -1,18 +1,18 @@
 const steps = [
   {
     number: "01",
-    title: "Connect My Own Shops",
-    desc: "I sign in with my own Etsy account and my own Wix account through each platform's official OAuth login. ETSYNC only ever requests listings_r and shops_r from Etsy — read-only.",
+    title: "Connect Your Shops",
+    desc: "You sign in with your Etsy account and your Wix account through each platform's own official login. MirrorStock only ever requests listings_r and shops_r from Etsy — read-only.",
   },
   {
     number: "02",
-    title: "ETSYNC Reads My Active Listings",
-    desc: "It pulls my active Etsy listings and matches them to the corresponding products in my Wix store by SKU or title. Nothing is sent to Etsy at this step.",
+    title: "We Read Your Active Listings",
+    desc: "MirrorStock pulls your active listings along with their variations, images and prices, and matches them to the products already in your store. Nothing is sent back to Etsy at this step.",
   },
   {
     number: "03",
-    title: "Wix Inventory Updates Automatically",
-    desc: "When a listing's quantity changes on Etsy, ETSYNC updates the matching product's stock on Wix. My Etsy shop itself is never modified.",
+    title: "Your Store Is Brought Up To Date",
+    desc: "Start a sync from your dashboard and watch it work through your catalogue. Products that are already there are updated in place, and your Etsy shop itself is never modified.",
   },
 ];
 
@@ -25,11 +25,11 @@ export default function HowItWorks() {
             How It Works
           </span>
           <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Three steps, one direction: Etsy to Wix
+            Three steps, one direction
           </h2>
           <p className="mt-4 text-lg text-muted">
-            No technical knowledge required. Etsy is only ever read from —
-            never written to.
+            No technical knowledge required. Your Etsy shop is only ever
+            read from — never written to.
           </p>
         </div>
 

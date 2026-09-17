@@ -8,23 +8,22 @@ export default function Hero() {
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs font-medium text-muted">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
-            A personal project &mdash; not a public product
+            Early access
           </div>
 
           <h1 className="font-display text-4xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            My Etsy listings,{" "}
-            <span className="text-gradient">always in stock</span> on Wix.
+            Your listings,{" "}
+            <span className="text-gradient">always in sync</span>.
           </h1>
 
           <p className="mt-6 max-w-2xl text-balance text-lg leading-relaxed text-muted">
-            ETSYNC reads my own active Etsy listings — read-only, nothing
-            is ever written back to Etsy — and keeps the matching products
-            in my own Wix store in sync, automatically. I built it for
-            myself, to run my own shop. It is not offered to other Etsy
-            sellers.
+            MirrorStock reads the active listings in your Etsy shop —
+            products, variations, images, descriptions and prices — and
+            keeps the matching products in your Wix store up to date. Access
+            is read-only: nothing is ever written back to your Etsy shop.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
@@ -58,7 +57,8 @@ export default function Hero() {
           </p>
 
           <p className="mt-5 text-xs text-muted">
-            Read-only Etsy access · No order data · Single Etsy shop, mine
+            Read-only access to your shop · No order or payment data · Your
+            listings are never modified
           </p>
         </div>
 
@@ -77,7 +77,7 @@ function HeroVisual() {
           <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
           <span className="ml-3 text-xs text-muted">
-            app.etsync.com/dashboard
+            mirrorstock.com/dashboard
           </span>
         </div>
 
@@ -114,8 +114,8 @@ function HeroVisual() {
       </div>
 
       <div className="animate-float absolute -left-10 -top-10 hidden rounded-xl border border-border bg-surface-2 px-4 py-3 shadow-xl sm:block">
-        <p className="text-[11px] text-muted">Sync latency</p>
-        <p className="font-display text-lg font-bold text-emerald-600">~2 sec</p>
+        <p className="text-[11px] text-muted">Variants &amp; images</p>
+        <p className="font-display text-lg font-bold text-emerald-600">Included</p>
       </div>
 
       <div

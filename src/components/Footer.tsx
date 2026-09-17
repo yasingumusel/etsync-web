@@ -6,13 +6,13 @@ const columns = [
     links: [
       { label: "Features", href: "#features" },
       { label: "How It Works", href: "#how-it-works" },
-      { label: "Etsy API Usage", href: "#api-usage" },
-      { label: "Project Status", href: "#status" },
+      { label: "API Usage", href: "#api-usage" },
+      { label: "Product Status", href: "#status" },
     ],
   },
   {
     title: "Contact",
-    links: [{ label: "Email", href: "mailto:yasin.gumusel@gmail.com" }],
+    links: [{ label: "Email", href: "mailto:support@mirrorstock.com" }],
   },
   {
     title: "Resources",
@@ -35,9 +35,9 @@ export default function Footer() {
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-              A personal, one-developer tool that reads my own active Etsy
-              listings (read-only) and keeps my own Wix store&rsquo;s
-              inventory in sync. Not offered to other sellers.
+              MirrorStock reads your active Etsy listings (read-only) and
+              keeps the matching products in your Wix store in sync, so you
+              only have to keep one catalogue up to date.
             </p>
           </div>
 
@@ -64,14 +64,14 @@ export default function Footer() {
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-border/60 pt-8 sm:flex-row">
           <p className="text-xs text-muted">
-            © {new Date().getFullYear()} ETSYNC. All rights reserved.
+            © {new Date().getFullYear()} MirrorStock. All rights reserved.
           </p>
           <p className="max-w-xl text-center text-xs text-muted sm:text-right">
             The term &ldquo;Etsy&rdquo; is a trademark of Etsy, Inc. This
             application uses the Etsy API but is not endorsed or certified
-            by Etsy, Inc. Wix is a trademark of Wix.com Ltd. ETSYNC is an
-            independent, single-developer software product not affiliated
-            with either company.
+            by Etsy, Inc. Wix is a trademark of Wix.com Ltd. MirrorStock is
+            an independent software product not affiliated with either
+            company.
           </p>
         </div>
       </div>

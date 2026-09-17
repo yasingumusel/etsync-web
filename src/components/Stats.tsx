@@ -1,8 +1,8 @@
 const stats = [
-  { value: "1", label: "Etsy shop connected — mine" },
-  { value: "2", label: "Read-only scopes used" },
-  { value: "0", label: "Other sellers connected" },
-  { value: "0", label: "Writes back to Etsy" },
+  { value: "2", label: "Read-only scopes requested" },
+  { value: "0", label: "Writes back to your Etsy shop" },
+  { value: "0", label: "Order or payment fields accessed" },
+  { value: "1", label: "Catalogue you have to keep up to date" },
 ];
 
 export default function Stats() {

@@ -6,7 +6,7 @@ import Logo from "./Logo";
 const links = [
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How It Works" },
-  { href: "#api-usage", label: "Etsy API Usage" },
+  { href: "#api-usage", label: "API Usage" },
   { href: "#faq", label: "FAQ" },
 ];
 

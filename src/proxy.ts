@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const COOKIE_NAME = "etsync_session";
+const COOKIE_NAME = "mirrorstock_session";
 
 // Edge middleware can't use the Node "crypto" module the same way route
 // handlers can, so this only checks that a session cookie is present, not
