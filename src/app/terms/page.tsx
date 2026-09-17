@@ -95,6 +95,14 @@ export default function TermsPage() {
 
           <h2>9. Disclaimer &amp; Limitation of Liability</h2>
           <p>
+            DISCLAIMER: THIS APPLICATION IS SOLELY PROVIDED BY MIRRORSTOCK
+            (THE &ldquo;APPLICATION DEVELOPER&rdquo;). YOU ACKNOWLEDGE THAT
+            ETSY, INC. AND ITS AFFILIATES ARE NOT THE APPLICATION DEVELOPER,
+            DO NOT PROVIDE THE APPLICATION SERVICE, AND MAKE NO WARRANTIES
+            OF ANY KIND WITH RESPECT TO THE APPLICATION OR DATA ACCESSED
+            THROUGH IT.
+          </p>
+          <p>
             The Service is provided &ldquo;as is,&rdquo; without warranties
             of any kind. To the maximum extent permitted by law, we will not
             be liable for indirect, incidental, or consequential damages

@@ -99,6 +99,29 @@ export default function AuthForm({ mode }: { mode: Mode }) {
                 <p className="mt-1 text-xs text-muted">At least 8 characters.</p>
               )}
             </div>
+
+            {/* Etsy's API Terms require app users to accept the developer's
+                terms through an explicit click-through, not just a link. */}
+            {mode === "signup" && (
+              <label className="flex items-start gap-2.5 text-xs leading-relaxed text-muted">
+                <input
+                  type="checkbox"
+                  required
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
+                />
+                <span>
+                  I agree to the{" "}
+                  <a href="/terms" target="_blank" className="font-medium text-foreground hover:underline">
+                    Terms of Service
+                  </a>{" "}
+                  and the{" "}
+                  <a href="/privacy" target="_blank" className="font-medium text-foreground hover:underline">
+                    Privacy Policy
+                  </a>
+                  .
+                </span>
+              </label>
+            )}
           </div>
 
           {error && (

@@ -68,10 +68,10 @@ export default function Footer() {
           </p>
           <p className="max-w-xl text-center text-xs text-muted sm:text-right">
             The term &ldquo;Etsy&rdquo; is a trademark of Etsy, Inc. This
-            application uses the Etsy API but is not endorsed or certified
-            by Etsy, Inc. Wix is a trademark of Wix.com Ltd. MirrorStock is
-            an independent software product not affiliated with either
-            company.
+            Application uses Etsy&rsquo;s API, but is not endorsed or
+            certified by Etsy. Wix is a trademark of Wix.com Ltd.
+            MirrorStock is an independent software product not affiliated
+            with either company.
           </p>
         </div>
       </div>
