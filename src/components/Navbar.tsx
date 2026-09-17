@@ -40,10 +40,10 @@ export default function Navbar() {
             Log In
           </a>
           <a
-            href="mailto:yasin.gumusel@gmail.com"
-            className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background transition-transform hover:scale-[1.03]"
+            href="/signup"
+            className="rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-4 py-2 text-sm font-semibold text-white shadow-[0_0_30px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.03]"
           >
-            Contact
+            Get Started
           </a>
         </div>
 
@@ -91,11 +91,11 @@ export default function Navbar() {
                 Log In
               </a>
               <a
-                href="mailto:yasin.gumusel@gmail.com"
+                href="/signup"
                 onClick={() => setOpen(false)}
-                className="rounded-full bg-foreground px-4 py-2 text-center text-sm font-semibold text-background"
+                className="rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-4 py-2 text-center text-sm font-semibold text-white"
               >
-                Contact
+                Get Started
               </a>
             </div>
           </nav>

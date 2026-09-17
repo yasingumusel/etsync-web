@@ -29,10 +29,10 @@ export default function Hero() {
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
             <a
-              href="#api-usage"
+              href="/signup"
               className="w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3.5 text-center text-sm font-semibold text-white shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.03] sm:w-auto"
             >
-              See Etsy API Usage
+              Get Started
             </a>
             <a
               href="#how-it-works"
@@ -47,6 +47,15 @@ export default function Hero() {
               See how it works
             </a>
           </div>
+
+          <p className="mt-4 text-sm">
+            <a
+              href="#api-usage"
+              className="font-medium text-muted underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
+            >
+              See Etsy API Usage &rarr;
+            </a>
+          </p>
 
           <p className="mt-5 text-xs text-muted">
             Read-only Etsy access · No order data · Single Etsy shop, mine
