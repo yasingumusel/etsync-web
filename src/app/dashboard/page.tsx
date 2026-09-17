@@ -237,11 +237,12 @@ export default function DashboardPage() {
               {syncing && (
                 <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 p-4 text-sm text-foreground">
                   <p className="font-medium">
-                    Etsy&apos;deki ürünler Wix mağazanıza aktarılıyor. Ürün
-                    sayısına göre bu işlem birkaç dakika sürebilir.
+                    Your Etsy listings are being synced to your Wix store.
+                    This can take a few minutes depending on how many
+                    products you have.
                   </p>
                   <p className="mt-1 text-amber-700">
-                    Senkron bitene kadar bu sekmeyi kapatmayın.
+                    Please don&apos;t close this tab until the sync finishes.
                   </p>
                 </div>
               )}
