@@ -4,6 +4,7 @@ import LogosStrip from "@/components/LogosStrip";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import ApiTrust from "@/components/ApiTrust";
+import Pricing from "@/components/Pricing";
 import Stats from "@/components/Stats";
 import Status from "@/components/Status";
 import FAQ from "@/components/FAQ";
@@ -20,6 +21,7 @@ export default function Home() {
         <Features />
         <HowItWorks />
         <ApiTrust />
+        <Pricing />
         <Stats />
         <Status />
         <FAQ />
