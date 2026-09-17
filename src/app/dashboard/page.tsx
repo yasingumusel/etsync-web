@@ -46,10 +46,12 @@ export default function DashboardPage() {
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const loadStatus = useCallback(async () => {
+  const loadStatus = useCallback(async (): Promise<StatusResponse | null> => {
     const res = await fetch("/api/sync");
-    if (res.ok) setStatus(await res.json());
-    return res.ok;
+    if (!res.ok) return null;
+    const data: StatusResponse = await res.json();
+    setStatus(data);
+    return data;
   }, []);
 
   useEffect(() => {
@@ -59,30 +61,49 @@ export default function DashboardPage() {
     };
   }, [loadStatus]);
 
-  async function handleSync() {
+  function handleSync() {
     setSyncing(true);
     setError(null);
     setRunResult(null);
 
-    // Fired without awaiting yet, so the polling loop below can run
-    // concurrently and update the progress bar while this is in flight.
-    const runPromise = fetch("/api/sync", { method: "POST" });
+    // A full sync can run 10-15+ minutes. The backend itself (a persistent
+    // Railway server) keeps running to completion regardless, but an
+    // intermediary (e.g. Vercel's own function timeout) may cut this
+    // specific request short before then - so completion is NOT solely
+    // detected by awaiting it. If it does come back in time, its detailed
+    // created/updated/failed breakdown is used; either way, the polling
+    // loop below independently detects completion via isSyncing flipping
+    // back to false and stops the spinner.
+    const finished = { current: false };
+    const sawSyncing = { current: false };
 
-    pollRef.current = setInterval(loadStatus, 1500);
+    fetch("/api/sync", { method: "POST" })
+      .then(async (res) => {
+        const body = await res.json();
+        if (finished.current) return;
+        finished.current = true;
+        if (pollRef.current) clearInterval(pollRef.current);
+        if (!res.ok) setError(body.error || "Sync failed");
+        else setRunResult(body);
+        setSyncing(false);
+      })
+      .catch(() => {
+        // Swallowed - the polling loop below is the fallback completion signal.
+      });
 
-    const res = await runPromise;
-    const body = await res.json();
+    pollRef.current = setInterval(async () => {
+      const data = await loadStatus();
+      if (!data || finished.current) return;
 
-    if (pollRef.current) clearInterval(pollRef.current);
+      const store = data.targetStores[0];
+      if (store?.isSyncing) sawSyncing.current = true;
 
-    if (!res.ok) {
-      setError(body.error || "Sync failed");
-    } else {
-      setRunResult(body);
-    }
-
-    setSyncing(false);
-    loadStatus();
+      if (sawSyncing.current && store && !store.isSyncing) {
+        finished.current = true;
+        if (pollRef.current) clearInterval(pollRef.current);
+        setSyncing(false);
+      }
+    }, 1500);
   }
 
   async function handleLogout() {
@@ -212,6 +233,18 @@ export default function DashboardPage() {
                   "Senkronize Et"
                 )}
               </button>
+
+              {syncing && (
+                <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 p-4 text-sm text-foreground">
+                  <p className="font-medium">
+                    Etsy&apos;deki ürünler Wix mağazanıza aktarılıyor. Ürün
+                    sayısına göre bu işlem birkaç dakika sürebilir.
+                  </p>
+                  <p className="mt-1 text-amber-700">
+                    Senkron bitene kadar bu sekmeyi kapatmayın.
+                  </p>
+                </div>
+              )}
             </>
           )}
         </div>
