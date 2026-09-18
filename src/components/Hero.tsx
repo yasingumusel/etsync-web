@@ -1,4 +1,4 @@
-export default function Hero() {
+export default function Hero({ syncedProducts }: { syncedProducts?: number }) {
   return (
     <section id="top" className="relative overflow-hidden pt-20 pb-24 lg:pt-28 lg:pb-32">
       <div className="pointer-events-none absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,black_40%,transparent_100%)]" />
@@ -62,13 +62,19 @@ export default function Hero() {
           </p>
         </div>
 
-        <HeroVisual />
+        <HeroVisual syncedProducts={syncedProducts} />
       </div>
     </section>
   );
 }
 
-function HeroVisual() {
+function HeroVisual({ syncedProducts }: { syncedProducts?: number }) {
+  // Anonymous visitors see an illustrative example (47/47). A logged-in
+  // visitor sees their own real, current synced count on both sides
+  // instead - the two are always equal once a sync has fully succeeded, so
+  // one number does double duty here.
+  const listings = syncedProducts ?? 47;
+
   return (
     <div className="relative mx-auto mt-20 max-w-4xl">
       <div className="relative rounded-2xl border border-border bg-surface/80 p-4 shadow-2xl shadow-black/10 backdrop-blur">
@@ -79,13 +85,18 @@ function HeroVisual() {
           <span className="ml-3 text-xs text-muted">
             mirrorstock.com/dashboard
           </span>
+          {syncedProducts !== undefined && (
+            <span className="ml-auto rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600">
+              Your store
+            </span>
+          )}
         </div>
 
         <div className="grid grid-cols-1 items-center gap-6 p-6 sm:grid-cols-[1fr_auto_1fr] sm:gap-4">
           <StoreCard
             platform="Etsy"
             color="from-accent-orange to-accent-pink"
-            listings={47}
+            listings={listings}
             badge="Read-only"
           />
 
@@ -107,7 +118,7 @@ function HeroVisual() {
           <StoreCard
             platform="Wix"
             color="from-accent-blue to-accent-violet"
-            listings={47}
+            listings={listings}
             badge="Updated"
           />
         </div>

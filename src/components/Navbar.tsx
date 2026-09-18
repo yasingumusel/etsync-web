@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Logo from "./Logo";
+import NotificationsBell from "./NotificationsBell";
+import AccountMenu from "./AccountMenu";
 
 const links = [
   { href: "#features", label: "Features" },
@@ -11,8 +14,17 @@ const links = [
   { href: "#faq", label: "FAQ" },
 ];
 
-export default function Navbar() {
+type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
+type Session = { email?: string; plan?: Plan } | null;
+
+export default function Navbar({ session = null }: { session?: Session }) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/logout", { method: "POST" });
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
@@ -34,18 +46,32 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <a
-            href="/login"
-            className="text-sm font-medium text-muted transition-colors hover:text-foreground"
-          >
-            Log In
-          </a>
-          <a
-            href="/signup"
-            className="rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-4 py-2 text-sm font-semibold text-white shadow-[0_0_30px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.03]"
-          >
-            Get Started
-          </a>
+          {session ? (
+            <>
+              <NotificationsBell refreshKey={0} />
+              <AccountMenu
+                email={session.email}
+                plan={session.plan}
+                onLogout={handleLogout}
+                navLink={{ href: "/dashboard", label: "Go to dashboard" }}
+              />
+            </>
+          ) : (
+            <>
+              <a
+                href="/login"
+                className="text-sm font-medium text-muted transition-colors hover:text-foreground"
+              >
+                Log In
+              </a>
+              <a
+                href="/signup"
+                className="rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-4 py-2 text-sm font-semibold text-white shadow-[0_0_30px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.03]"
+              >
+                Get Started
+              </a>
+            </>
+          )}
         </div>
 
         <button
@@ -88,16 +114,36 @@ export default function Navbar() {
               </a>
             ))}
             <div className="mt-2 flex flex-col gap-3 border-t border-border pt-4">
-              <a href="/login" className="text-sm font-medium text-muted">
-                Log In
-              </a>
-              <a
-                href="/signup"
-                onClick={() => setOpen(false)}
-                className="rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-4 py-2 text-center text-sm font-semibold text-white"
-              >
-                Get Started
-              </a>
+              {session ? (
+                <>
+                  <a href="/dashboard" onClick={() => setOpen(false)} className="text-sm font-medium text-foreground">
+                    Go to dashboard
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      handleLogout();
+                    }}
+                    className="text-left text-sm font-medium text-muted"
+                  >
+                    Log out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <a href="/login" className="text-sm font-medium text-muted">
+                    Log In
+                  </a>
+                  <a
+                    href="/signup"
+                    onClick={() => setOpen(false)}
+                    className="rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-4 py-2 text-center text-sm font-semibold text-white"
+                  >
+                    Get Started
+                  </a>
+                </>
+              )}
             </div>
           </nav>
         </div>

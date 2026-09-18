@@ -24,10 +24,15 @@ export default function AccountMenu({
   email,
   plan,
   onLogout,
+  navLink = { href: "/", label: "Back to homepage" },
 }: {
   email?: string;
   plan?: Plan;
   onLogout: () => void;
+  /** The dashboard shows a way back to the homepage; the homepage itself
+   *  shows a way into the dashboard instead - swapped per page rather than
+   *  hidden, since it's useful in both places. */
+  navLink?: { href: string; label: string };
 }) {
   const info = planInfo[plan ?? "free"];
   const isFree = (plan ?? "free") === "free";
@@ -78,10 +83,10 @@ export default function AccountMenu({
 
           <div className="p-1.5">
             <a
-              href="/"
+              href={navLink.href}
               className="block rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-surface hover:text-foreground"
             >
-              Back to homepage
+              {navLink.label}
             </a>
             {isFree && (
               <a
