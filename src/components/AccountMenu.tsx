@@ -2,6 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 
+type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
+
+// Mirrors the tiers on the marketing site's pricing table (Pricing.tsx),
+// so the badge here always names the same plan a visitor would see there.
+const planInfo: Record<Plan, { label: string; limit: string }> = {
+  free: { label: "Free plan", limit: "Up to 5 products" },
+  starter: { label: "Starter plan", limit: "Up to 50 products" },
+  growth: { label: "Growth plan", limit: "Up to 100 products" },
+  pro: { label: "Pro plan", limit: "Up to 200 products" },
+  unlimited: { label: "Unlimited plan", limit: "Unlimited products" },
+};
+
 function initials(email: string | undefined): string {
   if (!email) return "?";
   const name = email.split("@")[0];
@@ -10,13 +22,15 @@ function initials(email: string | undefined): string {
 
 export default function AccountMenu({
   email,
-  isPremium,
+  plan,
   onLogout,
 }: {
   email?: string;
-  isPremium?: boolean;
+  plan?: Plan;
   onLogout: () => void;
 }) {
+  const info = planInfo[plan ?? "free"];
+  const isFree = (plan ?? "free") === "free";
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -51,18 +65,25 @@ export default function AccountMenu({
               </p>
               <span
                 className={`mt-1 inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                  isPremium
-                    ? "bg-accent-violet/10 text-accent-violet"
-                    : "bg-surface-2 text-muted"
+                  isFree
+                    ? "bg-surface-2 text-muted"
+                    : "bg-accent-violet/10 text-accent-violet"
                 }`}
               >
-                {isPremium ? "Premium plan" : "Free plan"}
+                {info.label}
               </span>
+              <p className="mt-1 text-xs text-muted">{info.limit}</p>
             </div>
           </div>
 
           <div className="p-1.5">
-            {!isPremium && (
+            <a
+              href="/"
+              className="block rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-surface hover:text-foreground"
+            >
+              Back to homepage
+            </a>
+            {isFree && (
               <a
                 href="/#pricing"
                 className="block rounded-lg px-3 py-2 text-sm font-medium text-accent-violet transition-colors hover:bg-surface"

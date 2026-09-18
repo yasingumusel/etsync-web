@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Logo from "@/components/Logo";
 import SyncHistory from "@/components/SyncHistory";
 import SyncSettings from "@/components/SyncSettings";
@@ -22,6 +23,7 @@ type TargetStore = {
 type StatusResponse = {
   email?: string;
   isPremium: boolean;
+  plan?: "free" | "starter" | "growth" | "pro" | "unlimited";
   etsyConnected: boolean;
   targetStores: TargetStore[];
 };
@@ -129,10 +131,12 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-grid">
       <header className="border-b border-border/60 bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <Logo />
+          <Link href="/" aria-label="MirrorStock home">
+            <Logo />
+          </Link>
           <div className="flex items-center gap-3">
             <NotificationsBell refreshKey={historyKey} />
-            <AccountMenu email={status?.email} isPremium={status?.isPremium} onLogout={handleLogout} />
+            <AccountMenu email={status?.email} plan={status?.plan} onLogout={handleLogout} />
           </div>
         </div>
       </header>
