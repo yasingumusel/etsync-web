@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
 import SyncHistory from "@/components/SyncHistory";
 import SyncSettings from "@/components/SyncSettings";
+import NotificationsBell from "@/components/NotificationsBell";
+import AccountMenu from "@/components/AccountMenu";
 
 type TargetStore = {
   platform: string;
@@ -18,6 +20,7 @@ type TargetStore = {
 };
 
 type StatusResponse = {
+  email?: string;
   isPremium: boolean;
   etsyConnected: boolean;
   targetStores: TargetStore[];
@@ -127,12 +130,10 @@ export default function DashboardPage() {
       <header className="border-b border-border/60 bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
           <Logo />
-          <button
-            onClick={handleLogout}
-            className="text-sm font-medium text-muted transition-colors hover:text-foreground"
-          >
-            Log out
-          </button>
+          <div className="flex items-center gap-3">
+            <NotificationsBell refreshKey={historyKey} />
+            <AccountMenu email={status?.email} isPremium={status?.isPremium} onLogout={handleLogout} />
+          </div>
         </div>
       </header>
 
