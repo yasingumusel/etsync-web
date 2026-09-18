@@ -84,6 +84,13 @@ export default function SyncSettings() {
         with everything, since Wix needs a name and a price to make one.
       </p>
 
+      <a
+        href="/dashboard/products"
+        className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent-violet hover:underline"
+      >
+        Choose which products sync &rarr;
+      </a>
+
       {error && <p className="mt-3 text-xs font-medium text-red-500">{error}</p>}
 
       <div className="mt-5 space-y-6">

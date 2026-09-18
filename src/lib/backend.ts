@@ -9,7 +9,7 @@ export async function getSessionUserId(): Promise<string | null> {
   return payload?.userId ?? null;
 }
 
-type SyncPath = "status" | "run" | "history" | "settings";
+type SyncPath = "status" | "run" | "history" | "settings" | "etsy-listings" | "product-selection";
 
 /** Calls the Etsy integrator backend's /sync/:userId/* routes with the shared secret. */
 export async function callSyncBackend(
