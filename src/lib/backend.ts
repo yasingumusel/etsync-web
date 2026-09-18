@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 import { COOKIE_NAME, verifySessionCookieValue } from "@/lib/session";
 
 /** Returns the logged-in user's backend userId, or null if not logged in. */
@@ -22,11 +23,22 @@ export async function callSyncBackend(
     throw new Error("SYNC_BACKEND_URL / SYNC_API_SECRET not configured");
   }
 
+  // The shared secret alone only proved "this caller is our own server", not
+  // *which* account it is acting for - anyone holding it could have driven a
+  // sync for any userId. Signing the session's own userId into a short-lived
+  // token means the backend can check the two agree, so a token minted for one
+  // account is useless against another. It expires in 60s because it is
+  // created immediately before the request it authenticates.
+  const token = jwt.sign({ userId, purpose: "sync-api" }, secret, {
+    algorithm: "HS256",
+    expiresIn: "60s",
+  });
+
   const method = options.method ?? (path === "run" ? "POST" : "GET");
   const res = await fetch(`${baseUrl}/sync/${userId}/${path}`, {
     method,
     headers: {
-      "X-Sync-Secret": secret,
+      Authorization: `Bearer ${token}`,
       ...(options.body ? { "Content-Type": "application/json" } : {}),
     },
     ...(options.body ? { body: JSON.stringify(options.body) } : {}),
