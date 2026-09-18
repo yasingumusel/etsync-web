@@ -29,6 +29,11 @@ const features = [
     desc: "Start a sync from your dashboard and watch it work through your catalogue product by product, so you always know where it got to.",
     icon: ChartIcon,
   },
+  {
+    title: "A History That Skips The Noise",
+    desc: "MirrorStock checks for changes every few hours in the background, but only logs the checks that actually updated something — no wall of identical \"nothing changed\" entries. Each one shows up as a notification, so you know your storefront stayed current without watching it.",
+    icon: BellIcon,
+  },
 ];
 
 export default function Features() {
@@ -140,6 +145,15 @@ function ChartIcon() {
       <rect x="7" y="12" width="3" height="6" />
       <rect x="13" y="8" width="3" height="10" />
       <rect x="19" y="5" width="2" height="13" />
+    </svg>
+  );
+}
+
+function BellIcon() {
+  return (
+    <svg {...iconProps()}>
+      <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
     </svg>
   );
 }

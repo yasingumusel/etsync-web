@@ -3,11 +3,12 @@ const shipped = [
   "Size and colour variations are rebuilt as real Wix product options, each with its own price and SKU.",
   "Automatic currency conversion when your Etsy shop and your Wix site are priced in different currencies.",
   "Run a sync from your dashboard whenever you want, with live progress as it works.",
+  "Scheduled syncs every 4 hours, so your store stays current without you starting one by hand.",
+  "A sync history and notification bell that only surface runs where something actually changed.",
 ];
 
 const planned = [
   "Shopify as a second destination alongside Wix.",
-  "Scheduled syncs, so you do not have to start them by hand.",
   "Two-way sync, so products created in your store can be published to Etsy.",
 ];
 

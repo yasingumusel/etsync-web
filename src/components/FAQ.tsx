@@ -31,6 +31,10 @@ const faqs = [
     q: "Who can connect a shop today?",
     a: "MirrorStock is in early access while we complete Etsy's commercial API review. Until that review is finished, Etsy's access rules mean the app can only connect its own developer's shop. Once approved, any Etsy seller will be able to connect their own shop through Etsy's standard authorization screen.",
   },
+  {
+    q: "How often does MirrorStock check for changes, and will I get spammed with alerts?",
+    a: "Every 4 hours, automatically, on top of whatever you trigger yourself from the dashboard. Most of those checks find nothing new — and those are not logged or notified. Your sync history and notification bell only ever fill up with runs that actually changed something, so a quiet week looks quiet.",
+  },
 ];
 
 export default function FAQ() {
