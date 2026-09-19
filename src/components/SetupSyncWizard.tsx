@@ -36,6 +36,8 @@ function formatPrice(price: number, currency: string) {
   }
 }
 
+type Step = "picker" | "claim" | "already-claimed";
+
 /**
  * Two ways to reach this wizard, both ending up in the same UI:
  *
@@ -43,13 +45,16 @@ function formatPrice(price: number, currency: string) {
  *   carrying userId in the URL - the same trust model /connect-etsy already
  *   uses, since there's no dashboard session yet the first time a shop
  *   connects through the Wix install flow. Talks to the /api/setup-sync/*
- *   routes, which take userId from the query string/body.
+ *   routes, which take userId from the query string/body. Ends with a
+ *   "create your password" step (the "claim" Step below) - without one,
+ *   /dashboard (which requires a session) would be an immediate dead end.
  * - "manage": opened later from the dashboard by an already logged-in
  *   user, so it goes through the normal session-authenticated
  *   /api/sync/etsy-listings and /api/sync/product-selection routes instead
  *   - no userId is ever passed around, closing the "guess someone else's
  *   id and rewrite their sync settings" gap the "connect" variant accepts
- *   as a pre-existing, low-severity tradeoff (see /connect-etsy).
+ *   as a pre-existing, low-severity tradeoff (see /connect-etsy). Already
+ *   has a session, so it skips the claim step entirely.
  *
  * Renders just the card itself - the page around it (setup-sync/page.tsx
  * with the marketing Navbar+Footer, or dashboard/products/page.tsx with
@@ -67,6 +72,8 @@ export default function SetupSyncWizard({
   const [loadError, setLoadError] = useState(false);
   const [listings, setListings] = useState<EtsyListing[]>([]);
   const [plan, setPlan] = useState<Plan | undefined>();
+  const [existingEmail, setExistingEmail] = useState<string | undefined>();
+  const [step, setStep] = useState<Step>("picker");
   const [mode, setMode] = useState<Selection["mode"]>("all");
   const [includeDrafts, setIncludeDrafts] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -111,11 +118,13 @@ export default function SetupSyncWizard({
           : new Set(listingsData.listings.map((l) => l.listingId))
       );
 
-      // Non-critical - the wizard still works fine without knowing the plan,
-      // it just skips the "Free plan" note below.
+      // Non-critical - the wizard still works fine without knowing the
+      // plan/email, it just skips the "Free plan" note and can't tell in
+      // advance whether the claim step is needed.
       if (statusRes.ok) {
-        const statusData: { plan?: Plan } = await statusRes.json();
+        const statusData: { plan?: Plan; email?: string } = await statusRes.json();
         setPlan(statusData.plan);
+        setExistingEmail(statusData.email);
       }
 
       setLoading(false);
@@ -156,34 +165,48 @@ export default function SetupSyncWizard({
     setSelected(new Set());
   }
 
-  async function finish() {
+  /**
+   * Runs when leaving the picker step, either via "Finish setup" (saves
+   * the choices first) or "Skip for now" (leaves the existing/default
+   * selection alone). Either way, a "connect" session still needs to turn
+   * into a real logged-in dashboard account before it can go to /dashboard.
+   */
+  async function proceedFromPicker(shouldSave: boolean) {
     if (variant === "connect" && !userId) return;
-    setSaving(true);
-    setSaveError(null);
 
-    const body = {
-      ...(variant === "connect" ? { userId } : {}),
-      mode,
-      includeDrafts,
-      selectedListingIds: mode === "custom" ? Array.from(selected) : [],
-    };
+    if (shouldSave) {
+      setSaving(true);
+      setSaveError(null);
 
-    const res = await fetch(
-      variant === "manage" ? "/api/sync/product-selection" : "/api/setup-sync/selection",
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      }
-    );
+      const body = {
+        ...(variant === "connect" ? { userId } : {}),
+        mode,
+        includeDrafts,
+        selectedListingIds: mode === "custom" ? Array.from(selected) : [],
+      };
 
-    if (!res.ok) {
+      const res = await fetch(
+        variant === "manage" ? "/api/sync/product-selection" : "/api/setup-sync/selection",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      );
+
       setSaving(false);
-      setSaveError("Could not save your choices. Please try again.");
+      if (!res.ok) {
+        setSaveError("Could not save your choices. Please try again.");
+        return;
+      }
+    }
+
+    if (variant === "manage") {
+      router.push("/dashboard");
       return;
     }
 
-    router.push("/dashboard");
+    setStep(existingEmail ? "already-claimed" : "claim");
   }
 
   if (variant === "connect" && !userId) {
@@ -220,6 +243,29 @@ export default function SetupSyncWizard({
         </button>
       </Card>
     );
+  }
+
+  if (step === "already-claimed") {
+    return (
+      <Card>
+        <h1 className="text-lg font-display font-bold text-foreground">
+          This shop is already linked to an account
+        </h1>
+        <p className="mt-2 text-sm text-muted">
+          Log in to see your dashboard - your choices here have already been saved.
+        </p>
+        <a
+          href="/login"
+          className="mt-6 block w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3 text-center text-sm font-semibold text-white"
+        >
+          Log in
+        </a>
+      </Card>
+    );
+  }
+
+  if (step === "claim") {
+    return <ClaimForm userId={userId!} />;
   }
 
   return (
@@ -341,7 +387,7 @@ export default function SetupSyncWizard({
 
       <button
         type="button"
-        onClick={finish}
+        onClick={() => proceedFromPicker(true)}
         disabled={saving}
         className="mt-6 w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.01] disabled:opacity-60"
       >
@@ -350,8 +396,11 @@ export default function SetupSyncWizard({
 
       <button
         type="button"
-        onClick={() => router.push("/dashboard")}
-        className="mt-3 w-full text-center text-xs font-medium text-muted hover:text-foreground"
+        onClick={() =>
+          variant === "manage" ? router.push("/dashboard") : proceedFromPicker(false)
+        }
+        disabled={saving}
+        className="mt-3 w-full text-center text-xs font-medium text-muted hover:text-foreground disabled:opacity-60"
       >
         {variant === "manage" ? "Cancel" : "Skip for now"}
       </button>
@@ -361,6 +410,118 @@ export default function SetupSyncWizard({
           You can change this anytime from your dashboard.
         </p>
       )}
+    </Card>
+  );
+}
+
+/**
+ * The step that turns a URL-trusted "connect" session into a real,
+ * loggable-in dashboard account - see routes/auth/account.js's /claim for
+ * the backend side. Kept as its own component mainly so its form state
+ * doesn't have to share a namespace with the picker step above it.
+ */
+function ClaimForm({ userId }: { userId: string }) {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+
+    const res = await fetch("/api/setup-sync/claim", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, email, password }),
+    });
+
+    setSubmitting(false);
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setError(body.error || "Could not create your account");
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
+  }
+
+  return (
+    <Card>
+      <form onSubmit={handleSubmit}>
+        <h1 className="font-display text-xl font-bold text-foreground">
+          Create your password
+        </h1>
+        <p className="mt-1 text-sm text-muted">
+          Your Etsy shop is connected and your choices are saved. Set a
+          password so you can come back to your dashboard anytime.
+        </p>
+
+        <div className="mt-6 flex flex-col gap-4 text-left">
+          <div>
+            <label className="text-sm font-medium text-foreground">Email</label>
+            <input
+              type="email"
+              required
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-accent-violet"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-foreground">Password</label>
+            <input
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-accent-violet"
+            />
+            <p className="mt-1 text-xs text-muted">At least 8 characters.</p>
+          </div>
+
+          {/* Etsy's API Terms require app users to accept the developer's
+              terms through an explicit click-through, not just a link. */}
+          <label className="flex items-start gap-2.5 text-xs leading-relaxed text-muted">
+            <input
+              type="checkbox"
+              required
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
+            />
+            <span>
+              I agree to the{" "}
+              <a href="/terms" target="_blank" className="font-medium text-foreground hover:underline">
+                Terms of Service
+              </a>{" "}
+              and the{" "}
+              <a href="/privacy" target="_blank" className="font-medium text-foreground hover:underline">
+                Privacy Policy
+              </a>
+              .
+            </span>
+          </label>
+        </div>
+
+        {error && <p className="mt-4 text-sm font-medium text-red-500">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="mt-6 w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.02] disabled:opacity-60"
+        >
+          {submitting ? "Creating account…" : "Create account"}
+        </button>
+      </form>
     </Card>
   );
 }
