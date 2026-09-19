@@ -47,14 +47,42 @@ export default function DashboardPage() {
   const [runResult, setRunResult] = useState<RunResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [historyKey, setHistoryKey] = useState(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Tracks wall-clock time since a sync started being observed, purely for
+  // the "Preparing your sync… (Ns)" message below - not sent anywhere, just
+  // local reassurance while `total` is still 0 (Etsy's catalogue can take a
+  // few minutes to read for a large shop, before the first product is even
+  // known, let alone pushed).
+  const syncStartRef = useRef<number | null>(null);
+  const elapsedIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const loadStatus = useCallback(async (): Promise<StatusResponse | null> => {
     const res = await fetch("/api/sync");
     if (!res.ok) return null;
     const data: StatusResponse = await res.json();
     setStatus(data);
+
+    const anySyncing = data.targetStores.some((s) => s.isSyncing);
+    if (anySyncing) {
+      if (syncStartRef.current === null) {
+        syncStartRef.current = Date.now();
+        setElapsedSeconds(0);
+        elapsedIntervalRef.current = setInterval(() => {
+          if (syncStartRef.current !== null) {
+            setElapsedSeconds(Math.floor((Date.now() - syncStartRef.current) / 1000));
+          }
+        }, 1000);
+      }
+    } else if (syncStartRef.current !== null) {
+      syncStartRef.current = null;
+      if (elapsedIntervalRef.current) {
+        clearInterval(elapsedIntervalRef.current);
+        elapsedIntervalRef.current = null;
+      }
+    }
+
     return data;
   }, []);
 
@@ -62,6 +90,7 @@ export default function DashboardPage() {
     loadStatus().finally(() => setLoadingStatus(false));
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
+      if (elapsedIntervalRef.current) clearInterval(elapsedIntervalRef.current);
     };
   }, [loadStatus]);
 
@@ -181,7 +210,9 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-muted">
                             {store.isSyncing
-                              ? `Syncing: ${progress.current} / ${progress.total}`
+                              ? progress?.total
+                                ? `Syncing: ${progress.current} / ${progress.total}`
+                                : `Preparing your sync… (${elapsedSeconds}s)`
                               : store.lastSyncAt
                                 ? `Last synced: ${new Date(store.lastSyncAt).toLocaleString("en-US")}`
                                 : "Not synced yet"}
@@ -206,12 +237,18 @@ export default function DashboardPage() {
                       {store.isSyncing && (
                         <div className="mt-3">
                           <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
-                            <div
-                              className="h-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet transition-[width] duration-500 ease-out"
-                              style={{ width: `${pct}%` }}
-                            />
+                            {progress?.total ? (
+                              <div
+                                className="h-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet transition-[width] duration-500 ease-out"
+                                style={{ width: `${pct}%` }}
+                              />
+                            ) : (
+                              <div className="h-full w-1/4 rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet animate-sync-indeterminate" />
+                            )}
                           </div>
-                          <p className="mt-1 text-right text-[11px] text-muted">{pct}%</p>
+                          <p className="mt-1 text-right text-[11px] text-muted">
+                            {progress?.total ? `${pct}%` : "Reading your Etsy shop…"}
+                          </p>
                         </div>
                       )}
                     </div>
