@@ -1,14 +1,18 @@
 import Logo from "./Logo";
 
+// Absolute (/#section) rather than bare (#section) so these still work when
+// Footer renders on a page other than the homepage itself (the Etsy
+// connect/setup pages, for instance) - a bare hash would just be a no-op
+// there instead of jumping to that homepage section.
 const columns = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "#features" },
-      { label: "How It Works", href: "#how-it-works" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "API Usage", href: "#api-usage" },
-      { label: "Product Status", href: "#status" },
+      { label: "Features", href: "/#features" },
+      { label: "How It Works", href: "/#how-it-works" },
+      { label: "Pricing", href: "/#pricing" },
+      { label: "API Usage", href: "/#api-usage" },
+      { label: "Product Status", href: "/#status" },
     ],
   },
   {
@@ -17,7 +21,7 @@ const columns = [
   },
   {
     title: "Resources",
-    links: [{ label: "FAQ", href: "#faq" }],
+    links: [{ label: "FAQ", href: "/#faq" }],
   },
   {
     title: "Legal",

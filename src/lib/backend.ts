@@ -11,6 +11,42 @@ export async function getSessionUserId(): Promise<string | null> {
 
 type SyncPath = "status" | "run" | "history" | "settings" | "etsy-listings" | "product-selection";
 
+export type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
+
+export type SessionSummary = {
+  email?: string;
+  plan?: Plan;
+  syncedProducts: number;
+};
+
+/**
+ * Looks up the logged-in visitor's account, if any, so a page's navbar can
+ * show the same bell/avatar as the dashboard instead of "Log In" to someone
+ * who already is. Shared by every page that renders <Navbar> - the
+ * marketing homepage and the standalone Etsy connect/setup pages alike -
+ * so a visitor mid-onboarding still sees the rest of the site is really
+ * theirs, not a bare, disconnected form. A visitor without a session
+ * cookie never triggers the backend call below - this stays free for
+ * anonymous traffic.
+ */
+export async function getSessionSummary(): Promise<SessionSummary | null> {
+  const userId = await getSessionUserId();
+  if (!userId) return null;
+
+  const { ok, body } = await callSyncBackend(userId, "status");
+  if (!ok) return null;
+
+  const syncedProducts = (
+    body.targetStores as { syncedProductCount: number }[]
+  ).reduce((sum, s) => sum + (s.syncedProductCount || 0), 0);
+
+  return {
+    email: body.email as string | undefined,
+    plan: body.plan as Plan | undefined,
+    syncedProducts,
+  };
+}
+
 /** Calls the Etsy integrator backend's /sync/:userId/* routes with the shared secret. */
 export async function callSyncBackend(
   userId: string,

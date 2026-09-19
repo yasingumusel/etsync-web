@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Logo from "@/components/Logo";
 import SyncHistory from "@/components/SyncHistory";
 import SyncSettings from "@/components/SyncSettings";
-import NotificationsBell from "@/components/NotificationsBell";
-import AccountMenu from "@/components/AccountMenu";
+import DashboardHeader from "@/components/DashboardHeader";
 
 type TargetStore = {
   platform: string;
@@ -44,7 +40,6 @@ const statusColor: Record<TargetStore["lastSyncStatus"], string> = {
 };
 
 export default function DashboardPage() {
-  const router = useRouter();
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [syncing, setSyncing] = useState(false);
@@ -121,25 +116,9 @@ export default function DashboardPage() {
     }, 1500);
   }
 
-  async function handleLogout() {
-    await fetch("/api/logout", { method: "POST" });
-    router.push("/login");
-    router.refresh();
-  }
-
   return (
     <div className="min-h-screen bg-grid">
-      <header className="border-b border-border/60 bg-background/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <Link href="/" aria-label="MirrorStock home">
-            <Logo />
-          </Link>
-          <div className="flex items-center gap-3">
-            <NotificationsBell refreshKey={historyKey} />
-            <AccountMenu email={status?.email} plan={status?.plan} onLogout={handleLogout} />
-          </div>
-        </div>
-      </header>
+      <DashboardHeader refreshKey={historyKey} />
 
       <main className="mx-auto max-w-5xl px-6 py-12">
         <h1 className="font-display text-2xl font-bold text-foreground">

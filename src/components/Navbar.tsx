@@ -6,12 +6,16 @@ import Logo from "./Logo";
 import NotificationsBell from "./NotificationsBell";
 import AccountMenu from "./AccountMenu";
 
+// Absolute (/#section) rather than bare (#section) so these still work when
+// Navbar renders on a page other than the homepage itself (the Etsy
+// connect/setup pages, for instance) - a bare hash would just be a no-op
+// there instead of jumping to that homepage section.
 const links = [
-  { href: "#features", label: "Features" },
-  { href: "#how-it-works", label: "How It Works" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#api-usage", label: "API Usage" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#features", label: "Features" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/#api-usage", label: "API Usage" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
@@ -29,7 +33,7 @@ export default function Navbar({ session = null }: { session?: Session }) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
-        <a href="#top" className="shrink-0">
+        <a href="/" className="shrink-0">
           <Logo />
         </a>
 
