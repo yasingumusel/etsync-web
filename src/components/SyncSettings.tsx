@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import SetupSyncWizard from "@/components/SetupSyncWizard";
 
 type Fields = Record<string, boolean>;
 
@@ -26,6 +27,8 @@ export default function SyncSettings() {
   const [saving, setSaving] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerKey, setPickerKey] = useState(0);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/sync/settings");
@@ -84,12 +87,31 @@ export default function SyncSettings() {
         with everything, since Wix needs a name and a price to make one.
       </p>
 
-      <a
-        href="/dashboard/products"
+      <button
+        type="button"
+        onClick={() => setPickerOpen((v) => !v)}
         className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent-violet hover:underline"
       >
-        Choose which products sync &rarr;
-      </a>
+        {pickerOpen ? "Hide product picker" : "Choose which products sync"}
+        <span aria-hidden>{pickerOpen ? "↑" : "→"}</span>
+      </button>
+
+      {pickerOpen && (
+        <div className="mt-4 rounded-2xl border border-border bg-surface p-5">
+          <SetupSyncWizard
+            key={pickerKey}
+            variant="manage"
+            embedded
+            onDone={() => {
+              setPickerOpen(false);
+              // Remounts the picker fresh next time it's opened, instead of
+              // showing whatever it last had in memory (which may now be
+              // stale, e.g. right after a save).
+              setPickerKey((k) => k + 1);
+            }}
+          />
+        </div>
+      )}
 
       {error && <p className="mt-3 text-xs font-medium text-red-500">{error}</p>}
 

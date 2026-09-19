@@ -16,17 +16,17 @@ type Selection = {
   mode: "all" | "custom";
   includeDrafts: boolean;
   selectedListingIds: string[];
+  // null means no cap (Unlimited plan) - set by the same backend route this
+  // is loaded from, so it can never name a different number than the one
+  // that actually gets enforced when saving or syncing.
+  planLimit: number | null;
 };
 
 type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 
-const PLAN_LIMIT_LABEL: Record<Plan, string | null> = {
-  free: "Your Free plan can connect up to 5 listings. Upgrade anytime to sync more.",
-  starter: null,
-  growth: null,
-  pro: null,
-  unlimited: null,
-};
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 function formatPrice(price: number, currency: string) {
   try {
@@ -58,20 +58,30 @@ type Step = "picker" | "claim" | "already-claimed";
  *
  * Renders just the card itself - the page around it (setup-sync/page.tsx
  * with the marketing Navbar+Footer, or dashboard/products/page.tsx with
- * DashboardHeader) supplies the surrounding chrome and centering.
+ * DashboardHeader) supplies the surrounding chrome and centering. Passing
+ * `embedded` drops that outer card so a caller that already provides its
+ * own container (the dashboard's inline "Choose which products sync"
+ * panel) doesn't get a card nested inside another card; `onDone` is how
+ * that same embedded caller finds out saving/cancelling finished, since
+ * there's no "/dashboard" route to navigate back to when already on it.
  */
 export default function SetupSyncWizard({
   userId,
   variant = "connect",
+  embedded = false,
+  onDone,
 }: {
   userId?: string;
   variant?: "connect" | "manage";
+  embedded?: boolean;
+  onDone?: () => void;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [listings, setListings] = useState<EtsyListing[]>([]);
   const [plan, setPlan] = useState<Plan | undefined>();
+  const [planLimit, setPlanLimit] = useState<number | null>(null);
   const [existingEmail, setExistingEmail] = useState<string | undefined>();
   const [step, setStep] = useState<Step>("picker");
   const [mode, setMode] = useState<Selection["mode"]>("all");
@@ -79,6 +89,11 @@ export default function SetupSyncWizard({
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  function finishManage() {
+    if (onDone) onDone();
+    else router.push("/dashboard");
+  }
 
   useEffect(() => {
     if (variant === "connect" && !userId) {
@@ -112,6 +127,7 @@ export default function SetupSyncWizard({
       setListings(listingsData.listings);
       setMode(selectionData.mode);
       setIncludeDrafts(selectionData.includeDrafts);
+      setPlanLimit(selectionData.planLimit ?? null);
       setSelected(
         selectionData.mode === "custom"
           ? new Set(selectionData.selectedListingIds)
@@ -136,29 +152,43 @@ export default function SetupSyncWizard({
     [listings, includeDrafts]
   );
 
-  const planNote = plan ? PLAN_LIMIT_LABEL[plan] : null;
+  const planNote =
+    planLimit !== null
+      ? `Your ${plan ? capitalize(plan) : "current"} plan allows up to ${planLimit} product${planLimit === 1 ? "" : "s"}. Upgrade anytime to sync more.`
+      : null;
+  const atCustomLimit = planLimit !== null && selected.size >= planLimit;
+  const allModeOverLimit = planLimit !== null && visibleListings.length > planLimit;
 
   function chooseMode(next: Selection["mode"]) {
     setMode(next);
     // Switching into "pick myself" for the first time starts everything
-    // checked, not empty - an empty picker reads as "I made a mistake",
-    // not "I deliberately chose to sync nothing".
+    // checked (up to the plan limit), not empty - an empty picker reads as
+    // "I made a mistake", not "I deliberately chose to sync nothing".
     if (next === "custom" && selected.size === 0) {
-      setSelected(new Set(visibleListings.map((l) => l.listingId)));
+      const initial = planLimit !== null ? visibleListings.slice(0, planLimit) : visibleListings;
+      setSelected(new Set(initial.map((l) => l.listingId)));
     }
   }
 
   function toggleOne(listingId: string) {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(listingId)) next.delete(listingId);
-      else next.add(listingId);
+      if (next.has(listingId)) {
+        next.delete(listingId);
+      } else {
+        // Once a plan's cap is reached, further checkboxes are disabled
+        // (see the `disabled` prop below) - this is just a safety net
+        // against a stale click slipping through.
+        if (planLimit !== null && next.size >= planLimit) return prev;
+        next.add(listingId);
+      }
       return next;
     });
   }
 
   function selectAll() {
-    setSelected(new Set(visibleListings.map((l) => l.listingId)));
+    const capped = planLimit !== null ? visibleListings.slice(0, planLimit) : visibleListings;
+    setSelected(new Set(capped.map((l) => l.listingId)));
   }
 
   function selectNone() {
@@ -175,6 +205,13 @@ export default function SetupSyncWizard({
     if (variant === "connect" && !userId) return;
 
     if (shouldSave) {
+      if (mode === "custom" && planLimit !== null && selected.size > planLimit) {
+        setSaveError(
+          `You've selected ${selected.size} products, but your plan allows up to ${planLimit}. Remove some, or upgrade your plan.`
+        );
+        return;
+      }
+
       setSaving(true);
       setSaveError(null);
 
@@ -202,7 +239,7 @@ export default function SetupSyncWizard({
     }
 
     if (variant === "manage") {
-      router.push("/dashboard");
+      finishManage();
       return;
     }
 
@@ -222,26 +259,30 @@ export default function SetupSyncWizard({
 
   if (loading) {
     return (
-      <Card>
+      <Wrap embedded={embedded}>
         <p className="text-sm text-muted">Loading your Etsy listings&hellip;</p>
-      </Card>
+      </Wrap>
     );
   }
 
   if (loadError) {
     return (
-      <Card>
+      <Wrap embedded={embedded}>
         <p className="text-sm font-medium text-red-500">
-          Could not load your Etsy listings. You can still open your
-          dashboard - everything defaults to syncing all active listings.
+          Could not load your Etsy listings.{" "}
+          {variant === "manage"
+            ? "Please try again in a moment."
+            : "You can still open your dashboard - everything defaults to syncing all active listings."}
         </p>
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="mt-5 w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3 text-sm font-semibold text-white"
-        >
-          Go to dashboard
-        </button>
-      </Card>
+        {variant === "connect" && (
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="mt-5 w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3 text-sm font-semibold text-white"
+          >
+            Go to dashboard
+          </button>
+        )}
+      </Wrap>
     );
   }
 
@@ -269,15 +310,19 @@ export default function SetupSyncWizard({
   }
 
   return (
-    <Card wide>
-      <h1 className="text-center font-display text-xl font-bold text-foreground">
-        {variant === "manage" ? "Which products should sync?" : "Set up your sync"}
-      </h1>
-      <p className="mt-1 text-center text-sm text-muted">
-        {variant === "manage"
-          ? "Change which Etsy listings sync to your store."
-          : "Your Etsy shop is connected. A few choices to start."}
-      </p>
+    <Wrap embedded={embedded} wide>
+      {!embedded && (
+        <>
+          <h1 className="text-center font-display text-xl font-bold text-foreground">
+            {variant === "manage" ? "Which products should sync?" : "Set up your sync"}
+          </h1>
+          <p className="mt-1 text-center text-sm text-muted">
+            {variant === "manage"
+              ? "Change which Etsy listings sync to your store."
+              : "Your Etsy shop is connected. A few choices to start."}
+          </p>
+        </>
+      )}
 
       {planNote && (
         <p className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 px-3.5 py-2.5 text-center text-xs font-medium text-amber-700">
@@ -303,6 +348,13 @@ export default function SetupSyncWizard({
             onClick={() => chooseMode("custom")}
           />
         </div>
+        {mode === "all" && allModeOverLimit && (
+          <p className="mt-2.5 rounded-xl border border-amber-400/30 bg-amber-400/5 px-3.5 py-2.5 text-xs font-medium text-amber-700">
+            You have {visibleListings.length} listings but your plan allows{" "}
+            {planLimit}. We&apos;ll sync your {planLimit} oldest listings
+            until you upgrade or choose specific products.
+          </p>
+        )}
       </div>
 
       <label className="mt-5 flex cursor-pointer items-start gap-2.5 rounded-xl border border-border bg-surface px-3.5 py-3">
@@ -326,8 +378,9 @@ export default function SetupSyncWizard({
       {mode === "custom" && (
         <div className="mt-5">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-muted">
+            <p className={`text-xs font-medium ${atCustomLimit ? "text-amber-600" : "text-muted"}`}>
               {selected.size} of {visibleListings.length} selected
+              {planLimit !== null ? ` (max ${planLimit} on your plan)` : ""}
             </p>
             <div className="flex gap-3 text-xs font-medium text-accent-violet">
               <button type="button" onClick={selectAll} className="hover:underline">
@@ -345,12 +398,20 @@ export default function SetupSyncWizard({
             </p>
           ) : (
             <ul className="mt-3 max-h-80 space-y-1.5 overflow-y-auto rounded-xl border border-border bg-surface p-2">
-              {visibleListings.map((l) => (
+              {visibleListings.map((l) => {
+                const isSelected = selected.has(l.listingId);
+                const disabled = !isSelected && atCustomLimit;
+                return (
                 <li key={l.listingId}>
-                  <label className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 hover:bg-surface-2">
+                  <label
+                    className={`flex items-center gap-3 rounded-lg px-2 py-2 ${
+                      disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-surface-2"
+                    }`}
+                  >
                     <input
                       type="checkbox"
-                      checked={selected.has(l.listingId)}
+                      checked={isSelected}
+                      disabled={disabled}
                       onChange={() => toggleOne(l.listingId)}
                       className="h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
                     />
@@ -377,7 +438,8 @@ export default function SetupSyncWizard({
                     </span>
                   </label>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </div>
@@ -396,9 +458,7 @@ export default function SetupSyncWizard({
 
       <button
         type="button"
-        onClick={() =>
-          variant === "manage" ? router.push("/dashboard") : proceedFromPicker(false)
-        }
+        onClick={() => (variant === "manage" ? finishManage() : proceedFromPicker(false))}
         disabled={saving}
         className="mt-3 w-full text-center text-xs font-medium text-muted hover:text-foreground disabled:opacity-60"
       >
@@ -410,7 +470,7 @@ export default function SetupSyncWizard({
           You can change this anytime from your dashboard.
         </p>
       )}
-    </Card>
+    </Wrap>
   );
 }
 
@@ -557,4 +617,20 @@ function Card({ children, wide }: { children: React.ReactNode; wide?: boolean })
       {children}
     </div>
   );
+}
+
+// An embedded caller (the dashboard's inline product picker) already
+// provides its own surrounding card, so this skips adding another one
+// inside it - everywhere else gets the normal standalone Card.
+function Wrap({
+  children,
+  embedded,
+  wide,
+}: {
+  children: React.ReactNode;
+  embedded?: boolean;
+  wide?: boolean;
+}) {
+  if (embedded) return <>{children}</>;
+  return <Card wide={wide}>{children}</Card>;
 }
