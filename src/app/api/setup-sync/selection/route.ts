@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { status, body } = await callSyncBackend(userId, "product-selection");
+    const { status, body } = await callSyncBackend(userId, "product-selection", { purpose: "onboarding" });
     return NextResponse.json(body, { status });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
@@ -28,6 +28,7 @@ export async function PUT(req: NextRequest) {
     const { status, body } = await callSyncBackend(userId, "product-selection", {
       method: "PUT",
       body: { mode, includeDrafts, selectedListingIds },
+      purpose: "onboarding",
     });
     return NextResponse.json(body, { status });
   } catch (err) {

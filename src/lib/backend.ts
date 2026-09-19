@@ -47,11 +47,23 @@ export async function getSessionSummary(): Promise<SessionSummary | null> {
   };
 }
 
-/** Calls the Etsy integrator backend's /sync/:userId/* routes with the shared secret. */
+/**
+ * Calls the Etsy integrator backend's /sync/:userId/* routes with a signed,
+ * per-account token.
+ *
+ * `purpose` must be "onboarding" when `userId` came from a URL/body value
+ * rather than the verified session cookie (the pre-login setup wizard, which
+ * runs right after a fresh Wix/Etsy connect and has no session yet). That
+ * bare id isn't a secret - it travels in redirect URLs, Referer headers,
+ * browser history - so the backend only honours an "onboarding" token while
+ * the account has no password set yet; once claimed, it's rejected and the
+ * caller must be logged in like everyone else. Defaults to "sync-api"
+ * because every other caller in this file already has a verified session.
+ */
 export async function callSyncBackend(
   userId: string,
   path: SyncPath,
-  options: { method?: "GET" | "POST" | "PUT"; body?: unknown } = {}
+  options: { method?: "GET" | "POST" | "PUT"; body?: unknown; purpose?: "sync-api" | "onboarding" } = {}
 ) {
   const baseUrl = process.env.SYNC_BACKEND_URL;
   const secret = process.env.SYNC_API_SECRET;
@@ -65,7 +77,7 @@ export async function callSyncBackend(
   // token means the backend can check the two agree, so a token minted for one
   // account is useless against another. It expires in 60s because it is
   // created immediately before the request it authenticates.
-  const token = jwt.sign({ userId, purpose: "sync-api" }, secret, {
+  const token = jwt.sign({ userId, purpose: options.purpose ?? "sync-api" }, secret, {
     algorithm: "HS256",
     expiresIn: "60s",
   });

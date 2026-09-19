@@ -51,7 +51,12 @@ export default function AuthForm({ mode }: { mode: Mode }) {
       return;
     }
 
-    router.push(searchParams.get("from") || "/dashboard");
+    const from = searchParams.get("from");
+    // Only ever redirect within our own site - a "from" value like
+    // "https://evil.example.com" (or "//evil.example.com") must not send a
+    // freshly-authenticated user off-site.
+    const safeFrom = from && from.startsWith("/") && !from.startsWith("//") ? from : "/dashboard";
+    router.push(safeFrom);
     router.refresh();
   }
 

@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { status, body } = await callSyncBackend(userId, "status");
+    const { status, body } = await callSyncBackend(userId, "status", { purpose: "onboarding" });
     return NextResponse.json(body, { status });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
