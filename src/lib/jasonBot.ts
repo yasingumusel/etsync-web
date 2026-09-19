@@ -53,6 +53,13 @@ export function jasonAnswer(message: string): string {
   const { words, joined } = normalize(message);
   if (!words.size) return FALLBACK_ANSWER;
 
+  // Only entries that individually clear their own threshold are in the
+  // running - picking the single highest-scoring entry first and checking
+  // its threshold *after* the fact means an early entry that shares one
+  // word with a later, more-specific entry (e.g. "login" appearing in both
+  // a generic "password-security" entry and a dedicated "login" entry) can
+  // block the correct match just by coming first in the list at an equal,
+  // unqualifying score.
   let bestScore = 0;
   let bestEntry: FaqEntry | null = null;
 
@@ -67,12 +74,12 @@ export function jasonAnswer(message: string): string {
         score += 2; // verbatim phrase is a stronger signal than word overlap alone
       }
     }
-    if (score > bestScore) {
+    const threshold = entry.minScore ?? MIN_SCORE;
+    if (score >= threshold && score > bestScore) {
       bestScore = score;
       bestEntry = entry;
     }
   }
 
-  if (!bestEntry) return FALLBACK_ANSWER;
-  return bestScore >= (bestEntry.minScore ?? MIN_SCORE) ? bestEntry.answer : FALLBACK_ANSWER;
+  return bestEntry ? bestEntry.answer : FALLBACK_ANSWER;
 }

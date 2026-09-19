@@ -266,6 +266,26 @@ export const JASON_FAQ: FaqEntry[] = [
       "Not yet - Wix is the only destination store MirrorStock supports today. Shopify support is on the roadmap.",
   },
   {
+    id: "login",
+    keywords: [
+      "login",
+      "log in",
+      "sign in",
+      "signin",
+      "logging in",
+      "can't log in",
+      "cant log in",
+      "forgot password",
+      "reset password",
+      "password reset",
+      "my account",
+      "dashboard access",
+    ],
+    minScore: 1, // "login"/"log in"/"sign in" are unambiguous enough on their own
+    answer:
+      "Use the \"Log In\" link at the top of the site with the email and password you set - you create that password at the end of the Etsy connect/setup process, so if you haven't connected your Etsy shop yet, that's the first step. There's no self-serve password reset yet - if you're locked out, email support@mirrorstock.com and a real person will help.",
+  },
+  {
     id: "who-can-connect",
     keywords: [
       "can i connect",
