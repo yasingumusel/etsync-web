@@ -7,10 +7,10 @@ type Message = { role: "user" | "assistant"; content: string };
 /**
  * "Jason" - the site's support chatbot. Floats on every page (mounted once
  * in the root layout) since it's meant to help both prospects on the
- * marketing site and logged-in customers in the dashboard. Everything it's
- * allowed to know and say lives in src/lib/jasonKnowledge.ts, enforced
- * server-side in /api/chat - this component only handles the conversation
- * UI and streaming the reply in as it arrives.
+ * marketing site and logged-in customers in the dashboard. Runs entirely on
+ * our own server - no external AI API - matching each message against
+ * src/lib/jasonFaq.ts via /api/chat. This component only handles the
+ * conversation UI.
  */
 export default function JasonChat() {
   const [open, setOpen] = useState(false);
@@ -28,8 +28,7 @@ export default function JasonChat() {
     const text = input.trim();
     if (!text || sending) return;
 
-    const nextMessages: Message[] = [...messages, { role: "user", content: text }];
-    setMessages(nextMessages);
+    setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
     setSending(true);
     setError(null);
@@ -38,32 +37,13 @@ export default function JasonChat() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages }),
+        body: JSON.stringify({ message: text }),
       });
 
-      if (!res.ok || !res.body) {
-        throw new Error("Jason couldn't respond just now");
-      }
+      if (!res.ok) throw new Error("Jason couldn't respond just now");
 
-      // Stream the reply in as it arrives, appending to one growing
-      // assistant message rather than waiting for the full response.
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            role: "assistant",
-            content: updated[updated.length - 1].content + chunk,
-          };
-          return updated;
-        });
-      }
+      const data: { answer: string } = await res.json();
+      setMessages((prev) => [...prev, { role: "assistant", content: data.answer }]);
     } catch {
       setError("Jason is having trouble responding. Try again, or email support@mirrorstock.com.");
     } finally {
@@ -114,10 +94,11 @@ export default function JasonChat() {
 
             {messages.map((m, i) => (
               <ChatBubble key={i} role={m.role}>
-                {m.content || (m.role === "assistant" && sending ? "…" : "")}
+                {m.content}
               </ChatBubble>
             ))}
 
+            {sending && <ChatBubble role="assistant">…</ChatBubble>}
             {error && <p className="text-xs font-medium text-red-500">{error}</p>}
           </div>
 
