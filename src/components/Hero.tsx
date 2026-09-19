@@ -1,3 +1,5 @@
+import SyncPreviewMockup from "@/components/SyncPreviewMockup";
+
 export default function Hero({ syncedProducts }: { syncedProducts?: number }) {
   return (
     <section id="top" className="relative overflow-hidden pt-20 pb-24 lg:pt-28 lg:pb-32">
@@ -62,113 +64,8 @@ export default function Hero({ syncedProducts }: { syncedProducts?: number }) {
           </p>
         </div>
 
-        <HeroVisual syncedProducts={syncedProducts} />
+        <SyncPreviewMockup syncedProducts={syncedProducts} />
       </div>
     </section>
-  );
-}
-
-function HeroVisual({ syncedProducts }: { syncedProducts?: number }) {
-  // Anonymous visitors see an illustrative example (47/47). A logged-in
-  // visitor sees their own real, current synced count on both sides
-  // instead - the two are always equal once a sync has fully succeeded, so
-  // one number does double duty here.
-  const listings = syncedProducts ?? 47;
-
-  return (
-    <div className="relative mx-auto mt-20 max-w-4xl">
-      <div className="relative rounded-2xl border border-border bg-surface/80 p-4 shadow-2xl shadow-black/10 backdrop-blur">
-        <div className="flex items-center gap-1.5 border-b border-border px-2 pb-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-          <span className="ml-3 text-xs text-muted">
-            mirrorstock.com/dashboard
-          </span>
-          {syncedProducts !== undefined && (
-            <span className="ml-auto rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600">
-              Your store
-            </span>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 items-center gap-6 p-6 sm:grid-cols-[1fr_auto_1fr] sm:gap-4">
-          <StoreCard
-            platform="Etsy"
-            color="from-accent-orange to-accent-pink"
-            listings={listings}
-            badge="Read-only"
-          />
-
-          <div className="flex flex-col items-center gap-2 py-2">
-            <svg width="28" height="24" viewBox="0 0 28 24" fill="none" className="text-accent-violet">
-              <path
-                d="M2 12h20M16 5l7 7-7 7"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="whitespace-nowrap text-[11px] font-medium text-muted">
-              One-way sync
-            </span>
-          </div>
-
-          <StoreCard
-            platform="Wix"
-            color="from-accent-blue to-accent-violet"
-            listings={listings}
-            badge="Updated"
-          />
-        </div>
-      </div>
-
-      <div className="animate-float absolute -left-10 -top-10 hidden rounded-xl border border-border bg-surface-2 px-4 py-3 shadow-xl sm:block">
-        <p className="text-[11px] text-muted">Variants &amp; images</p>
-        <p className="font-display text-lg font-bold text-emerald-600">Included</p>
-      </div>
-
-      <div
-        className="animate-float absolute -right-6 -bottom-6 hidden rounded-xl border border-border bg-surface-2 px-4 py-3 shadow-xl sm:block"
-        style={{ animationDelay: "1.5s" }}
-      >
-        <p className="text-[11px] text-muted">Writes back to Etsy</p>
-        <p className="font-display text-lg font-bold text-foreground">0</p>
-      </div>
-    </div>
-  );
-}
-
-function StoreCard({
-  platform,
-  color,
-  listings,
-  badge,
-}: {
-  platform: string;
-  color: string;
-  listings: number;
-  badge: string;
-}) {
-  return (
-    <div className="card-glass rounded-xl p-4">
-      <div className="flex items-center gap-2">
-        <span className={`h-7 w-7 rounded-lg bg-gradient-to-br ${color}`} />
-        <span className="text-sm font-semibold text-foreground">
-          {platform} Shop
-        </span>
-      </div>
-      <div className="mt-4">
-        <p className="text-[11px] text-muted">Active Listings</p>
-        <p className="font-display text-xl font-bold text-foreground">
-          {listings}
-        </p>
-      </div>
-      <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-medium text-emerald-600">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-        {badge}
-      </div>
-    </div>
   );
 }

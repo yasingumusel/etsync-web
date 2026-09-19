@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SyncPreviewMockup from "@/components/SyncPreviewMockup";
 import { getSessionSummary } from "@/lib/backend";
 
 function ConnectEtsyCard({ userId }: { userId?: string }) {
@@ -8,7 +9,7 @@ function ConnectEtsyCard({ userId }: { userId?: string }) {
   const connectHref = userId && backendUrl ? `${backendUrl}/auth/etsy/connect?userId=${encodeURIComponent(userId)}` : null;
 
   return (
-    <div className="mx-auto w-full max-w-sm px-6 py-16">
+    <div className="mx-auto w-full max-w-sm pt-16">
       <div className="card-glass rounded-2xl p-8 text-center">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-accent-orange/15 via-accent-pink/15 to-accent-violet/15">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -73,10 +74,14 @@ export default async function ConnectEtsyPage({
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar session={session} />
-      <main className="flex flex-1 items-center justify-center bg-grid">
+      <main className="flex flex-1 flex-col items-center justify-center bg-grid px-6 pb-20">
         <Suspense>
           <ConnectEtsyCard userId={userId} />
         </Suspense>
+        {/* Fills what would otherwise be empty space below the card, and
+            doubles as a preview of what the merchant is about to set up -
+            onboarding is still a marketing moment. */}
+        <SyncPreviewMockup />
       </main>
       <Footer />
     </div>
