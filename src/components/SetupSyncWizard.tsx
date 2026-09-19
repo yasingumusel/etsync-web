@@ -152,6 +152,22 @@ export default function SetupSyncWizard({
     [listings, includeDrafts]
   );
 
+  // `selected` can hold ids that aren't in `visibleListings` right now - a
+  // saved custom selection can include drafts while "also sync drafts" is
+  // unchecked, or a listing that's since been removed from Etsy entirely.
+  // Those stay in `selected` (unchecking the draft filter shouldn't silently
+  // forget a merchant's draft picks), but counting them in the headline
+  // "X of Y selected" produced a nonsensical "192 of 176" - X could exceed Y
+  // outright. The headline now counts only what's actually checked among
+  // the currently visible listings; the leftover is surfaced separately so
+  // it's explained rather than hidden.
+  const visibleListingIds = useMemo(() => new Set(visibleListings.map((l) => l.listingId)), [visibleListings]);
+  const visibleSelectedCount = useMemo(
+    () => Array.from(selected).filter((id) => visibleListingIds.has(id)).length,
+    [selected, visibleListingIds]
+  );
+  const hiddenSelectedCount = selected.size - visibleSelectedCount;
+
   const planNote =
     planLimit !== null
       ? `Your ${plan ? capitalize(plan) : "current"} plan allows up to ${planLimit} product${planLimit === 1 ? "" : "s"}. Upgrade anytime to sync more.`
@@ -379,7 +395,7 @@ export default function SetupSyncWizard({
         <div className="mt-5">
           <div className="flex items-center justify-between">
             <p className={`text-xs font-medium ${atCustomLimit ? "text-amber-600" : "text-muted"}`}>
-              {selected.size} of {visibleListings.length} selected
+              {visibleSelectedCount} of {visibleListings.length} selected
               {planLimit !== null ? ` (max ${planLimit} on your plan)` : ""}
             </p>
             <div className="flex gap-3 text-xs font-medium text-accent-violet">
@@ -391,6 +407,14 @@ export default function SetupSyncWizard({
               </button>
             </div>
           </div>
+
+          {hiddenSelectedCount > 0 && (
+            <p className="mt-1.5 text-[11px] text-muted">
+              +{hiddenSelectedCount} more selected but not shown here
+              {includeDrafts ? "" : " - check “Also sync draft listings” to see them"}.
+              They&apos;ll stay selected unless you use &quot;Select none&quot;.
+            </p>
+          )}
 
           {visibleListings.length === 0 ? (
             <p className="mt-3 rounded-xl border border-border bg-surface px-3.5 py-3 text-sm text-muted">
