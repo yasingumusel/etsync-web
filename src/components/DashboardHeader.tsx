@@ -35,9 +35,17 @@ export default function DashboardHeader({ refreshKey = 0 }: { refreshKey?: numbe
   return (
     <header className="border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-        <Link href="/" aria-label="MirrorStock home">
-          <Logo />
-        </Link>
+        <div className="flex items-center gap-6">
+          <Link href="/" aria-label="MirrorStock home">
+            <Logo />
+          </Link>
+          <Link
+            href="/dashboard/help"
+            className="hidden text-sm font-medium text-muted transition-colors hover:text-foreground sm:block"
+          >
+            Help
+          </Link>
+        </div>
         <div className="flex items-center gap-3">
           <NotificationsBell refreshKey={refreshKey} />
           <AccountMenu email={account.email} plan={account.plan} onLogout={handleLogout} />

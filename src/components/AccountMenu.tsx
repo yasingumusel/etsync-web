@@ -88,6 +88,12 @@ export default function AccountMenu({
             >
               {navLink.label}
             </a>
+            <a
+              href="/dashboard/help"
+              className="block rounded-lg px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-surface hover:text-foreground sm:hidden"
+            >
+              Help
+            </a>
             {isFree && (
               <a
                 href="/#pricing"
