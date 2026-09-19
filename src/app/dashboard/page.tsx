@@ -146,6 +146,14 @@ export default function DashboardPage() {
                   <span className="h-1.5 w-1.5 rounded-full bg-current" />
                   Etsy {status.etsyConnected ? "connected" : "not connected"}
                 </span>
+                <a
+                  href="/api/etsy/reconnect"
+                  target="_blank"
+                  rel="noopener"
+                  className="text-xs font-medium text-accent-violet underline-offset-2 hover:underline"
+                >
+                  {status.etsyConnected ? "Reconnect Etsy" : "Connect Etsy"}
+                </a>
                 {!status.isPremium && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-600">
                     Not premium
