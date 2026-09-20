@@ -35,6 +35,7 @@
   <script type="module">
     import { editor, widget } from "https://cdn.jsdelivr.net/npm/@wix/editor/+esm";
     import { createClient } from "https://cdn.jsdelivr.net/npm/@wix/sdk/+esm";
+    import { appInstances } from "https://cdn.jsdelivr.net/npm/@wix/app-management/+esm";
 
     const statusEl = document.getElementById("status");
     const skuInput = document.getElementById("sku");
@@ -46,29 +47,21 @@
 
     const client = createClient({
       host: editor.host(),
-      modules: { widget },
+      modules: { widget, appInstances },
     });
 
+    // No query param needed (a site widget's settings panel doesn't get
+    // the `instance` query param the way iframe/dashboard apps do) - the
+    // editor host context is enough for the SDK to identify which site
+    // this panel is running on.
     async function resolveInstanceId() {
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get("instance");
-      if (!token) return { error: "no 'instance' query param on this panel URL" };
-
-      let res;
       try {
-        res = await fetch("https://api.mirrorstock.com/public/reviews/token-info", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token }),
-        });
+        const result = await client.appInstances.getAppInstance();
+        const instanceId = result && result.instance && result.instance.instanceId;
+        return instanceId ? { instanceId } : { error: `no instanceId in response: ${JSON.stringify(result)}` };
       } catch (err) {
-        return { error: `fetch failed: ${err.message}` };
+        return { error: `getAppInstance() threw: ${err && err.message}` };
       }
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) return { error: `backend returned ${res.status}: ${JSON.stringify(data)}` };
-      if (!data.instanceId) return { error: `backend response missing instanceId: ${JSON.stringify(data)}` };
-      return { instanceId: data.instanceId };
     }
 
     async function init() {
