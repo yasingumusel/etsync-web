@@ -52,37 +52,44 @@
     async function resolveInstanceId() {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("instance");
-      if (!token) return null;
+      if (!token) return { error: "no 'instance' query param on this panel URL" };
 
-      const res = await fetch("https://api.mirrorstock.com/public/reviews/token-info", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
-      if (!res.ok) return null;
-      const data = await res.json();
-      return data.instanceId || null;
+      let res;
+      try {
+        res = await fetch("https://api.mirrorstock.com/public/reviews/token-info", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+      } catch (err) {
+        return { error: `fetch failed: ${err.message}` };
+      }
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return { error: `backend returned ${res.status}: ${JSON.stringify(data)}` };
+      if (!data.instanceId) return { error: `backend response missing instanceId: ${JSON.stringify(data)}` };
+      return { instanceId: data.instanceId };
     }
 
     async function init() {
       try {
-        const [instanceId, existingSku] = await Promise.all([
+        const [instanceResult, existingSku] = await Promise.all([
           resolveInstanceId(),
           client.widget.getProp("sku").catch(() => null),
         ]);
 
         if (existingSku) skuInput.value = existingSku;
 
-        if (!instanceId) {
-          setStatus("Could not verify this site. Try reopening this panel.", "err");
+        if (!instanceResult.instanceId) {
+          setStatus(`DEBUG: ${instanceResult.error}`, "err");
           return;
         }
 
         // Set automatically - the merchant never has to know or enter this.
-        await client.widget.setProp("instance-id", instanceId);
+        await client.widget.setProp("instance-id", instanceResult.instanceId);
         setStatus("Ready.", "ok");
       } catch (err) {
-        setStatus("Something went wrong loading settings.", "err");
+        setStatus(`DEBUG init() threw: ${err && err.message}`, "err");
       }
     }
 
