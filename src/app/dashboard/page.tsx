@@ -32,6 +32,25 @@ type RunResult = {
   >;
 };
 
+type PreviewChange = { field: string; from: unknown; to: unknown };
+type PreviewItem = {
+  sku: string;
+  name?: string;
+  price?: number;
+  action: "create" | "update" | "unchanged" | "unknown";
+  changes?: PreviewChange[];
+  reason?: string;
+};
+type PreviewStoreResult = {
+  toCreate: number;
+  toUpdate: number;
+  unchanged: number;
+  toHide: number;
+  items: PreviewItem[];
+  error?: string;
+};
+type PreviewResponse = { results: Record<string, PreviewStoreResult> };
+
 const statusColor: Record<TargetStore["lastSyncStatus"], string> = {
   never: "bg-muted/20 text-muted",
   success: "bg-emerald-400/10 text-emerald-600",
@@ -48,6 +67,10 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [historyKey, setHistoryKey] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [previewing, setPreviewing] = useState(false);
+  const [previewResult, setPreviewResult] = useState<PreviewResponse | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const [expandedPreviewStore, setExpandedPreviewStore] = useState<string | null>(null);
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Tracks wall-clock time since a sync started being observed, purely for
@@ -94,10 +117,31 @@ export default function DashboardPage() {
     };
   }, [loadStatus]);
 
+  async function handlePreview() {
+    setPreviewing(true);
+    setPreviewError(null);
+    setPreviewResult(null);
+
+    try {
+      const res = await fetch("/api/sync/preview", { method: "POST" });
+      const body = await res.json();
+      if (!res.ok) {
+        setPreviewError(body.error || "Could not load preview");
+      } else {
+        setPreviewResult(body);
+      }
+    } catch {
+      setPreviewError("Could not load preview");
+    } finally {
+      setPreviewing(false);
+    }
+  }
+
   function handleSync() {
     setSyncing(true);
     setJustFinished(false);
     setError(null);
+    setPreviewResult(null);
     setRunResult(null);
 
     // A full sync can run 10-15+ minutes. The backend itself (a persistent
@@ -256,22 +300,32 @@ export default function DashboardPage() {
                 })}
               </div>
 
-              <button
-                onClick={handleSync}
-                disabled={syncing || !status.etsyConnected}
-                className="mt-6 w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.01] disabled:opacity-50 sm:w-auto"
-              >
-                {syncing ? (
-                  <span className="inline-flex items-center gap-2">
-                    <svg className="animate-sync-spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M2 12h20M16 5l7 7-7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    Syncing&hellip;
-                  </span>
-                ) : (
-                  "Sync Now"
-                )}
-              </button>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  onClick={handleSync}
+                  disabled={syncing || !status.etsyConnected}
+                  className="rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.01] disabled:opacity-50"
+                >
+                  {syncing ? (
+                    <span className="inline-flex items-center gap-2">
+                      <svg className="animate-sync-spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                        <path d="M2 12h20M16 5l7 7-7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Syncing&hellip;
+                    </span>
+                  ) : (
+                    "Sync Now"
+                  )}
+                </button>
+
+                <button
+                  onClick={handlePreview}
+                  disabled={previewing || syncing || !status.etsyConnected}
+                  className="rounded-full border border-border px-7 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-2 disabled:opacity-50"
+                >
+                  {previewing ? "Checking…" : "Preview changes"}
+                </button>
+              </div>
 
               {syncing && (
                 <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 p-4 text-sm text-foreground">
@@ -324,6 +378,83 @@ export default function DashboardPage() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {previewError && (
+          <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 p-4 text-sm text-red-500">
+            {previewError}
+          </div>
+        )}
+
+        {previewResult && (
+          <div className="mt-4 card-glass rounded-2xl p-6">
+            <p className="text-sm font-semibold text-foreground">
+              What would happen if you synced right now
+            </p>
+            <div className="mt-4 grid gap-3">
+              {Object.entries(previewResult.results).map(([key, r]) => {
+                if (r.error) {
+                  return (
+                    <div key={key} className="rounded-xl border border-border bg-surface px-4 py-3 text-sm">
+                      <p className="font-medium text-foreground">{key}</p>
+                      <p className="mt-1 text-xs text-red-500">{r.error}</p>
+                    </div>
+                  );
+                }
+
+                const notable = r.items.filter((i) => i.action === "create" || i.action === "update");
+                const expanded = expandedPreviewStore === key;
+
+                return (
+                  <div key={key} className="rounded-xl border border-border bg-surface px-4 py-3 text-sm">
+                    <p className="font-medium text-foreground">{key}</p>
+                    <p className="mt-1 text-xs text-muted">
+                      {r.toCreate} to create &middot; {r.toUpdate} to update &middot; {r.unchanged} unchanged
+                      {r.toHide > 0 ? ` · ${r.toHide} to hide (removed from Etsy)` : ""}
+                    </p>
+
+                    {notable.length > 0 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setExpandedPreviewStore(expanded ? null : key)}
+                          className="mt-2 text-xs font-medium text-accent-violet hover:underline"
+                        >
+                          {expanded ? "Hide details" : `Show ${notable.length} change${notable.length === 1 ? "" : "s"}`}
+                        </button>
+
+                        {expanded && (
+                          <ul className="mt-3 max-h-72 space-y-2 overflow-y-auto rounded-lg border border-border bg-background p-3">
+                            {notable.map((item) => (
+                              <li key={item.sku} className="text-xs">
+                                <span className="font-medium text-foreground">{item.name || item.sku}</span>
+                                {item.action === "create" ? (
+                                  <span className="ml-1.5 rounded-full bg-emerald-400/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-600">
+                                    New
+                                  </span>
+                                ) : (
+                                  <ul className="mt-1 space-y-0.5 text-muted">
+                                    {(item.changes || []).map((c) => (
+                                      <li key={c.field}>
+                                        {c.field}
+                                        {c.from !== null && c.to !== null
+                                          ? `: ${String(c.from)} → ${String(c.to)}`
+                                          : " changed"}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

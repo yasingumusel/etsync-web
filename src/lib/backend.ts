@@ -9,7 +9,7 @@ export async function getSessionUserId(): Promise<string | null> {
   return payload?.userId ?? null;
 }
 
-type SyncPath = "status" | "run" | "history" | "settings" | "etsy-listings" | "product-selection";
+type SyncPath = "status" | "run" | "preview" | "history" | "settings" | "etsy-listings" | "product-selection";
 
 export type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 
@@ -82,7 +82,7 @@ export async function callSyncBackend(
     expiresIn: "60s",
   });
 
-  const method = options.method ?? (path === "run" ? "POST" : "GET");
+  const method = options.method ?? (path === "run" || path === "preview" ? "POST" : "GET");
   const res = await fetch(`${baseUrl}/sync/${userId}/${path}`, {
     method,
     headers: {
