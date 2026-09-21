@@ -129,6 +129,11 @@ export default function Pricing() {
           </p>
         </div>
 
+        <p className="mx-auto mt-6 max-w-lg text-center text-sm font-medium text-foreground">
+          This is launch pricing — once we&apos;re fully live on the Wix App
+          Market, new sign-ups pay full price. Lock in 50% off while it lasts.
+        </p>
+
         <div className="mt-10 flex flex-col items-center gap-3">
           <div className="inline-flex items-center rounded-full border border-border bg-surface p-1">
             <button
@@ -242,6 +247,11 @@ export default function Pricing() {
                 >
                   {isFree ? "Start free" : "Get started"}
                 </a>
+                {!isFree && (
+                  <p className="mt-2 text-center text-[11px] text-muted">
+                    Cancel anytime — no contracts, no cancellation fees.
+                  </p>
+                )}
               </div>
             );
           })}
@@ -250,7 +260,10 @@ export default function Pricing() {
         <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-muted">
           Paid plans are billed through the Wix App Market once our listing is
           published. Early access accounts start on the Free plan, and we will
-          tell you before anything is ever charged.
+          tell you before anything is ever charged. Every paid plan can be
+          cancelled anytime, right from your Wix billing settings — no
+          contracts, no cancellation fees, no risk in locking in launch
+          pricing today.
         </p>
       </div>
     </section>
