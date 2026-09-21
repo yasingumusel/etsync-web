@@ -33,7 +33,11 @@
   <div id="status" class="status"></div>
 
   <script type="module">
-    import { editor, widget, application } from "https://cdn.jsdelivr.net/npm/@wix/editor/+esm";
+    // Only the `sku` prop needs a settings panel at all - the widget's own
+    // site identity is proven automatically at render time via a Wix
+    // access token (see mirrorstock-reviews-widget.js), so this panel
+    // never needs to resolve or store an instance id.
+    import { editor, widget } from "https://cdn.jsdelivr.net/npm/@wix/editor/+esm";
     import { createClient } from "https://cdn.jsdelivr.net/npm/@wix/sdk/+esm";
 
     const statusEl = document.getElementById("status");
@@ -46,67 +50,15 @@
 
     const client = createClient({
       host: editor.host(),
-      modules: { widget, application },
+      modules: { widget },
     });
-
-    // Deliberately uses @wix/editor's own `application.getAppInstance()`
-    // (an editor-platform bridge call) rather than the REST-backed
-    // appInstances.getAppInstance() from @wix/app-management - real testing
-    // showed the latter 403s when called from inside a settings panel
-    // (Wix's docs note most widget-adjacent surfaces can't call Wix APIs
-    // while previewed/edited in the Editor). This one is meant for exactly
-    // this context, but returns the same kind of signed token string Wix
-    // would otherwise append as an `instance` query param (not a parsed
-    // object) - verify it the same way, via the backend's Token Info proxy.
-    async function resolveInstanceId() {
-      let token;
-      try {
-        token = await client.application.getAppInstance();
-      } catch (err) {
-        return { error: `application.getAppInstance() threw: ${err && err.message}` };
-      }
-      if (!token || typeof token !== "string") {
-        return { error: `unexpected getAppInstance() result: ${JSON.stringify(token)}` };
-      }
-
-      let res;
-      try {
-        res = await fetch("https://api.mirrorstock.com/public/reviews/token-info", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token }),
-        });
-      } catch (err) {
-        return { error: `token-info fetch failed: ${err.message}` };
-      }
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) return { error: `token-info returned ${res.status}: ${JSON.stringify(data)}` };
-      if (!data.instanceId) return { error: `token-info response missing instanceId: ${JSON.stringify(data)}` };
-      return { instanceId: data.instanceId };
-    }
 
     async function init() {
       try {
-        const [instanceResult, existingSku] = await Promise.all([
-          resolveInstanceId(),
-          client.widget.getProp("sku").catch(() => null),
-        ]);
-
+        const existingSku = await client.widget.getProp("sku").catch(() => null);
         if (existingSku) skuInput.value = existingSku;
-
-        if (!instanceResult.instanceId) {
-          console.error("MirrorStock reviews panel:", instanceResult.error);
-          setStatus("Could not verify this site. Try reopening this panel.", "err");
-          return;
-        }
-
-        // Set automatically - the merchant never has to know or enter this.
-        await client.widget.setProp("instance-id", instanceResult.instanceId);
-        setStatus("Ready.", "ok");
       } catch (err) {
         console.error("MirrorStock reviews panel:", err);
-        setStatus("Something went wrong loading settings.", "err");
       }
     }
 
