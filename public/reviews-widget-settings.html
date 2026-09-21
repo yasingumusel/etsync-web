@@ -33,9 +33,8 @@
   <div id="status" class="status"></div>
 
   <script type="module">
-    import { editor, widget } from "https://cdn.jsdelivr.net/npm/@wix/editor/+esm";
+    import { editor, widget, application } from "https://cdn.jsdelivr.net/npm/@wix/editor/+esm";
     import { createClient } from "https://cdn.jsdelivr.net/npm/@wix/sdk/+esm";
-    import { appInstances } from "https://cdn.jsdelivr.net/npm/@wix/app-management/+esm";
 
     const statusEl = document.getElementById("status");
     const skuInput = document.getElementById("sku");
@@ -47,20 +46,24 @@
 
     const client = createClient({
       host: editor.host(),
-      modules: { widget, appInstances },
+      modules: { widget, application },
     });
 
-    // No query param needed (a site widget's settings panel doesn't get
-    // the `instance` query param the way iframe/dashboard apps do) - the
-    // editor host context is enough for the SDK to identify which site
-    // this panel is running on.
+    // Deliberately uses @wix/editor's own `application.getAppInstance()`
+    // (an editor-platform bridge call) rather than the REST-backed
+    // appInstances.getAppInstance() from @wix/app-management - real testing
+    // showed the latter 403s when called from inside a settings panel
+    // (Wix's docs note most widget-adjacent surfaces can't call Wix APIs
+    // while previewed/edited in the Editor). This one is meant for exactly
+    // this context.
     async function resolveInstanceId() {
       try {
-        const result = await client.appInstances.getAppInstance();
-        const instanceId = result && result.instance && result.instance.instanceId;
+        const result = await client.application.getAppInstance();
+        const instanceId =
+          (result && result.instanceId) || (result && result.instance && result.instance.instanceId);
         return instanceId ? { instanceId } : { error: `no instanceId in response: ${JSON.stringify(result)}` };
       } catch (err) {
-        return { error: `getAppInstance() threw: ${err && err.message}` };
+        return { error: `application.getAppInstance() threw: ${err && err.message}` };
       }
     }
 
