@@ -52,10 +52,13 @@ export default function AuthForm({ mode }: { mode: Mode }) {
     }
 
     const from = searchParams.get("from");
-    // Only ever redirect within our own site - a "from" value like
-    // "https://evil.example.com" (or "//evil.example.com") must not send a
-    // freshly-authenticated user off-site.
-    const safeFrom = from && from.startsWith("/") && !from.startsWith("//") ? from : "/dashboard";
+    // Only ever redirect within our own site. A leading "//" is the classic
+    // protocol-relative bypass ("//evil.example.com"), and a leading
+    // backslash is a less obvious one: browsers normalise "\" to "/" while
+    // parsing an http(s) URL, so "/\evil.example.com" can resolve to
+    // "//evil.example.com" too. Rejecting any backslash closes that off.
+    const isSafeFrom = from && from.startsWith("/") && !from.startsWith("//") && !from.includes("\\");
+    const safeFrom = isSafeFrom ? from : "/dashboard";
     router.push(safeFrom);
     router.refresh();
   }

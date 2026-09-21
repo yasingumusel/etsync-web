@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSessionCookieValue, COOKIE_NAME, SESSION_TTL_MS } from "@/lib/session";
+import { clientIp } from "@/lib/clientIp";
 
 /**
  * Backs the "create your password" step at the end of the setup wizard
@@ -20,7 +21,11 @@ export async function POST(request: NextRequest) {
 
   const backendRes = await fetch(`${baseUrl}/auth/account/claim`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Sync-Secret": secret },
+    headers: {
+      "Content-Type": "application/json",
+      "X-Sync-Secret": secret,
+      "X-Client-IP": clientIp(request),
+    },
     body: JSON.stringify({ userId, email, password }),
   });
   const backendBody = await backendRes.json();

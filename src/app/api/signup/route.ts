@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSessionCookieValue, COOKIE_NAME, SESSION_TTL_MS } from "@/lib/session";
+import { clientIp } from "@/lib/clientIp";
 
 export async function POST(request: NextRequest) {
   const { email, password } = await request.json();
@@ -12,7 +13,11 @@ export async function POST(request: NextRequest) {
 
   const backendRes = await fetch(`${baseUrl}/auth/account/signup`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Sync-Secret": secret },
+    headers: {
+      "Content-Type": "application/json",
+      "X-Sync-Secret": secret,
+      "X-Client-IP": clientIp(request),
+    },
     body: JSON.stringify({ email, password }),
   });
   const backendBody = await backendRes.json();
