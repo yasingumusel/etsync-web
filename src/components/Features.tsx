@@ -1,4 +1,14 @@
-const features = [
+import type { ReactElement } from "react";
+
+type Feature = {
+  title: string;
+  desc: string;
+  icon: () => ReactElement;
+  /** Shown as a small pill next to the title for plan-gated features. */
+  badge?: string;
+};
+
+const features: Feature[] = [
   {
     title: "Read-Only Access",
     desc: "MirrorStock connects to Etsy using only the listings_r and shops_r scopes — enough to read your shop's active listings. Nothing more is requested.",
@@ -34,6 +44,12 @@ const features = [
     desc: "MirrorStock checks for changes every few hours in the background, but only logs the checks that actually updated something — no wall of identical \"nothing changed\" entries. Each one shows up as a notification, so you know your storefront stayed current without watching it.",
     icon: BellIcon,
   },
+  {
+    title: "Your Etsy Reviews, On The Right Product",
+    desc: "Pull your real Etsy reviews — star rating and review text, never the buyer's name or photo — onto the matching product's own Wix page, not just a generic store-wide list. Pick which products show theirs from a simple on/off list in your dashboard.",
+    icon: StarIcon,
+    badge: "Pro & Unlimited",
+  },
 ];
 
 export default function Features() {
@@ -64,8 +80,13 @@ export default function Features() {
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-accent-orange/20 via-accent-pink/20 to-accent-violet/20 text-accent-pink">
                 <f.icon />
               </div>
-              <h3 className="mt-5 font-display text-base font-semibold text-foreground">
+              <h3 className="mt-5 flex flex-wrap items-center gap-2 font-display text-base font-semibold text-foreground">
                 {f.title}
+                {f.badge && (
+                  <span className="rounded-full bg-gradient-to-r from-accent-orange/15 via-accent-pink/15 to-accent-violet/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-pink">
+                    {f.badge}
+                  </span>
+                )}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 {f.desc}
@@ -73,8 +94,59 @@ export default function Features() {
             </div>
           ))}
         </div>
+
+        <ReviewsPreviewMockup />
       </div>
     </section>
+  );
+}
+
+/**
+ * A small, static illustration of the dashboard's "Etsy Reviews" management
+ * list (see routes/sync.js's /reviews-settings) - product names and photos
+ * below are made up, not a real customer's shop, since this is marketing
+ * copy rather than a live data view.
+ */
+function ReviewsPreviewMockup() {
+  const rows = [
+    { name: "Vintage Sunset Band Tee", rating: 5, count: 12, visible: true },
+    { name: "Retro Mug — Wildflower Set", rating: 5, count: 4, visible: true },
+    { name: "Handmade Leather Journal", rating: 4, count: 1, visible: false },
+  ];
+
+  return (
+    <div className="card-glass mx-auto mt-8 max-w-2xl rounded-2xl p-6">
+      <p className="text-xs font-semibold uppercase tracking-widest text-accent-pink">
+        Etsy Reviews · Dashboard preview
+      </p>
+      <p className="mt-2 text-sm text-muted">
+        Reviews show automatically on every product that has them — switch
+        one off here if you&apos;d rather not show it.
+      </p>
+      <ul className="mt-5 divide-y divide-border">
+        {rows.map((r) => (
+          <li key={r.name} className="flex items-center gap-3 py-3">
+            <div className="h-9 w-9 shrink-0 rounded-lg bg-gradient-to-br from-accent-orange/20 via-accent-pink/20 to-accent-violet/20" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-foreground">{r.name}</p>
+              <p className="mt-0.5 text-xs text-muted">
+                {"★".repeat(r.rating)}
+                {"☆".repeat(5 - r.rating)} · {r.count} review{r.count === 1 ? "" : "s"}
+              </p>
+            </div>
+            <span
+              className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                r.visible
+                  ? "bg-emerald-600/10 text-emerald-600"
+                  : "bg-surface-2 text-muted"
+              }`}
+            >
+              {r.visible ? "Visible" : "Hidden"}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -154,6 +226,14 @@ function BellIcon() {
     <svg {...iconProps()}>
       <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
       <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  );
+}
+
+function StarIcon() {
+  return (
+    <svg {...iconProps()}>
+      <path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.3l-5.9 3.2 1.2-6.5-4.8-4.6 6.6-.9L12 2.5z" />
     </svg>
   );
 }
