@@ -55,16 +55,35 @@
     // showed the latter 403s when called from inside a settings panel
     // (Wix's docs note most widget-adjacent surfaces can't call Wix APIs
     // while previewed/edited in the Editor). This one is meant for exactly
-    // this context.
+    // this context, but returns the same kind of signed token string Wix
+    // would otherwise append as an `instance` query param (not a parsed
+    // object) - verify it the same way, via the backend's Token Info proxy.
     async function resolveInstanceId() {
+      let token;
       try {
-        const result = await client.application.getAppInstance();
-        const instanceId =
-          (result && result.instanceId) || (result && result.instance && result.instance.instanceId);
-        return instanceId ? { instanceId } : { error: `no instanceId in response: ${JSON.stringify(result)}` };
+        token = await client.application.getAppInstance();
       } catch (err) {
         return { error: `application.getAppInstance() threw: ${err && err.message}` };
       }
+      if (!token || typeof token !== "string") {
+        return { error: `unexpected getAppInstance() result: ${JSON.stringify(token)}` };
+      }
+
+      let res;
+      try {
+        res = await fetch("https://api.mirrorstock.com/public/reviews/token-info", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+      } catch (err) {
+        return { error: `token-info fetch failed: ${err.message}` };
+      }
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return { error: `token-info returned ${res.status}: ${JSON.stringify(data)}` };
+      if (!data.instanceId) return { error: `token-info response missing instanceId: ${JSON.stringify(data)}` };
+      return { instanceId: data.instanceId };
     }
 
     async function init() {
