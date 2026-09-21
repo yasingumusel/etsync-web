@@ -9,7 +9,15 @@ export async function getSessionUserId(): Promise<string | null> {
   return payload?.userId ?? null;
 }
 
-type SyncPath = "status" | "run" | "preview" | "history" | "settings" | "etsy-listings" | "product-selection";
+type SyncPath =
+  | "status"
+  | "run"
+  | "preview"
+  | "history"
+  | "settings"
+  | "etsy-listings"
+  | "product-selection"
+  | "reviews-settings";
 
 export type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 
