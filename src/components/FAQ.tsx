@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: "Who can connect a shop today?",
-    a: "MirrorStock is in early access while we complete Etsy's commercial API review. Until that review is finished, Etsy's access rules mean the app can only connect its own developer's shop. Once approved, any Etsy seller will be able to connect their own shop through Etsy's standard authorization screen.",
+    a: "Any Etsy seller. MirrorStock completed Etsy's commercial API review, so any shop can connect through Etsy's standard authorization screen — it's no longer limited to a single developer account.",
   },
   {
     q: "How often does MirrorStock check for changes, and will I get spammed with alerts?",

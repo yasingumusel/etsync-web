@@ -105,12 +105,11 @@ export const JASON_FAQ: FaqEntry[] = [
       "get started",
       "join",
       "is it available",
-      "early access",
       "who can use",
       "can i use this",
     ],
     answer:
-      "MirrorStock is in early access while its Etsy commercial API review is in progress. Until that's approved, only the app's own developer shop can connect. Once approved, any Etsy seller will be able to connect their own shop through Etsy's standard authorization screen.",
+      "Any Etsy seller. MirrorStock completed Etsy's commercial API review, so any shop can connect through Etsy's standard authorization screen.",
   },
   {
     id: "login",
@@ -454,7 +453,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "change my plan",
     ],
     answer:
-      "Nothing is billed without telling you first - MirrorStock is in early access and every account is currently on the Free plan, with no paid subscription to invoice, cancel, refund, or upgrade yet. Once paid plans launch, billing (invoices, payment methods, upgrades, cancellations, refunds) will be handled through the Wix App Market, following Wix's own billing rules. For anything before then, email support@mirrorstock.com.",
+      "Billing is handled entirely through the Wix App Market. Once you subscribe to a paid plan there, Wix manages your invoices, payment methods, upgrades, cancellations, and refunds under Wix's own billing rules - MirrorStock never charges you directly. For anything else, email support@mirrorstock.com.",
   },
   {
     id: "annual-discount",
@@ -616,7 +615,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "go over my limit",
     ],
     answer:
-      "Plan product limits aren't actually enforced yet - MirrorStock is in early access, so nothing will suddenly stop working if you pass a plan's product count today. That will change once paid plans and limits go live; email support@mirrorstock.com for specifics.",
+      "Nothing breaks or gets deleted. If your shop has more active listings than your plan allows, MirrorStock syncs up to your plan's limit (your oldest listings first) and leaves the rest unsynced until you upgrade or choose specific products to sync instead. Upgrading picks up the remaining products on the next sync.",
   },
   {
     id: "who-are-you",
