@@ -11,13 +11,87 @@
     color: #17171c;
   }
   p { font-size: 13px; line-height: 1.6; color: #6e6e78; margin: 0; }
+  .status { margin-top: 12px; font-size: 12px; }
+  .status.ok { color: #0a8f5b; }
+  .status.err { color: #d1372f; }
 </style>
 </head>
 <body>
   <p>
     Nothing to configure - this plugin automatically shows reviews for
-    whichever product a shopper is currently viewing, on whichever site it's
-    installed on. There's nothing here to fill in or save.
+    whichever product a shopper is currently viewing.
   </p>
+  <div id="status" class="status"></div>
+
+  <script type="module">
+    import { editor, widget, application } from "https://cdn.jsdelivr.net/npm/@wix/editor/+esm";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@wix/sdk/+esm";
+
+    const statusEl = document.getElementById("status");
+
+    function setStatus(text, kind) {
+      statusEl.textContent = text;
+      statusEl.className = `status ${kind || ""}`;
+    }
+
+    const client = createClient({
+      host: editor.host(),
+      modules: { widget, application },
+    });
+
+    // Same resolution as the Site Widget's settings panel
+    // (reviews-widget-settings.html) - see that file for why this two-step
+    // dance (editor-native getAppInstance() -> backend Token Info proxy) is
+    // needed instead of a simpler call. The only difference here is there's
+    // no `sku` field to collect - the Product Page slot feeds `product-id`
+    // to the plugin automatically on every page view, this panel only ever
+    // needs to set `instance-id` once.
+    async function resolveInstanceId() {
+      let token;
+      try {
+        token = await client.application.getAppInstance();
+      } catch (err) {
+        return { error: `application.getAppInstance() threw: ${err && err.message}` };
+      }
+      if (!token || typeof token !== "string") {
+        return { error: `unexpected getAppInstance() result: ${JSON.stringify(token)}` };
+      }
+
+      let res;
+      try {
+        res = await fetch("https://api.mirrorstock.com/public/reviews/token-info", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+      } catch (err) {
+        return { error: `token-info fetch failed: ${err.message}` };
+      }
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return { error: `token-info returned ${res.status}: ${JSON.stringify(data)}` };
+      if (!data.instanceId) return { error: `token-info response missing instanceId: ${JSON.stringify(data)}` };
+      return { instanceId: data.instanceId };
+    }
+
+    async function init() {
+      const result = await resolveInstanceId();
+      if (!result.instanceId) {
+        console.error("MirrorStock reviews plugin panel:", result.error);
+        setStatus("Could not verify this site. Try reopening this panel.", "err");
+        return;
+      }
+
+      try {
+        await client.widget.setProp("instance-id", result.instanceId);
+        setStatus("Ready.", "ok");
+      } catch (err) {
+        console.error("MirrorStock reviews plugin panel:", err);
+        setStatus("Could not save. Try reopening this panel.", "err");
+      }
+    }
+
+    init();
+  </script>
 </body>
 </html>

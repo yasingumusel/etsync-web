@@ -1,50 +1,23 @@
 /**
  * MirrorStock Etsy Reviews widget - a self-hosted Wix Custom Element.
  *
- * Registered as a Site Widget extension (freely placed, needs a `sku`
- * attribute) and a Site Plugin extension (auto-placed into the Wix Stores
- * Product Page, fed a `product-id` attribute automatically by Wix) in the
- * Wix Dev Center, both pointing at this file's public URL
- * (https://www.mirrorstock.com/mirrorstock-reviews-widget.js).
- *
- * Neither variant needs a merchant (or a settings-panel script) to ever
- * enter or resolve their site's app instance id. Instead, `@wix/site`'s
- * site.auth() automatically attaches a signed Wix access token to every
- * fetchWithAuth() call made from a self-hosted widget running on a live
- * Wix site - the backend verifies that token and reads the instance id
- * straight out of it (see requireWixSiteToken() in
- * routes/public/reviews.js). This is Wix's own documented pattern for
- * exactly this case - see
- * https://dev.wix.com/docs/build-apps/.../identify-the-app-instance-in-a-self-hosted-site-widget -
- * and it's what makes the Site Plugin variant fully hands-free: it's
- * auto-added to every product page on install with nothing left for a
- * merchant to configure.
- *
- * Etsy reviews carry no buyer name, photo, or email (Etsy fully anonymises
- * the buyer), so there is nothing private ever exposed through these calls.
+ * Registered as a Site Widget extension in the Wix Dev Center, pointing at
+ * this file's public URL (https://www.mirrorstock.com/mirrorstock-reviews-widget.js).
+ * A merchant drags it onto a Wix product page in the editor and configures
+ * two attributes there: `instance-id` (their Wix site's app instance id -
+ * MirrorStock already has it once they've connected, this widget just
+ * needs it repeated here since a Custom Element has no other way to reach
+ * our backend) and `sku` (the Wix product's SKU on that page, so the same
+ * widget instance shows only that product's reviews - see
+ * routes/public/reviews.js on the backend for why this works without any
+ * additional auth: Etsy reviews carry no buyer name, photo, or email, so
+ * there is nothing private being exposed here).
  *
  * Deliberately framework-free (no React/build step) so it stays a single
  * small file a Custom Element can load directly.
  */
 (function () {
   const API_BASE = "https://api.mirrorstock.com/public/reviews";
-  // Public Wix App ID - the same one already used in the app's install URL
-  // (routes/auth/wix.js), not a secret.
-  const WIX_APP_ID = "27c1d8a2-d9f2-46c6-8009-d5bb09ea2bee";
-
-  let wixClient = null;
-  async function getWixClient() {
-    if (wixClient) return wixClient;
-    const [{ site }, { createClient }] = await Promise.all([
-      import("https://cdn.jsdelivr.net/npm/@wix/site/+esm"),
-      import("https://cdn.jsdelivr.net/npm/@wix/sdk/+esm"),
-    ]);
-    wixClient = createClient({
-      auth: site.auth(),
-      host: site.host({ applicationId: WIX_APP_ID }),
-    });
-    return wixClient;
-  }
 
   const STAR_FILLED =
     '<path d="M8 1.2l2.02 4.1 4.53.66-3.28 3.2.77 4.5L8 11.5l-4.04 2.16.77-4.5-3.28-3.2 4.53-.66L8 1.2z" fill="currentColor"/>';
@@ -80,19 +53,6 @@
    * which backend endpoint they call.
    */
   class MirrorStockReviewsBase extends HTMLElement {
-    constructor() {
-      super();
-      // Kicks off site-auth setup immediately (not just on connect) so it's
-      // usually already resolved by the time _fetchReviews needs it.
-      this._clientReady = getWixClient().then((client) => {
-        this._wixClient = client;
-        // Must be called (even though its own return value is unused) to
-        // register the injector that makes fetchWithAuth() below actually
-        // attach a Wix access token to outgoing requests.
-        client.auth.getAccessTokenInjector();
-      });
-    }
-
     connectedCallback() {
       if (!this._root) {
         this._root = this.attachShadow({ mode: "open" });
@@ -108,26 +68,17 @@
       }
     }
 
-    async _fetchReviews(url) {
+    _fetchReviews(url) {
       const max = Number(this.getAttribute("max")) || 5;
-      try {
-        await this._clientReady;
-        const res = await this._wixClient.fetchWithAuth(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        const reviews = (data.reviews || []).slice(0, max);
-        this.style.display = "";
-        this._setBody(this._reviewsHtml(reviews));
-      } catch {
-        // Covers both "this site's plan doesn't include the reviews
-        // feature" (backend returns 403) and any other failure. Either
-        // way, a real shopper sees nothing rather than an error box - a
-        // Free/Starter/Growth site ends up with an invisible plugin
-        // instead of a broken-looking one, since Wix has no way for us to
-        // stop the plugin from being placed on those sites in the first
-        // place (see routes/public/reviews.js).
-        this.style.display = "none";
-      }
+      fetch(url)
+        .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
+        .then((data) => {
+          const reviews = (data.reviews || []).slice(0, max);
+          this._setBody(this._reviewsHtml(reviews));
+        })
+        .catch(() => {
+          this._setBody('<p class="ms-empty">Reviews are unavailable right now.</p>');
+        });
     }
 
     _reviewsHtml(reviews) {
@@ -181,49 +132,48 @@
   }
 
   /**
-   * Site Widget variant - freely dragged onto any page. The only thing left
-   * to configure is which product it's for (`sku`) - its own site's
-   * identity no longer needs configuring at all, see the class comment
-   * above.
+   * Site Widget variant - freely dragged anywhere, manually configured in
+   * its settings panel with `instance-id` and the product's `sku`.
    */
   class MirrorStockReviews extends MirrorStockReviewsBase {
     static get observedAttributes() {
-      return ["sku", "title", "max", "accent-color"];
+      return ["instance-id", "sku", "title", "max", "accent-color"];
     }
 
     _load() {
+      const instanceId = this.getAttribute("instance-id");
       const sku = this.getAttribute("sku");
-      if (!sku) {
-        this._setBody('<p class="ms-empty">Missing sku.</p>');
+      if (!instanceId || !sku) {
+        this._setBody('<p class="ms-empty">Missing instance-id or sku.</p>');
         return;
       }
-      this._fetchReviews(`${API_BASE}/site/by-sku/${encodeURIComponent(sku)}`);
+      this._fetchReviews(`${API_BASE}/${encodeURIComponent(instanceId)}/${encodeURIComponent(sku)}`);
     }
   }
 
   /**
-   * Site Plugin variant - placed automatically by Wix into a slot on the
-   * Wix Stores Product Page template on every install, with zero manual
-   * setup: the host page feeds it a fresh `product-id` attribute for
-   * whichever product the shopper is currently viewing (see
-   * https://dev.wix.com/docs - Wix Stores Product Page plugin API,
-   * `productId` prop -> `product-id` attribute), and its own site identity
-   * comes from the access token site.auth() attaches automatically (see the
-   * class comment above) - nothing left for a merchant to open a settings
-   * panel for.
+   * Site Plugin variant - placed once by Wix into a slot on the Wix Stores
+   * Product Page template; the host page automatically feeds it a fresh
+   * `product-id` attribute for whichever product the shopper is currently
+   * viewing (see https://dev.wix.com/docs - Wix Stores Product Page plugin
+   * API, `productId` prop -> `product-id` attribute). `instance-id` is not
+   * part of that host API, so it's still set once via this plugin's own
+   * settings panel (reviews-plugin-settings.html) at add-time, the same way
+   * the Site Widget's panel sets it - see that file for how it's resolved.
    */
   class MirrorStockReviewsPlugin extends MirrorStockReviewsBase {
     static get observedAttributes() {
-      return ["product-id", "title", "max", "accent-color"];
+      return ["instance-id", "product-id", "title", "max", "accent-color"];
     }
 
     _load() {
+      const instanceId = this.getAttribute("instance-id");
       const productId = this.getAttribute("product-id");
-      if (!productId) {
-        this._setBody('<p class="ms-empty">Missing product-id.</p>');
+      if (!instanceId || !productId) {
+        this._setBody('<p class="ms-empty">Missing instance-id or product-id.</p>');
         return;
       }
-      this._fetchReviews(`${API_BASE}/site/by-product/${encodeURIComponent(productId)}`);
+      this._fetchReviews(`${API_BASE}/by-product/${encodeURIComponent(instanceId)}/${encodeURIComponent(productId)}`);
     }
   }
 
