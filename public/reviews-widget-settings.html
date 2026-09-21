@@ -96,7 +96,8 @@
         if (existingSku) skuInput.value = existingSku;
 
         if (!instanceResult.instanceId) {
-          setStatus(`DEBUG: ${instanceResult.error}`, "err");
+          console.error("MirrorStock reviews panel:", instanceResult.error);
+          setStatus("Could not verify this site. Try reopening this panel.", "err");
           return;
         }
 
@@ -104,7 +105,8 @@
         await client.widget.setProp("instance-id", instanceResult.instanceId);
         setStatus("Ready.", "ok");
       } catch (err) {
-        setStatus(`DEBUG init() threw: ${err && err.message}`, "err");
+        console.error("MirrorStock reviews panel:", err);
+        setStatus("Something went wrong loading settings.", "err");
       }
     }
 

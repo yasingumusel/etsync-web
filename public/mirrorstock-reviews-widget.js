@@ -47,11 +47,12 @@
     return html;
   }
 
-  class MirrorStockReviews extends HTMLElement {
-    static get observedAttributes() {
-      return ["instance-id", "sku", "title", "max", "accent-color"];
-    }
-
+  /**
+   * Shared rendering (shadow DOM, star markup, review list) for both
+   * variants below - they only differ in which attributes they read and
+   * which backend endpoint they call.
+   */
+  class MirrorStockReviewsBase extends HTMLElement {
     connectedCallback() {
       if (!this._root) {
         this._root = this.attachShadow({ mode: "open" });
@@ -67,17 +68,8 @@
       }
     }
 
-    _load() {
-      const instanceId = this.getAttribute("instance-id");
-      const sku = this.getAttribute("sku");
-      if (!instanceId || !sku) {
-        this._setBody('<p class="ms-empty">Missing instance-id or sku.</p>');
-        return;
-      }
-
+    _fetchReviews(url) {
       const max = Number(this.getAttribute("max")) || 5;
-      const url = `${API_BASE}/${encodeURIComponent(instanceId)}/${encodeURIComponent(sku)}`;
-
       fetch(url)
         .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
         .then((data) => {
@@ -139,7 +131,56 @@
     }
   }
 
+  /**
+   * Site Widget variant - freely dragged anywhere, manually configured in
+   * its settings panel with `instance-id` and the product's `sku`.
+   */
+  class MirrorStockReviews extends MirrorStockReviewsBase {
+    static get observedAttributes() {
+      return ["instance-id", "sku", "title", "max", "accent-color"];
+    }
+
+    _load() {
+      const instanceId = this.getAttribute("instance-id");
+      const sku = this.getAttribute("sku");
+      if (!instanceId || !sku) {
+        this._setBody('<p class="ms-empty">Missing instance-id or sku.</p>');
+        return;
+      }
+      this._fetchReviews(`${API_BASE}/${encodeURIComponent(instanceId)}/${encodeURIComponent(sku)}`);
+    }
+  }
+
+  /**
+   * Site Plugin variant - placed once by Wix into a slot on the Wix Stores
+   * Product Page template; the host page automatically feeds it a fresh
+   * `product-id` attribute for whichever product the shopper is currently
+   * viewing (see https://dev.wix.com/docs - Wix Stores Product Page plugin
+   * API, `productId` prop -> `product-id` attribute). `instance-id` is not
+   * part of that host API, so it's still set once via this plugin's own
+   * settings panel (reviews-plugin-settings.html) at add-time, the same way
+   * the Site Widget's panel sets it - see that file for how it's resolved.
+   */
+  class MirrorStockReviewsPlugin extends MirrorStockReviewsBase {
+    static get observedAttributes() {
+      return ["instance-id", "product-id", "title", "max", "accent-color"];
+    }
+
+    _load() {
+      const instanceId = this.getAttribute("instance-id");
+      const productId = this.getAttribute("product-id");
+      if (!instanceId || !productId) {
+        this._setBody('<p class="ms-empty">Missing instance-id or product-id.</p>');
+        return;
+      }
+      this._fetchReviews(`${API_BASE}/by-product/${encodeURIComponent(instanceId)}/${encodeURIComponent(productId)}`);
+    }
+  }
+
   if (!customElements.get("mirrorstock-reviews")) {
     customElements.define("mirrorstock-reviews", MirrorStockReviews);
+  }
+  if (!customElements.get("mirrorstock-reviews-plugin")) {
+    customElements.define("mirrorstock-reviews-plugin", MirrorStockReviewsPlugin);
   }
 })();
