@@ -130,8 +130,8 @@ export default function Pricing() {
         </div>
 
         <p className="mx-auto mt-6 max-w-lg text-center text-sm font-medium text-foreground">
-          We&apos;re about to go live on the Wix App Market — once we do, new
-          sign-ups pay full price. Lock in 50% off while it lasts.
+          This is limited-time launch pricing, not our regular rate — lock in
+          50% off now, before it goes up.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-3">
