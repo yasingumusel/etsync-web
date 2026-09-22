@@ -15,7 +15,13 @@ const badgeClass = (connected: boolean) =>
 const linkClass = "text-xs font-medium text-accent-violet underline-offset-2 hover:underline";
 
 /**
- * The Etsy / Wix / Shopify connection strip shown on both dashboard tabs.
+ * The Etsy + store connection strip shown on the dashboard.
+ *
+ * Only the platform a merchant actually sells on is shown: a Shopify
+ * merchant has no reason to read anything about Wix, and vice versa. Both
+ * appear only before either is connected, which is the one moment the
+ * choice is still open.
+ *
  * Shopify needs one extra step the others don't: its OAuth has to know
  * which shop it's talking to before it can start, so clicking through opens
  * a small field for the merchant's myshopify.com address.
@@ -26,6 +32,9 @@ export default function ConnectionBadges({ status }: { status: ConnectionStatus 
 
   const wixConnected = status.targetStores.some((s) => s.platform === "wix");
   const shopifyConnected = status.targetStores.some((s) => s.platform === "shopify");
+  const nothingConnected = !wixConnected && !shopifyConnected;
+  const showWix = wixConnected || nothingConnected;
+  const showShopify = shopifyConnected || nothingConnected;
 
   function connectShopify(e: React.FormEvent) {
     e.preventDefault();
@@ -46,21 +55,29 @@ export default function ConnectionBadges({ status }: { status: ConnectionStatus 
           {status.etsyConnected ? "Reconnect Etsy" : "Connect Etsy"}
         </a>
 
-        <span className={badgeClass(wixConnected)}>
-          <span className="h-1.5 w-1.5 rounded-full bg-current" />
-          Wix {wixConnected ? "connected" : "not connected"}
-        </span>
-        <a href="/api/wix/connect" className={linkClass}>
-          {wixConnected ? "Reconnect Wix store" : "Connect Wix store"}
-        </a>
+        {showWix && (
+          <>
+            <span className={badgeClass(wixConnected)}>
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              Wix {wixConnected ? "connected" : "not connected"}
+            </span>
+            <a href="/api/wix/connect" className={linkClass}>
+              {wixConnected ? "Reconnect Wix store" : "Connect Wix store"}
+            </a>
+          </>
+        )}
 
-        <span className={badgeClass(shopifyConnected)}>
-          <span className="h-1.5 w-1.5 rounded-full bg-current" />
-          Shopify {shopifyConnected ? "connected" : "not connected"}
-        </span>
-        <button type="button" onClick={() => setShopFormOpen((v) => !v)} className={linkClass}>
-          {shopifyConnected ? "Reconnect Shopify store" : "Connect Shopify store"}
-        </button>
+        {showShopify && (
+          <>
+            <span className={badgeClass(shopifyConnected)}>
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              Shopify {shopifyConnected ? "connected" : "not connected"}
+            </span>
+            <button type="button" onClick={() => setShopFormOpen((v) => !v)} className={linkClass}>
+              {shopifyConnected ? "Reconnect Shopify store" : "Connect Shopify store"}
+            </button>
+          </>
+        )}
       </div>
 
       {shopFormOpen && (

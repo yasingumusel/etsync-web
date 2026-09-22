@@ -193,6 +193,10 @@ export default function DashboardPage() {
     }, 1500);
   }
 
+  const hasWix = Boolean(status?.targetStores.some((s) => s.platform === "wix"));
+  const hasShopify = Boolean(status?.targetStores.some((s) => s.platform === "shopify"));
+  const storeLabel = hasWix ? "Wix" : hasShopify ? "Shopify" : "your store";
+
   return (
     <div className="min-h-screen bg-grid">
       <DashboardHeader refreshKey={historyKey} />
@@ -203,33 +207,38 @@ export default function DashboardPage() {
         </h1>
         <p className="mt-1 text-sm text-muted">
           <span className="font-medium text-accent-orange">Etsy</span>{" "}
-          &rarr; <span className="font-medium text-accent-blue">Wix</span> product sync.
+          &rarr; <span className="font-medium text-accent-blue">{storeLabel}</span> product sync.
         </p>
 
-        <div className="mt-6 inline-flex rounded-full border border-border bg-surface p-1">
-          <button
-            type="button"
-            onClick={() => setDirection("etsy-to-wix")}
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-              direction === "etsy-to-wix"
-                ? "bg-accent-orange text-white"
-                : "text-muted hover:text-foreground"
-            }`}
-          >
-            Etsy &rarr; Wix
-          </button>
-          <button
-            type="button"
-            onClick={() => setDirection("wix-to-etsy")}
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-              direction === "wix-to-etsy"
-                ? "bg-accent-blue text-white"
-                : "text-muted hover:text-foreground"
-            }`}
-          >
-            Wix &rarr; Etsy
-          </button>
-        </div>
+        {/* Publishing a brand new store product back to Etsy is a Wix-only
+            feature for now, so a Shopify merchant is shown the one direction
+            that applies to them rather than a tab leading nowhere. */}
+        {hasWix && (
+          <div className="mt-6 inline-flex rounded-full border border-border bg-surface p-1">
+            <button
+              type="button"
+              onClick={() => setDirection("etsy-to-wix")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                direction === "etsy-to-wix"
+                  ? "bg-accent-orange text-white"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              Etsy &rarr; Wix
+            </button>
+            <button
+              type="button"
+              onClick={() => setDirection("wix-to-etsy")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                direction === "wix-to-etsy"
+                  ? "bg-accent-blue text-white"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              Wix &rarr; Etsy
+            </button>
+          </div>
+        )}
 
         {direction === "etsy-to-wix" && (
         <>
@@ -346,7 +355,7 @@ export default function DashboardPage() {
               {syncing && (
                 <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 p-4 text-sm text-foreground">
                   <p className="font-medium">
-                    Your Etsy listings are being synced to your Wix store.
+                    Your Etsy listings are being synced to your {storeLabel} store.
                     This can take a few minutes depending on how many
                     products you have.
                   </p>
