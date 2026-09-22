@@ -53,6 +53,10 @@ export default function EtsyListingDefaults() {
   const [error, setError] = useState<string | null>(null);
   const [optionsError, setOptionsError] = useState<string | null>(null);
 
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+
   useEffect(() => {
     (async () => {
       const [optionsRes, defaultsRes] = await Promise.all([
@@ -132,13 +136,62 @@ export default function EtsyListingDefaults() {
     setSavedAt(Date.now());
   }, [taxonomyId, taxonomyName, shippingProfileId, readinessStateId, whoMade, whenMade]);
 
+  const syncNow = useCallback(async () => {
+    setSyncing(true);
+    setSyncError(null);
+    setSyncResult(null);
+
+    const res = await fetch("/api/sync/sync-to-etsy", { method: "POST" });
+    const body = await res.json().catch(() => ({}));
+
+    setSyncing(false);
+    if (!res.ok) {
+      setSyncError(body.error || "Could not sync. Try again.");
+      return;
+    }
+
+    const totals = Object.values(
+      (body.results ?? {}) as Record<string, { pushedToEtsy?: number; createdOnEtsy?: number }>
+    ).reduce(
+      (acc, r) => ({
+        pushed: acc.pushed + (r.pushedToEtsy || 0),
+        created: acc.created + (r.createdOnEtsy || 0),
+      }),
+      { pushed: 0, created: 0 }
+    );
+
+    setSyncResult(
+      totals.pushed || totals.created
+        ? [
+            totals.pushed > 0 && `${totals.pushed} edit${totals.pushed > 1 ? "s" : ""} pushed to Etsy`,
+            totals.created > 0 && `${totals.created} new draft${totals.created > 1 ? "s" : ""} published`,
+          ]
+            .filter(Boolean)
+            .join(" · ")
+        : "Nothing new to sync."
+    );
+  }, []);
+
   if (loading) return null;
 
   const configured = Boolean(taxonomyId && shippingProfileId && readinessStateId);
 
   return (
     <div className="mt-4 card-glass rounded-2xl p-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-accent-violet">
+        Wix
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+          <path
+            d="M1 5h11M8 1l4 4-4 4"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        Etsy
+      </span>
+      <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-base font-semibold text-foreground">
           Defaults for new Etsy listings
         </h2>
@@ -279,6 +332,37 @@ export default function EtsyListingDefaults() {
           {saving ? "Saving…" : "Save"}
         </button>
         {savedAt && !saving && <span className="text-xs font-medium text-emerald-600">Saved</span>}
+      </div>
+
+      <div className="mt-6 border-t border-border pt-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-foreground">Sync Wix → Etsy</p>
+            <p className="mt-0.5 text-xs text-muted">
+              Pushes any Wix edits and new Wix-only products to Etsy right
+              now, separately from the regular Etsy → Wix sync.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={syncNow}
+            disabled={syncing || !configured}
+            className="shrink-0 rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-60"
+          >
+            {syncing ? "Syncing…" : "Sync Wix → Etsy now"}
+          </button>
+        </div>
+        {!configured && (
+          <p className="mt-2 text-[11px] text-muted">
+            Fill in the fields above and save first.
+          </p>
+        )}
+        {syncResult && !syncing && (
+          <p className="mt-2 text-xs font-medium text-emerald-600">{syncResult}</p>
+        )}
+        {syncError && !syncing && (
+          <p className="mt-2 text-xs font-medium text-red-500">{syncError}</p>
+        )}
       </div>
     </div>
   );

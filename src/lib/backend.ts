@@ -20,7 +20,8 @@ type SyncPath =
   | "reviews-settings"
   | "etsy-listing-options"
   | "etsy-taxonomy"
-  | "etsy-listing-defaults";
+  | "etsy-listing-defaults"
+  | "sync-to-etsy";
 
 export type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 
@@ -98,7 +99,7 @@ export async function callSyncBackend(
     expiresIn: "60s",
   });
 
-  const method = options.method ?? (path === "run" || path === "preview" ? "POST" : "GET");
+  const method = options.method ?? (path === "run" || path === "preview" || path === "sync-to-etsy" ? "POST" : "GET");
   const qs = options.query ? `?${new URLSearchParams(options.query).toString()}` : "";
   const res = await fetch(`${baseUrl}/sync/${userId}/${path}${qs}`, {
     method,
