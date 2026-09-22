@@ -216,7 +216,7 @@ export default function EtsyListingDefaults() {
       <button
         type="button"
         onClick={() => setPickerOpen((v) => !v)}
-        className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent-blue hover:underline"
+        className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-accent-blue/40 bg-accent-blue/5 px-4 py-2 text-sm font-semibold text-accent-blue transition-colors hover:bg-accent-blue/10"
       >
         {pickerOpen ? "Hide product picker" : "Choose which products sync"}
         <span aria-hidden>{pickerOpen ? "↑" : "→"}</span>

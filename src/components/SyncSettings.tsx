@@ -92,7 +92,7 @@ export default function SyncSettings() {
       <button
         type="button"
         onClick={() => setPickerOpen((v) => !v)}
-        className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent-violet hover:underline"
+        className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-accent-orange/40 bg-accent-orange/5 px-4 py-2 text-sm font-semibold text-accent-orange transition-colors hover:bg-accent-orange/10"
       >
         {pickerOpen ? "Hide product picker" : "Choose which products sync"}
         <span aria-hidden>{pickerOpen ? "↑" : "→"}</span>
