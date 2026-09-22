@@ -261,20 +261,29 @@ export default function DashboardPage() {
                 >
                   {status.etsyConnected ? "Reconnect Etsy" : "Connect Etsy"}
                 </a>
-                {!status.targetStores.some((s) => s.platform === "wix") && (
-                  <>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-red-400/10 px-3 py-1 text-xs font-medium text-red-500">
-                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                      Wix not connected
-                    </span>
-                    <a
-                      href="/api/wix/connect"
-                      className="text-xs font-medium text-accent-violet underline-offset-2 hover:underline"
-                    >
-                      Connect Wix store
-                    </a>
-                  </>
-                )}
+                {(() => {
+                  const wixConnected = status.targetStores.some((s) => s.platform === "wix");
+                  return (
+                    <>
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
+                          wixConnected
+                            ? "bg-emerald-400/10 text-emerald-600"
+                            : "bg-red-400/10 text-red-500"
+                        }`}
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                        Wix {wixConnected ? "connected" : "not connected"}
+                      </span>
+                      <a
+                        href="/api/wix/connect"
+                        className="text-xs font-medium text-accent-violet underline-offset-2 hover:underline"
+                      >
+                        {wixConnected ? "Reconnect Wix store" : "Connect Wix store"}
+                      </a>
+                    </>
+                  );
+                })()}
                 {!status.isPremium && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-600">
                     Not premium
