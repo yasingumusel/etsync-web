@@ -14,7 +14,8 @@ const links = [
   { href: "/#features", label: "Features" },
   { href: "/#how-it-works", label: "How It Works" },
   { href: "/#pricing", label: "Pricing" },
-  { href: "/#api-usage", label: "API Usage" },
+  { href: "/wix-etsy-sync", label: "Wix Integration" },
+  { href: "/shopify-etsy-sync", label: "Shopify Integration" },
   { href: "/#faq", label: "FAQ" },
 ];
 

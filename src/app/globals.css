@@ -11,6 +11,10 @@
   --accent-pink: #e0397e;
   --accent-violet: #7c4fe0;
   --accent-blue: #2f6feb;
+  /* Shopify's brand green, used for platform-specific pages only - see
+     CLAUDE.md's trademark note on why brand-accurate colors are used
+     instead of third-party logos. */
+  --accent-green: #95bf47;
 }
 
 @theme inline {
@@ -24,6 +28,7 @@
   --color-accent-pink: var(--accent-pink);
   --color-accent-violet: var(--accent-violet);
   --color-accent-blue: var(--accent-blue);
+  --color-accent-green: var(--accent-green);
   --font-sans: var(--font-inter);
   --font-display: var(--font-sora);
 }
