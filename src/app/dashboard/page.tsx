@@ -74,7 +74,7 @@ export default function DashboardPage() {
   const [previewResult, setPreviewResult] = useState<PreviewResponse | null>(null);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [expandedPreviewStore, setExpandedPreviewStore] = useState<string | null>(null);
-  const [direction, setDirection] = useState<"etsy-to-wix" | "wix-to-etsy">("etsy-to-wix");
+  const [direction, setDirection] = useState<"from-etsy" | "to-etsy">("from-etsy");
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Tracks wall-clock time since a sync started being observed, purely for
@@ -210,37 +210,36 @@ export default function DashboardPage() {
           &rarr; <span className="font-medium text-accent-blue">{storeLabel}</span> product sync.
         </p>
 
-        {/* Publishing a brand new store product back to Etsy is a Wix-only
-            feature for now, so a Shopify merchant is shown the one direction
-            that applies to them rather than a tab leading nowhere. */}
-        {hasWix && (
+        {/* Both directions work on either platform, so the tabs appear as
+            soon as a store is connected - only the labels differ. */}
+        {(hasWix || hasShopify) && (
           <div className="mt-6 inline-flex rounded-full border border-border bg-surface p-1">
             <button
               type="button"
-              onClick={() => setDirection("etsy-to-wix")}
+              onClick={() => setDirection("from-etsy")}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                direction === "etsy-to-wix"
+                direction === "from-etsy"
                   ? "bg-accent-orange text-white"
                   : "text-muted hover:text-foreground"
               }`}
             >
-              Etsy &rarr; Wix
+              Etsy &rarr; {storeLabel}
             </button>
             <button
               type="button"
-              onClick={() => setDirection("wix-to-etsy")}
+              onClick={() => setDirection("to-etsy")}
               className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                direction === "wix-to-etsy"
+                direction === "to-etsy"
                   ? "bg-accent-blue text-white"
                   : "text-muted hover:text-foreground"
               }`}
             >
-              Wix &rarr; Etsy
+              {storeLabel} &rarr; Etsy
             </button>
           </div>
         )}
 
-        {direction === "etsy-to-wix" && (
+        {direction === "from-etsy" && (
         <>
         <div className="mt-6 card-glass rounded-2xl p-6">
           <SyncSettings embedded />
@@ -487,7 +486,7 @@ export default function DashboardPage() {
         </>
         )}
 
-        {direction === "wix-to-etsy" && <EtsyListingDefaults />}
+        {direction === "to-etsy" && <EtsyListingDefaults />}
 
         <ReviewsSettings />
         <SyncHistory refreshKey={historyKey} />

@@ -8,7 +8,7 @@ export async function GET() {
   }
 
   try {
-    const { status, body } = await callSyncBackend(userId, "wix-products");
+    const { status, body } = await callSyncBackend(userId, "store-products");
     return NextResponse.json(body, { status });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });

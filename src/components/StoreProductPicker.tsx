@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-type WixProduct = {
+type StoreProduct = {
   id: string;
   name: string;
   price: number;
@@ -10,9 +10,15 @@ type WixProduct = {
   thumbnailUrl: string | null;
 };
 
-export default function WixProductPicker({ onDone }: { onDone?: () => void }) {
+export default function StoreProductPicker({
+  onDone,
+  platform = "your store",
+}: {
+  onDone?: () => void;
+  platform?: string;
+}) {
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<WixProduct[]>([]);
+  const [products, setProducts] = useState<StoreProduct[]>([]);
   const [mode, setMode] = useState<"all" | "custom">("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
@@ -21,26 +27,26 @@ export default function WixProductPicker({ onDone }: { onDone?: () => void }) {
   useEffect(() => {
     (async () => {
       const [productsRes, selectionRes] = await Promise.all([
-        fetch("/api/sync/wix-products"),
-        fetch("/api/sync/wix-product-selection"),
+        fetch("/api/sync/store-products"),
+        fetch("/api/sync/store-product-selection"),
       ]);
 
       if (productsRes.ok) {
         const data = await productsRes.json();
         setProducts(data.products ?? []);
       } else {
-        setError("Could not load your Wix products.");
+        setError(`Could not load your ${platform} products.`);
       }
 
       if (selectionRes.ok) {
         const data = await selectionRes.json();
         setMode(data.mode === "custom" ? "custom" : "all");
-        setSelected(new Set((data.selectedWixProductIds ?? []) as string[]));
+        setSelected(new Set((data.selectedProductIds ?? []) as string[]));
       }
 
       setLoading(false);
     })();
-  }, []);
+  }, [platform]);
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -55,10 +61,10 @@ export default function WixProductPicker({ onDone }: { onDone?: () => void }) {
     setSaving(true);
     setError(null);
 
-    const res = await fetch("/api/sync/wix-product-selection", {
+    const res = await fetch("/api/sync/store-product-selection", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mode, selectedWixProductIds: Array.from(selected) }),
+      body: JSON.stringify({ mode, selectedProductIds: Array.from(selected) }),
     });
 
     setSaving(false);
@@ -70,11 +76,11 @@ export default function WixProductPicker({ onDone }: { onDone?: () => void }) {
     onDone?.();
   }
 
-  if (loading) return <p className="mt-4 text-sm text-muted">Loading your Wix products…</p>;
+  if (loading) return <p className="mt-4 text-sm text-muted">Loading your {platform} products…</p>;
 
   return (
     <div className="mt-4 rounded-2xl border border-border bg-surface p-5">
-      <p className="text-sm font-medium text-foreground">Which Wix products should we publish to Etsy?</p>
+      <p className="text-sm font-medium text-foreground">Which {platform} products should we publish to Etsy?</p>
       <p className="mt-1 text-xs text-muted">
         Only products that don&apos;t already have a matching Etsy listing show up here.
       </p>
@@ -88,7 +94,7 @@ export default function WixProductPicker({ onDone }: { onDone?: () => void }) {
           }`}
         >
           <span className="block text-sm font-medium text-foreground">All eligible products</span>
-          <span className="block text-[11px] text-muted">New Wix-only products publish automatically too</span>
+          <span className="block text-[11px] text-muted">New {platform}-only products publish automatically too</span>
         </button>
         <button
           type="button"
@@ -105,7 +111,7 @@ export default function WixProductPicker({ onDone }: { onDone?: () => void }) {
       {mode === "custom" && (
         <div className="mt-4 max-h-72 overflow-y-auto rounded-xl border border-border">
           {products.length === 0 ? (
-            <p className="p-4 text-xs text-muted">No eligible Wix products found.</p>
+            <p className="p-4 text-xs text-muted">No eligible {platform} products found.</p>
           ) : (
             <ul className="divide-y divide-border">
               {products.map((p) => (

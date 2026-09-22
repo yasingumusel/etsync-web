@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import WixProductPicker from "@/components/WixProductPicker";
+import StoreProductPicker from "@/components/StoreProductPicker";
 import ConnectionBadges, { type ConnectionStatus } from "@/components/ConnectionBadges";
 
 type Option = { id: number; title?: string; label?: string };
@@ -17,7 +17,7 @@ const WHO_MADE_OPTIONS = [
 // Etsy's rolling "recent years" enum value (its exact token has drifted
 // across API versions in ways that weren't possible to verify with
 // confidence) - "Made to order" already covers the realistic case for
-// products coming from a Wix store, so there's no real loss here.
+// products coming from an online store, so there's no real loss here.
 const WHEN_MADE_OPTIONS = [
   { value: "made_to_order", label: "Made to order" },
   { value: "1990s", label: "1990s" },
@@ -184,12 +184,17 @@ export default function EtsyListingDefaults() {
 
   if (loading) return null;
 
+  // Whichever store this merchant actually sells on - the panel never says
+  // "Wix" to a Shopify merchant, or the other way round.
+  const storeLabel =
+    connection && connection.targetStores.some((s) => s.platform === "shopify") ? "Shopify" : "Wix";
+
   const configured = Boolean(taxonomyId && shippingProfileId && readinessStateId);
 
   return (
     <div className="mt-4 card-glass rounded-2xl p-6">
       <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest">
-        <span className="text-accent-blue">Wix</span>
+        <span className="text-accent-blue">{storeLabel}</span>
         <svg width="14" height="10" viewBox="0 0 14 10" fill="none" className="text-muted">
           <path
             d="M1 5h11M8 1l4 4-4 4"
@@ -215,10 +220,11 @@ export default function EtsyListingDefaults() {
         </span>
       </div>
       <p className="mt-1 text-xs leading-relaxed text-muted">
-        A product created in Wix has no Etsy listing yet. Fill in these three
-        fields (Etsy requires them, Wix has no equivalent) and MirrorStock
-        will publish new Wix-only products to Etsy as drafts for you to
-        review - it never activates them automatically.
+        A product created in {storeLabel} has no Etsy listing yet. Fill in
+        these three fields (Etsy requires them, {storeLabel} has no
+        equivalent) and MirrorStock will publish new {storeLabel}-only
+        products to Etsy as drafts for you to review - it never activates
+        them automatically.
       </p>
 
       <button
@@ -230,7 +236,7 @@ export default function EtsyListingDefaults() {
         <span aria-hidden>{pickerOpen ? "↑" : "→"}</span>
       </button>
 
-      {pickerOpen && <WixProductPicker onDone={() => setPickerOpen(false)} />}
+      {pickerOpen && <StoreProductPicker platform={storeLabel} onDone={() => setPickerOpen(false)} />}
 
       {optionsError && <p className="mt-3 text-xs font-medium text-red-500">{optionsError}</p>}
 
@@ -364,10 +370,11 @@ export default function EtsyListingDefaults() {
         )}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-medium text-foreground">Sync Wix → Etsy</p>
+            <p className="text-sm font-medium text-foreground">Sync {storeLabel} → Etsy</p>
             <p className="mt-0.5 text-xs text-muted">
-              Pushes any Wix edits and new Wix-only products to Etsy right
-              now, separately from the regular Etsy → Wix sync.
+              Pushes any {storeLabel} edits and new {storeLabel}-only
+              products to Etsy right now, separately from the regular
+              Etsy → {storeLabel} sync.
             </p>
           </div>
           <button
@@ -376,7 +383,7 @@ export default function EtsyListingDefaults() {
             disabled={syncing || !configured}
             className="shrink-0 rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-60"
           >
-            {syncing ? "Syncing…" : "Sync Wix → Etsy now"}
+            {syncing ? "Syncing…" : `Sync ${storeLabel} → Etsy now`}
           </button>
         </div>
         {!configured && (
