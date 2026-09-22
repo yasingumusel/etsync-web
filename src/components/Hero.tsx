@@ -24,8 +24,9 @@ export default function Hero({ syncedProducts }: { syncedProducts?: number }) {
           <p className="mt-6 max-w-2xl text-balance text-lg leading-relaxed text-muted">
             MirrorStock reads the active listings in your Etsy shop —
             products, variations, images, descriptions and prices — and
-            keeps the matching products in your Wix store up to date. Access
-            is read-only: nothing is ever written back to your Etsy shop.
+            keeps the matching products in your Wix store up to date. Edit a
+            product&rsquo;s name or description in Wix instead, and it can
+            sync back to Etsy too.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
@@ -59,8 +60,8 @@ export default function Hero({ syncedProducts }: { syncedProducts?: number }) {
           </p>
 
           <p className="mt-5 text-xs text-muted">
-            Read-only access to your shop · No order or payment data · Your
-            listings are never modified
+            No order or payment data · Etsy writes are limited to a
+            title/description you choose to edit in Wix instead
           </p>
         </div>
 

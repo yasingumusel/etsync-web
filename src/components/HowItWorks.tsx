@@ -2,17 +2,17 @@ const steps = [
   {
     number: "01",
     title: "Connect Your Shops",
-    desc: "You sign in with your Etsy account and your Wix account through each platform's own official login. MirrorStock only ever requests listings_r and shops_r from Etsy — read-only.",
+    desc: "You sign in with your Etsy account and your Wix account through each platform's own official login. MirrorStock never sees your password on either side.",
   },
   {
     number: "02",
     title: "We Read Your Active Listings",
-    desc: "MirrorStock pulls your active listings along with their variations, images and prices, and matches them to the products already in your store. Nothing is sent back to Etsy at this step.",
+    desc: "MirrorStock pulls your active listings along with their variations, images and prices, and matches them to the products already in your store.",
   },
   {
     number: "03",
     title: "Your Store Is Brought Up To Date",
-    desc: "Start a sync from your dashboard and watch it work through your catalogue. Products that are already there are updated in place, and your Etsy shop itself is never modified.",
+    desc: "Start a sync from your dashboard and watch it work through your catalogue. Products that are already there are updated in place, and if you'd rather edit a title or description in Wix, that flows back to Etsy too.",
   },
 ];
 
@@ -25,11 +25,12 @@ export default function HowItWorks() {
             How It Works
           </span>
           <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Three steps, one direction
+            Three steps to a synced store
           </h2>
           <p className="mt-4 text-lg text-muted">
-            No technical knowledge required. Your Etsy shop is only ever
-            read from — never written to.
+            No technical knowledge required. Etsy is the default source of
+            truth — edit a title or description in Wix instead, and that
+            change syncs back.
           </p>
         </div>
 

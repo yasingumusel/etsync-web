@@ -1,5 +1,6 @@
 const shipped = [
-  "One-way sync from Etsy to Wix: products, variants, images, descriptions and prices.",
+  "Sync from Etsy to Wix: products, variants, images, descriptions and prices.",
+  "Edit a product's title or description in Wix instead, and it syncs back to the matching Etsy listing.",
   "Size and colour variations are rebuilt as real Wix product options, each with its own price and SKU.",
   "Automatic currency conversion when your Etsy shop and your Wix site are priced in different currencies.",
   "Run a sync from your dashboard whenever you want, with live progress as it works.",
@@ -9,7 +10,8 @@ const shipped = [
 
 const planned = [
   "Shopify as a second destination alongside Wix.",
-  "Two-way sync, so products created in your store can be published to Etsy.",
+  "Publishing a brand-new product created in Wix as a new Etsy listing.",
+  "Syncing price and variant edits back to Etsy, not just title and description.",
 ];
 
 export default function Status() {

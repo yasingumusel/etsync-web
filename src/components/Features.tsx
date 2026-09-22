@@ -20,9 +20,9 @@ const features: Feature[] = [
     icon: StoreIcon,
   },
   {
-    title: "Nothing Written Back to Etsy",
-    desc: "MirrorStock never edits, creates, or uploads anything to your Etsy shop, never reads your sales or order data, and never sends email through Etsy.",
-    icon: BanIcon,
+    title: "Edit In Wix, Sync Back To Etsy",
+    desc: "Prefer to edit a product's title or description in Wix? Switch off syncing that field and MirrorStock treats Wix as correct, pushing your edit back to the matching Etsy listing. Outside of that, nothing is ever written to Etsy, and your sales and order data is never read.",
+    icon: SyncIcon,
   },
   {
     title: "Automatic Currency Conversion",
@@ -172,11 +172,11 @@ function LockIcon() {
   );
 }
 
-function BanIcon() {
+function SyncIcon() {
   return (
     <svg {...iconProps()}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M5.5 5.5l13 13" />
+      <path d="M4 8h13M13 3l4 5-4 5" />
+      <path d="M20 16H7M11 21l-4-5 4-5" />
     </svg>
   );
 }

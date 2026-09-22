@@ -23,13 +23,19 @@ export default function TermsPage() {
 
           <h2>1. The Service</h2>
           <p>
-            MirrorStock reads the active listings in your Etsy shop
-            (read-only, using the <code>listings_r</code> and{" "}
-            <code>shops_r</code> scopes) and creates or updates the matching
-            products in your connected Wix store. The Service does not
-            write, edit, delete, or upload anything back to Etsy, does not
-            read Etsy sales, order, or payment data, and does not send email
-            or messages through Etsy.
+            MirrorStock reads the active listings in your Etsy shop (using
+            the <code>listings_r</code> and <code>shops_r</code> scopes) and
+            creates or updates the matching products in your connected Wix
+            store. If you switch off syncing a listing&rsquo;s title or
+            description in your dashboard, MirrorStock instead writes your
+            current Wix value back to the matching Etsy listing (using the{" "}
+            <code>listings_w</code> scope) &mdash; this is the only way the
+            Service ever writes to Etsy, is limited to the title and
+            description fields, and only happens for a field you have
+            explicitly opted out of syncing from Etsy. The Service does not
+            otherwise create, edit, delete, or upload anything on Etsy, does
+            not read Etsy sales, order, or payment data, and does not send
+            email or messages through Etsy.
           </p>
 
           <h2>2. Eligibility &amp; Account Ownership</h2>
@@ -58,7 +64,7 @@ export default function TermsPage() {
           <ul>
             <li>Access, resell, or redistribute Etsy or Wix API data to a third party</li>
             <li>Act on behalf of a shop you do not own or manage</li>
-            <li>Circumvent rate limits, security controls, or the intended read-only scope of Etsy API access</li>
+            <li>Circumvent rate limits, security controls, or the intended scope of Etsy or Wix API access</li>
             <li>Serve any unlawful purpose or violate Etsy&rsquo;s or Wix&rsquo;s own terms of use</li>
           </ul>
 

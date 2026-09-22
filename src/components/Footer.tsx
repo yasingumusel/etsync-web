@@ -40,9 +40,9 @@ export default function Footer() {
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-              MirrorStock reads your active Etsy listings (read-only) and
-              keeps the matching products in your Wix store in sync, so you
-              only have to keep one catalogue up to date.
+              MirrorStock reads your active Etsy listings and keeps the
+              matching products in your Wix store in sync, so you only have
+              to keep one catalogue up to date.
             </p>
           </div>
 

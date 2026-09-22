@@ -80,7 +80,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "tell me about mirrorstock",
     ],
     answer:
-      "MirrorStock reads the active listings in your Etsy shop - products, variations, images, descriptions and prices - and keeps the matching products in your connected Wix store up to date automatically. Sync is one-way, Etsy to Wix: nothing is ever written back to your Etsy shop.",
+      "MirrorStock reads the active listings in your Etsy shop - products, variations, images, descriptions and prices - and keeps the matching products in your connected Wix store up to date automatically. By default sync runs Etsy to Wix; if you'd rather edit a title or description in Wix, that can sync back to Etsy too.",
   },
   {
     id: "how-it-works",
@@ -93,7 +93,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "how does syncing work",
     ],
     answer:
-      "Three steps: (1) You connect your Etsy shop and your Wix store through each platform's own official login. (2) MirrorStock reads your active Etsy listings, including variations, images and prices. (3) It creates or updates the matching products in your Wix store - existing products are updated in place, nothing is duplicated, and your Etsy shop itself is never modified.",
+      "Three steps: (1) You connect your Etsy shop and your Wix store through each platform's own official login. (2) MirrorStock reads your active Etsy listings, including variations, images and prices. (3) It creates or updates the matching products in your Wix store - existing products are updated in place, nothing is duplicated. If you switch off syncing a title or description for a product, MirrorStock instead pushes your Wix edit back to that Etsy listing.",
   },
   {
     id: "who-can-connect",
@@ -161,9 +161,16 @@ export const JASON_FAQ: FaqEntry[] = [
       "write back",
       "wix to etsy",
       "from wix to etsy",
+      "edit in wix",
+      "edit my product in wix",
+      "update on etsy",
+      "update my etsy listing",
+      "sync back to etsy",
+      "changes sync back",
+      "push to etsy",
     ],
     answer:
-      "Sync currently runs one direction only: from Etsy to Wix. Nothing created or edited in Wix is ever sent back to Etsy - your Etsy shop is read-only from MirrorStock's side. Two-way sync is on the roadmap but not available yet.",
+      "Partially. By default sync runs one direction: Etsy to Wix. But if you switch off syncing a product's title or description (in the dashboard's 'What to sync' settings), MirrorStock treats your Wix edit as correct and pushes it back to the matching Etsy listing. Price, images, and variants are still Etsy-to-Wix only, and creating a brand-new Etsy listing from a Wix-only product isn't available yet.",
   },
   {
     id: "duplicates",
@@ -324,7 +331,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "what does it access",
     ],
     answer:
-      "MirrorStock requests exactly two read-only Etsy scopes: listings_r (your shop's active listings) and shops_r (basic shop info). Nothing else - no receipts, no transactions, no shop management, no order or payment data.",
+      "MirrorStock requests three Etsy scopes: listings_r and shops_r (both read-only, for your shop's active listings and basic shop info), and listings_w - used narrowly to write a title or description back to a listing, only when you've told MirrorStock you're editing that field in Wix instead. Nothing else - no receipts, no transactions, no shop management, no order or payment data.",
   },
   {
     id: "writes-to-etsy",
@@ -340,7 +347,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "does it edit my etsy",
     ],
     answer:
-      "No - access is strictly read-only. MirrorStock never creates, edits, deletes, or uploads anything on Etsy, never changes your shop settings, and never sends email or messages through Etsy.",
+      "Only one thing, and only if you turn it on: switching off syncing a listing's title or description lets MirrorStock push your Wix edit back to that Etsy listing. Outside of that, MirrorStock never creates, deletes, or uploads anything on Etsy, never touches price/inventory/images there, never changes your shop settings, and never sends email or messages through Etsy.",
   },
   {
     id: "sales-data",

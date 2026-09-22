@@ -41,25 +41,27 @@ export default function PrivacyPage() {
             <a href="/terms">Terms of Service</a>, and for no other purpose.
           </p>
 
-          <h2>2. Data Accessed via the Etsy API (Read-Only)</h2>
+          <h2>2. Data Accessed via the Etsy API</h2>
           <p>
             When you connect your Etsy shop to MirrorStock through
             Etsy&rsquo;s official OAuth 2.0 authorization flow, MirrorStock
-            requests exactly two read-only scopes:
+            requests three scopes:
           </p>
           <ul>
-            <li><code>listings_r</code> &mdash; to read your shop&rsquo;s active listings, including titles, descriptions, SKUs, variations, prices, images, and inventory quantities</li>
-            <li><code>shops_r</code> &mdash; to read basic shop profile information (shop name, shop ID)</li>
+            <li><code>listings_r</code> &mdash; read-only, to read your shop&rsquo;s active listings, including titles, descriptions, SKUs, variations, prices, images, and inventory quantities</li>
+            <li><code>shops_r</code> &mdash; read-only, to read basic shop profile information (shop name, shop ID)</li>
+            <li><code>listings_w</code> &mdash; write, used narrowly and only when you opt in: if you switch off syncing a listing&rsquo;s title or description in your dashboard (telling MirrorStock you now edit that field in Wix instead), MirrorStock writes your current Wix value back to the matching Etsy listing so the two stay consistent. This scope is never used to create, delete, or otherwise modify a listing, and never touches price, inventory, images, shipping, or any other listing or shop setting.</li>
           </ul>
           <p>
             MirrorStock does not request, and cannot access, your Etsy
             receipts, transactions, sales history, buyer information,
-            financial data, or shop management functions. MirrorStock never
-            writes to, edits, creates, deletes, or uploads anything on your
-            Etsy shop, and never sends email or messages through Etsy on
-            your behalf. We never see your Etsy account password &mdash;
-            authentication is handled entirely by Etsy&rsquo;s own login and
-            consent screen.
+            financial data, or shop management functions. Outside of the
+            narrow, opt-in title/description write described above,
+            MirrorStock never edits, creates, deletes, or uploads anything
+            on your Etsy shop, and never sends email or messages through
+            Etsy on your behalf. We never see your Etsy account password
+            &mdash; authentication is handled entirely by Etsy&rsquo;s own
+            login and consent screen.
           </p>
 
           <h2>3. Data Accessed via the Wix API</h2>

@@ -12,8 +12,8 @@ type Store = {
 };
 
 const FIELDS: { key: string; label: string; hint: string }[] = [
-  { key: "title", label: "Product name", hint: "Keep the Wix name matching your Etsy title" },
-  { key: "description", label: "Description", hint: "Keep the Wix description matching Etsy" },
+  { key: "title", label: "Product name", hint: "Off = edit the name in Wix instead, and it syncs back to Etsy" },
+  { key: "description", label: "Description", hint: "Off = edit the description in Wix instead, and it syncs back to Etsy" },
   { key: "price", label: "Prices", hint: "Including each variation's own price" },
   { key: "sku", label: "SKUs", hint: "Including each variation's own SKU" },
   { key: "images", label: "Images", hint: "Replace Wix photos with your Etsy photos" },
@@ -83,8 +83,10 @@ export default function SyncSettings() {
       </div>
       <p className="mt-1 text-xs leading-relaxed text-muted">
         Switch something off and a sync will stop overwriting it, so you can
-        edit it in Wix and keep your changes. New products are always created
-        with everything, since Wix needs a name and a price to make one.
+        edit it in Wix and keep your changes. For product name and
+        description specifically, your Wix edit also syncs back to the
+        matching Etsy listing. New products are always created with
+        everything, since Wix needs a name and a price to make one.
       </p>
 
       <button

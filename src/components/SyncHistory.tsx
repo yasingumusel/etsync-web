@@ -10,6 +10,7 @@ type Run = {
   updated: number;
   failed: number;
   hidden: number;
+  pushedToEtsy: number;
   durationMs?: number;
   errors: { sku?: string; message?: string }[];
 };
@@ -96,6 +97,7 @@ export default function SyncHistory({ refreshKey }: { refreshKey: number }) {
                                 run.created > 0 && `${run.created} created`,
                                 run.updated > 0 && `${run.updated} updated`,
                                 run.hidden > 0 && `${run.hidden} hidden`,
+                                run.pushedToEtsy > 0 && `${run.pushedToEtsy} pushed to Etsy`,
                                 run.failed > 0 && `${run.failed} failed`,
                               ]
                                 .filter(Boolean)

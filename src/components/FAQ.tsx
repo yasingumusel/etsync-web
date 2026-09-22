@@ -9,11 +9,11 @@ const faqs = [
   },
   {
     q: "Does MirrorStock ever write anything to my Etsy shop?",
-    a: "No. Access is strictly read-only. MirrorStock never edits, creates, deletes, or uploads listings, never changes shop settings, and never sends email or messages through Etsy.",
+    a: "Only one thing, and only if you ask for it: if you switch off syncing a listing's title or description in your dashboard, MirrorStock writes your current Wix value back to that Etsy listing. That's the entire write path — it never creates, deletes, or uploads listings, never touches price, inventory, or images on Etsy, never changes shop settings, and never sends email or messages through Etsy.",
   },
   {
     q: "Does the sync work the other way, from Wix back to Etsy?",
-    a: "Not today. Sync currently runs one direction only: listing data flows from Etsy to Wix, and nothing flows back. Two-way sync is on the roadmap, and it would require write access that we do not request today.",
+    a: "Partially. Turn off syncing a product's title or description and MirrorStock treats your Wix edit as correct, pushing it back to the matching Etsy listing on the next sync. Price, images, and variants still flow one direction only (Etsy to Wix), and publishing a brand-new Wix product as a new Etsy listing isn't available yet.",
   },
   {
     q: "Will running a sync twice create duplicate products?",

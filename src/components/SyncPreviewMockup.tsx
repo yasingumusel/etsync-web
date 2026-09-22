@@ -1,8 +1,8 @@
 /**
- * The "Etsy Shop -> Wix Shop, one-way sync" browser mockup, originally
- * built for the Hero section. Extracted into its own component so it can
- * also fill the marketing-adjacent empty space on the connect-etsy page -
- * onboarding is a marketing moment too, not just the homepage.
+ * The "Etsy Shop <-> Wix Shop" browser mockup, originally built for the
+ * Hero section. Extracted into its own component so it can also fill the
+ * marketing-adjacent empty space on the connect-etsy page - onboarding is
+ * a marketing moment too, not just the homepage.
  */
 export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?: number }) {
   // Anonymous visitors (or a page like connect-etsy, reached before any
@@ -34,21 +34,21 @@ export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?:
             platform="Etsy"
             color="from-accent-orange to-accent-pink"
             listings={listings}
-            badge="Read-only"
+            badge="Source"
           />
 
           <div className="flex flex-col items-center gap-2 py-2">
             <svg width="28" height="24" viewBox="0 0 28 24" fill="none" className="text-accent-violet">
               <path
-                d="M2 12h20M16 5l7 7-7 7"
+                d="M4 8h16M16 3l4 5-4 5M20 16H4M8 21l-4-5 4-5"
                 stroke="currentColor"
-                strokeWidth="2.2"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
             <span className="whitespace-nowrap text-[11px] font-medium text-muted">
-              One-way sync
+              Synced automatically
             </span>
           </div>
 
@@ -70,8 +70,8 @@ export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?:
         className="animate-float absolute -right-6 -bottom-6 hidden rounded-xl border border-border bg-surface-2 px-4 py-3 shadow-xl sm:block"
         style={{ animationDelay: "1.5s" }}
       >
-        <p className="text-[11px] text-muted">Writes back to Etsy</p>
-        <p className="font-display text-lg font-bold text-foreground">0</p>
+        <p className="text-[11px] text-muted">Edit in Wix instead</p>
+        <p className="font-display text-lg font-bold text-foreground">Syncs back</p>
       </div>
     </div>
   );
