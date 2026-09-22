@@ -261,29 +261,26 @@ export default function DashboardPage() {
                 >
                   {status.etsyConnected ? "Reconnect Etsy" : "Connect Etsy"}
                 </a>
+                {!status.targetStores.some((s) => s.platform === "wix") && (
+                  <>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-red-400/10 px-3 py-1 text-xs font-medium text-red-500">
+                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                      Wix not connected
+                    </span>
+                    <a
+                      href="/api/wix/connect"
+                      className="text-xs font-medium text-accent-violet underline-offset-2 hover:underline"
+                    >
+                      Connect Wix store
+                    </a>
+                  </>
+                )}
                 {!status.isPremium && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-600">
                     Not premium
                   </span>
                 )}
               </div>
-
-              {!status.targetStores.some((s) => s.platform === "wix") && (
-                <div className="mt-6 rounded-xl border border-accent-blue/30 bg-accent-blue/5 px-4 py-3.5 text-sm text-foreground">
-                  <p className="font-medium">No Wix store connected yet.</p>
-                  <p className="mt-1 text-xs text-muted">
-                    Connect the Wix store you want your Etsy listings synced
-                    to. You&apos;ll pick the site on Wix&apos;s own install
-                    screen.
-                  </p>
-                  <a
-                    href="/api/wix/connect"
-                    className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accent-blue px-4 py-2 text-xs font-semibold text-white transition-transform hover:scale-[1.02]"
-                  >
-                    Connect Wix store
-                  </a>
-                </div>
-              )}
 
               <div className="mt-6 grid gap-3">
                 {status.targetStores.map((store) => {
