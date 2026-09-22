@@ -21,7 +21,7 @@ const FIELDS: { key: string; label: string; hint: string }[] = [
   { key: "convertCurrency", label: "Convert currency", hint: "If your two stores use different currencies" },
 ];
 
-export default function SyncSettings() {
+export default function SyncSettings({ embedded = false }: { embedded?: boolean } = {}) {
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export default function SyncSettings() {
   if (!stores.length) return null;
 
   return (
-    <div className="mt-4 card-glass rounded-2xl p-6">
+    <div className={embedded ? "" : "mt-4 card-glass rounded-2xl p-6"}>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-base font-semibold text-foreground">
           What to sync

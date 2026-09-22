@@ -232,9 +232,10 @@ export default function DashboardPage() {
 
         {direction === "etsy-to-wix" && (
         <>
-        <SyncSettings />
-
         <div className="mt-6 card-glass rounded-2xl p-6">
+          <SyncSettings embedded />
+
+          <div className="mt-6 border-t border-border pt-5">
           {loadingStatus ? (
             <p className="text-sm text-muted">Loading status&hellip;</p>
           ) : !status ? (
@@ -389,6 +390,7 @@ export default function DashboardPage() {
               )}
             </>
           )}
+          </div>
         </div>
 
         {error && (
