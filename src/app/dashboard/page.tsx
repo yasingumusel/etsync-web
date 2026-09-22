@@ -272,11 +272,16 @@ export default function DashboardPage() {
                 <div className="mt-6 rounded-xl border border-accent-blue/30 bg-accent-blue/5 px-4 py-3.5 text-sm text-foreground">
                   <p className="font-medium">No Wix store connected yet.</p>
                   <p className="mt-1 text-xs text-muted">
-                    MirrorStock isn&apos;t listed on the Wix App Market yet, so
-                    there&apos;s no way to connect a Wix store from here for
-                    the moment. This is temporary while we finish publishing -
-                    check back soon.
+                    Connect the Wix store you want your Etsy listings synced
+                    to. You&apos;ll pick the site on Wix&apos;s own install
+                    screen.
                   </p>
+                  <a
+                    href="/api/wix/connect"
+                    className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accent-blue px-4 py-2 text-xs font-semibold text-white transition-transform hover:scale-[1.02]"
+                  >
+                    Connect Wix store
+                  </a>
                 </div>
               )}
 
