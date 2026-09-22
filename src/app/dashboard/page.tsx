@@ -268,6 +268,18 @@ export default function DashboardPage() {
                 )}
               </div>
 
+              {!status.targetStores.some((s) => s.platform === "wix") && (
+                <div className="mt-6 rounded-xl border border-accent-blue/30 bg-accent-blue/5 px-4 py-3.5 text-sm text-foreground">
+                  <p className="font-medium">No Wix store connected yet.</p>
+                  <p className="mt-1 text-xs text-muted">
+                    MirrorStock isn&apos;t listed on the Wix App Market yet, so
+                    there&apos;s no way to connect a Wix store from here for
+                    the moment. This is temporary while we finish publishing -
+                    check back soon.
+                  </p>
+                </div>
+              )}
+
               <div className="mt-6 grid gap-3">
                 {status.targetStores.map((store) => {
                   const progress = store.syncProgress;
