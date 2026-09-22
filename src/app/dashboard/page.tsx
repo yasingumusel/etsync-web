@@ -232,6 +232,8 @@ export default function DashboardPage() {
 
         {direction === "etsy-to-wix" && (
         <>
+        <SyncSettings />
+
         <div className="mt-6 card-glass rounded-2xl p-6">
           {loadingStatus ? (
             <p className="text-sm text-muted">Loading status&hellip;</p>
@@ -489,8 +491,6 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
-
-        <SyncSettings />
         </>
         )}
 
