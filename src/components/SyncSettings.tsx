@@ -12,11 +12,20 @@ type Store = {
 };
 
 const FIELDS: { key: string; label: string; hint: string }[] = [
-  { key: "title", label: "Product name", hint: "Off = edit the name in Wix instead, and it syncs back to Etsy" },
-  { key: "description", label: "Description", hint: "Off = edit the description in Wix instead, and it syncs back to Etsy" },
+  { key: "title", label: "Product name", hint: "Off = edit the name in your store instead, and it syncs back to Etsy" },
+  {
+    key: "description",
+    label: "Description",
+    hint: "Off = edit the description in your store instead, and it syncs back to Etsy",
+  },
   { key: "price", label: "Prices", hint: "Including each variation's own price" },
   { key: "sku", label: "SKUs", hint: "Including each variation's own SKU" },
-  { key: "images", label: "Images", hint: "Replace Wix photos with your Etsy photos" },
+  {
+    key: "stock",
+    label: "Stock levels",
+    hint: "Keeps quantities in step with Etsy, so you don't sell what you no longer have",
+  },
+  { key: "images", label: "Images", hint: "Replace your store's photos with your Etsy photos" },
   { key: "etsyLink", label: "“View on Etsy” link", hint: "Adds a link to the original listing" },
   { key: "convertCurrency", label: "Convert currency", hint: "If your two stores use different currencies" },
 ];
