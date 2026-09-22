@@ -37,14 +37,10 @@ export default function ReviewsSettings() {
   useEffect(() => {
     (async () => {
       const res = await fetch("/api/sync/reviews-settings");
-      if (res.status === 403) {
-        setEligible(false);
-        setLoading(false);
-        return;
-      }
       if (res.ok) {
         const data = await res.json();
         setProducts(data.products ?? []);
+        setEligible(Boolean(data.eligible));
       }
       setLoading(false);
     })();
@@ -76,30 +72,20 @@ export default function ReviewsSettings() {
 
   if (loading) return null;
 
-  if (!eligible) {
-    return (
-      <div className="mt-4 card-glass rounded-2xl p-6">
-        <h2 className="font-display text-base font-semibold text-foreground">Etsy Reviews</h2>
-        <p className="mt-2 text-sm text-muted">
-          Show your Etsy customer reviews automatically on every product page.
-          This is available on the Pro and Unlimited plans.
-        </p>
-        <a
-          href="/#pricing"
-          className="mt-4 inline-flex rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
-        >
-          See plans
-        </a>
-      </div>
-    );
-  }
-
   return (
     <div className="mt-4 card-glass rounded-2xl p-6">
-      <h2 className="font-display text-base font-semibold text-foreground">Etsy Reviews</h2>
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="font-display text-base font-semibold text-foreground">Etsy Reviews</h2>
+        {!eligible && (
+          <span className="rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-muted">
+            Pro & Unlimited
+          </span>
+        )}
+      </div>
       <p className="mt-1 text-xs leading-relaxed text-muted">
-        Reviews show automatically on every product that has them. Switch a
-        product off here if you&apos;d rather not show its reviews.
+        {eligible
+          ? "Reviews show automatically on every product that has them. Switch a product off here if you'd rather not show its reviews."
+          : "This is what your Etsy Reviews panel will look like - upgrade to Pro or Unlimited to actually show reviews on your product pages. Your choices below are saved for when you do."}
       </p>
 
       {error && <p className="mt-3 text-xs font-medium text-red-500">{error}</p>}
@@ -146,6 +132,20 @@ export default function ReviewsSettings() {
             </li>
           ))}
         </ul>
+      )}
+
+      {!eligible && (
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent-violet/30 bg-accent-violet/5 px-4 py-3.5">
+          <p className="text-xs text-foreground">
+            Etsy Reviews is a Pro & Unlimited feature - upgrade to show these on your product pages.
+          </p>
+          <a
+            href="/#pricing"
+            className="shrink-0 rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
+          >
+            Upgrade to Pro
+          </a>
+        </div>
       )}
     </div>
   );
