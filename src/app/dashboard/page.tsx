@@ -73,6 +73,7 @@ export default function DashboardPage() {
   const [previewResult, setPreviewResult] = useState<PreviewResponse | null>(null);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [expandedPreviewStore, setExpandedPreviewStore] = useState<string | null>(null);
+  const [direction, setDirection] = useState<"etsy-to-wix" | "wix-to-etsy">("etsy-to-wix");
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Tracks wall-clock time since a sync started being observed, purely for
@@ -204,7 +205,34 @@ export default function DashboardPage() {
           &rarr; <span className="font-medium text-accent-blue">Wix</span> product sync.
         </p>
 
-        <div className="mt-8 card-glass rounded-2xl p-6">
+        <div className="mt-6 inline-flex rounded-full border border-border bg-surface p-1">
+          <button
+            type="button"
+            onClick={() => setDirection("etsy-to-wix")}
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              direction === "etsy-to-wix"
+                ? "bg-accent-orange text-white"
+                : "text-muted hover:text-foreground"
+            }`}
+          >
+            Etsy &rarr; Wix
+          </button>
+          <button
+            type="button"
+            onClick={() => setDirection("wix-to-etsy")}
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              direction === "wix-to-etsy"
+                ? "bg-accent-blue text-white"
+                : "text-muted hover:text-foreground"
+            }`}
+          >
+            Wix &rarr; Etsy
+          </button>
+        </div>
+
+        {direction === "etsy-to-wix" && (
+        <>
+        <div className="mt-6 card-glass rounded-2xl p-6">
           {loadingStatus ? (
             <p className="text-sm text-muted">Loading status&hellip;</p>
           ) : !status ? (
@@ -463,7 +491,11 @@ export default function DashboardPage() {
         )}
 
         <SyncSettings />
-        <EtsyListingDefaults />
+        </>
+        )}
+
+        {direction === "wix-to-etsy" && <EtsyListingDefaults />}
+
         <ReviewsSettings />
         <SyncHistory refreshKey={historyKey} />
       </main>

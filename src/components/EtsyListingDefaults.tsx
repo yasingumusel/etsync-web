@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import WixProductPicker from "@/components/WixProductPicker";
 
 type Option = { id: number; title?: string; label?: string };
 type TaxonomyResult = { id: number; fullPath: string };
@@ -56,6 +57,8 @@ export default function EtsyListingDefaults() {
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<string | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
+
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -209,6 +212,17 @@ export default function EtsyListingDefaults() {
         will publish new Wix-only products to Etsy as drafts for you to
         review - it never activates them automatically.
       </p>
+
+      <button
+        type="button"
+        onClick={() => setPickerOpen((v) => !v)}
+        className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent-blue hover:underline"
+      >
+        {pickerOpen ? "Hide product picker" : "Choose which products sync"}
+        <span aria-hidden>{pickerOpen ? "↑" : "→"}</span>
+      </button>
+
+      {pickerOpen && <WixProductPicker onDone={() => setPickerOpen(false)} />}
 
       {optionsError && <p className="mt-3 text-xs font-medium text-red-500">{optionsError}</p>}
 

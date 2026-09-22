@@ -21,7 +21,9 @@ type SyncPath =
   | "etsy-listing-options"
   | "etsy-taxonomy"
   | "etsy-listing-defaults"
-  | "sync-to-etsy";
+  | "sync-to-etsy"
+  | "wix-products"
+  | "wix-product-selection";
 
 export type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 
