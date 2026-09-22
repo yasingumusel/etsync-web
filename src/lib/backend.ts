@@ -17,7 +17,10 @@ type SyncPath =
   | "settings"
   | "etsy-listings"
   | "product-selection"
-  | "reviews-settings";
+  | "reviews-settings"
+  | "etsy-listing-options"
+  | "etsy-taxonomy"
+  | "etsy-listing-defaults";
 
 export type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 
@@ -71,7 +74,12 @@ export async function getSessionSummary(): Promise<SessionSummary | null> {
 export async function callSyncBackend(
   userId: string,
   path: SyncPath,
-  options: { method?: "GET" | "POST" | "PUT"; body?: unknown; purpose?: "sync-api" | "onboarding" } = {}
+  options: {
+    method?: "GET" | "POST" | "PUT";
+    body?: unknown;
+    purpose?: "sync-api" | "onboarding";
+    query?: Record<string, string>;
+  } = {}
 ) {
   const baseUrl = process.env.SYNC_BACKEND_URL;
   const secret = process.env.SYNC_API_SECRET;
@@ -91,7 +99,8 @@ export async function callSyncBackend(
   });
 
   const method = options.method ?? (path === "run" || path === "preview" ? "POST" : "GET");
-  const res = await fetch(`${baseUrl}/sync/${userId}/${path}`, {
+  const qs = options.query ? `?${new URLSearchParams(options.query).toString()}` : "";
+  const res = await fetch(`${baseUrl}/sync/${userId}/${path}${qs}`, {
     method,
     headers: {
       Authorization: `Bearer ${token}`,

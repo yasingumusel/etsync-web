@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import SyncHistory from "@/components/SyncHistory";
 import SyncSettings from "@/components/SyncSettings";
 import ReviewsSettings from "@/components/ReviewsSettings";
+import EtsyListingDefaults from "@/components/EtsyListingDefaults";
 import DashboardHeader from "@/components/DashboardHeader";
 
 type TargetStore = {
@@ -461,6 +462,7 @@ export default function DashboardPage() {
         )}
 
         <SyncSettings />
+        <EtsyListingDefaults />
         <ReviewsSettings />
         <SyncHistory refreshKey={historyKey} />
       </main>
