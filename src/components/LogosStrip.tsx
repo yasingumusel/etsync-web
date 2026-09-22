@@ -2,9 +2,10 @@ const items = [
   "Etsy Open API v3",
   "listings_r scope",
   "shops_r scope",
+  "listings_w scope",
   "OAuth 2.0",
   "Wix Stores API",
-  "Read-only Etsy access",
+  "Two-way sync",
 ];
 
 export default function LogosStrip() {
