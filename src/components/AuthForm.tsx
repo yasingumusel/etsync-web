@@ -45,8 +45,9 @@ export default function AuthForm({ mode }: { mode: Mode }) {
 
     setLoading(false);
 
+    const body = await res.json().catch(() => ({}));
+
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
       setError(body.error || `${c.title} failed`);
       return;
     }
@@ -58,8 +59,27 @@ export default function AuthForm({ mode }: { mode: Mode }) {
     // parsing an http(s) URL, so "/\evil.example.com" can resolve to
     // "//evil.example.com" too. Rejecting any backslash closes that off.
     const isSafeFrom = from && from.startsWith("/") && !from.startsWith("//") && !from.includes("\\");
-    const safeFrom = isSafeFrom ? from : "/dashboard";
-    router.push(safeFrom);
+
+    if (isSafeFrom) {
+      router.push(from as string);
+      router.refresh();
+      return;
+    }
+
+    if (mode === "signup") {
+      // A brand new signup has no Etsy connection yet - send them straight
+      // into connecting it (the site's actual onboarding start) instead of
+      // an empty dashboard they'd have to find their own way out of. Full
+      // navigation (not router.push) because this hits an API route that
+      // itself redirects on to the backend and then to Etsy's own OAuth
+      // screen - the session cookie set by /api/signup just above is what
+      // lets /api/etsy/reconnect authenticate this as "really this account"
+      // rather than a bare, guessable userId.
+      window.location.href = "/api/etsy/reconnect";
+      return;
+    }
+
+    router.push("/dashboard");
     router.refresh();
   }
 
