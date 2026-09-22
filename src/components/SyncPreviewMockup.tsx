@@ -32,7 +32,7 @@ export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?:
         <div className="grid grid-cols-1 items-center gap-6 p-6 sm:grid-cols-[1fr_auto_1fr] sm:gap-4">
           <StoreCard
             platform="Etsy"
-            color="from-accent-orange to-accent-pink"
+            color="from-accent-orange to-accent-orange"
             listings={listings}
             badge="Source"
           />
@@ -54,7 +54,7 @@ export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?:
 
           <StoreCard
             platform="Wix"
-            color="from-accent-blue to-accent-violet"
+            color="from-accent-blue to-accent-blue"
             listings={listings}
             badge="Updated"
           />
