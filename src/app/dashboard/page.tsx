@@ -200,7 +200,8 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-muted">
-          Etsy &rarr; Wix product sync.
+          <span className="font-medium text-accent-orange">Etsy</span>{" "}
+          &rarr; <span className="font-medium text-accent-blue">Wix</span> product sync.
         </p>
 
         <div className="mt-8 card-glass rounded-2xl p-6">

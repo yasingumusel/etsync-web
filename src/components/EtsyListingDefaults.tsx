@@ -178,9 +178,9 @@ export default function EtsyListingDefaults() {
 
   return (
     <div className="mt-4 card-glass rounded-2xl p-6">
-      <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-accent-violet">
-        Wix
-        <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest">
+        <span className="text-accent-blue">Wix</span>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" className="text-muted">
           <path
             d="M1 5h11M8 1l4 4-4 4"
             stroke="currentColor"
@@ -189,7 +189,7 @@ export default function EtsyListingDefaults() {
             strokeLinejoin="round"
           />
         </svg>
-        Etsy
+        <span className="text-accent-orange">Etsy</span>
       </span>
       <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-base font-semibold text-foreground">
