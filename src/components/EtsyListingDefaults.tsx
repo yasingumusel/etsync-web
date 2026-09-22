@@ -5,6 +5,10 @@ import WixProductPicker from "@/components/WixProductPicker";
 
 type Option = { id: number; title?: string; label?: string };
 type TaxonomyResult = { id: number; fullPath: string };
+type ConnectionStatus = {
+  etsyConnected: boolean;
+  targetStores: { platform: string }[];
+};
 
 const WHO_MADE_OPTIONS = [
   { value: "i_did", label: "I did" },
@@ -59,13 +63,19 @@ export default function EtsyListingDefaults() {
   const [syncError, setSyncError] = useState<string | null>(null);
 
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [connection, setConnection] = useState<ConnectionStatus | null>(null);
 
   useEffect(() => {
     (async () => {
-      const [optionsRes, defaultsRes] = await Promise.all([
+      const [optionsRes, defaultsRes, statusRes] = await Promise.all([
         fetch("/api/sync/etsy-listing-options"),
         fetch("/api/sync/etsy-listing-defaults"),
+        fetch("/api/sync"),
       ]);
+
+      if (statusRes.ok) {
+        setConnection(await statusRes.json());
+      }
 
       if (optionsRes.ok) {
         const data = await optionsRes.json();
@@ -194,6 +204,53 @@ export default function EtsyListingDefaults() {
         </svg>
         <span className="text-accent-orange">Etsy</span>
       </span>
+
+      {connection && (
+        <div className="mt-2 flex flex-wrap items-center gap-3">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
+              connection.etsyConnected
+                ? "bg-emerald-400/10 text-emerald-600"
+                : "bg-red-400/10 text-red-500"
+            }`}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+            Etsy {connection.etsyConnected ? "connected" : "not connected"}
+          </span>
+          <a
+            href="/api/etsy/reconnect"
+            target="_blank"
+            rel="noopener"
+            className="text-xs font-medium text-accent-violet underline-offset-2 hover:underline"
+          >
+            {connection.etsyConnected ? "Reconnect Etsy" : "Connect Etsy"}
+          </a>
+          {(() => {
+            const wixConnected = connection.targetStores.some((s) => s.platform === "wix");
+            return (
+              <>
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
+                    wixConnected
+                      ? "bg-emerald-400/10 text-emerald-600"
+                      : "bg-red-400/10 text-red-500"
+                  }`}
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                  Wix {wixConnected ? "connected" : "not connected"}
+                </span>
+                <a
+                  href="/api/wix/connect"
+                  className="text-xs font-medium text-accent-violet underline-offset-2 hover:underline"
+                >
+                  {wixConnected ? "Reconnect Wix store" : "Connect Wix store"}
+                </a>
+              </>
+            );
+          })()}
+        </div>
+      )}
+
       <div className="mt-1.5 flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-base font-semibold text-foreground">
           Defaults for new Etsy listings
