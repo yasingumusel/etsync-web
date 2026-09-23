@@ -75,6 +75,15 @@ export default function SyncSettings({ embedded = false }: { embedded?: boolean 
   if (loading) return null;
   if (!stores.length) return null;
 
+  // Only Unlimited accounts can have more than one store connected at once
+  // (see ConnectionBadges) - everyone else has exactly one, so this reads
+  // naturally as "your Wix"/"your Shopify" for the vast majority of accounts
+  // and falls back to a neutral "your store" for the rare dual-platform case.
+  const storeLabel =
+    stores.length === 1
+      ? stores[0].platform.charAt(0).toUpperCase() + stores[0].platform.slice(1)
+      : "your store";
+
   return (
     <div className={embedded ? "" : "mt-4 card-glass rounded-2xl p-6"}>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -87,10 +96,10 @@ export default function SyncSettings({ embedded = false }: { embedded?: boolean 
       </div>
       <p className="mt-1 text-xs leading-relaxed text-muted">
         Switch something off and a sync will stop overwriting it, so you can
-        edit it in Wix and keep your changes. For product name and
-        description specifically, your Wix edit also syncs back to the
-        matching Etsy listing. New products are always created with
-        everything, since Wix needs a name and a price to make one.
+        edit it in {storeLabel} and keep your changes. For product name and
+        description specifically, your {storeLabel} edit also syncs back to
+        the matching Etsy listing. New products are always created with
+        everything, since {storeLabel} needs a name and a price to make one.
       </p>
 
       <button

@@ -2,11 +2,20 @@ import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SyncPreviewMockup from "@/components/SyncPreviewMockup";
-import { getSessionSummary } from "@/lib/backend";
+import { callSyncBackend, getSessionSummary } from "@/lib/backend";
 
-function ConnectEtsyCard({ userId }: { userId?: string }) {
+function ConnectEtsyCard({
+  userId,
+  storeLabel,
+}: {
+  userId?: string;
+  storeLabel: "Wix" | "Shopify" | null;
+}) {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const connectHref = userId && backendUrl ? `${backendUrl}/auth/etsy/connect?userId=${encodeURIComponent(userId)}` : null;
+  // A merchant lands here straight from either platform's own install flow -
+  // this card shows only the one they actually came from, never the other.
+  const store = storeLabel ?? "store";
 
   return (
     <div className="mx-auto w-full max-w-sm pt-16">
@@ -34,8 +43,8 @@ function ConnectEtsyCard({ userId }: { userId?: string }) {
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
           Connect your Etsy shop to start syncing your listings to this
-          Wix store. Make sure you&apos;re logged into the correct Etsy
-          account before continuing.
+          {" "}{store} store. Make sure you&apos;re logged into the correct
+          Etsy account before continuing.
         </p>
 
         {connectHref ? (
@@ -49,8 +58,8 @@ function ConnectEtsyCard({ userId }: { userId?: string }) {
           </a>
         ) : (
           <p className="mt-6 text-sm font-medium text-red-500">
-            Missing setup information. Please reinstall the app from the
-            Wix App Market.
+            Missing setup information. Please try connecting your{" "}
+            {store} store again.
           </p>
         )}
 
@@ -71,12 +80,30 @@ export default async function ConnectEtsyPage({
   const { userId } = await searchParams;
   const session = await getSessionSummary();
 
+  // The account already has a targetStore (created at install time, before
+  // Etsy is ever connected) whichever platform the merchant came from - read
+  // it back so the card can greet them by their actual platform instead of
+  // assuming Wix, which used to be hardcoded here.
+  let storeLabel: "Wix" | "Shopify" | null = null;
+  if (userId) {
+    try {
+      const { ok, body } = await callSyncBackend(userId, "status", { purpose: "onboarding" });
+      if (ok) {
+        const stores = (body.targetStores as { platform: string }[]) ?? [];
+        if (stores.some((s) => s.platform === "shopify")) storeLabel = "Shopify";
+        else if (stores.some((s) => s.platform === "wix")) storeLabel = "Wix";
+      }
+    } catch {
+      // Falls back to the neutral "store" wording below.
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar session={session} />
       <main className="flex flex-1 flex-col items-center justify-center bg-grid px-6 pb-20">
         <Suspense>
-          <ConnectEtsyCard userId={userId} />
+          <ConnectEtsyCard userId={userId} storeLabel={storeLabel} />
         </Suspense>
         {/* Fills what would otherwise be empty space below the card, and
             doubles as a preview of what the merchant is about to set up -
