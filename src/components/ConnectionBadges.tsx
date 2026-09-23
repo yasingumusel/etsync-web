@@ -5,6 +5,7 @@ import { useState } from "react";
 export type ConnectionStatus = {
   etsyConnected: boolean;
   targetStores: { platform: string }[];
+  plan?: "free" | "starter" | "growth" | "pro" | "unlimited";
 };
 
 const badgeClass = (connected: boolean) =>
@@ -19,8 +20,11 @@ const linkClass = "text-xs font-medium text-accent-violet underline-offset-2 hov
  *
  * Only the platform a merchant actually sells on is shown: a Shopify
  * merchant has no reason to read anything about Wix, and vice versa. Both
- * appear only before either is connected, which is the one moment the
- * choice is still open.
+ * appear before either is connected (the one moment the choice is still
+ * open) - and, as a deliberate Unlimited-plan perk, both always appear for
+ * an Unlimited account regardless of what's connected, since that's the
+ * only tier meant to run Etsy into both a Wix and a Shopify store from one
+ * account at once.
  *
  * Shopify needs one extra step the others don't: its OAuth has to know
  * which shop it's talking to before it can start, so clicking through opens
@@ -33,8 +37,9 @@ export default function ConnectionBadges({ status }: { status: ConnectionStatus 
   const wixConnected = status.targetStores.some((s) => s.platform === "wix");
   const shopifyConnected = status.targetStores.some((s) => s.platform === "shopify");
   const nothingConnected = !wixConnected && !shopifyConnected;
-  const showWix = wixConnected || nothingConnected;
-  const showShopify = shopifyConnected || nothingConnected;
+  const isUnlimited = status.plan === "unlimited";
+  const showWix = wixConnected || nothingConnected || isUnlimited;
+  const showShopify = shopifyConnected || nothingConnected || isUnlimited;
 
   function connectShopify(e: React.FormEvent) {
     e.preventDefault();
