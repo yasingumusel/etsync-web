@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import StoreProductPicker from "@/components/StoreProductPicker";
 
 type EtsyListing = {
   listingId: string;
@@ -83,6 +84,7 @@ export default function SetupSyncWizard({
   const [plan, setPlan] = useState<Plan | undefined>();
   const [planLimit, setPlanLimit] = useState<number | null>(null);
   const [existingEmail, setExistingEmail] = useState<string | undefined>();
+  const [connectedPlatform, setConnectedPlatform] = useState<"Wix" | "Shopify" | null>(null);
   const [step, setStep] = useState<Step>("picker");
   const [mode, setMode] = useState<Selection["mode"]>("all");
   const [includeDrafts, setIncludeDrafts] = useState(false);
@@ -138,9 +140,13 @@ export default function SetupSyncWizard({
       // plan/email, it just skips the "Free plan" note and can't tell in
       // advance whether the claim step is needed.
       if (statusRes.ok) {
-        const statusData: { plan?: Plan; email?: string } = await statusRes.json();
+        const statusData: { plan?: Plan; email?: string; targetStores?: { platform: string }[] } =
+          await statusRes.json();
         setPlan(statusData.plan);
         setExistingEmail(statusData.email);
+        const stores = statusData.targetStores ?? [];
+        if (stores.some((s) => s.platform === "shopify")) setConnectedPlatform("Shopify");
+        else if (stores.some((s) => s.platform === "wix")) setConnectedPlatform("Wix");
       }
 
       setLoading(false);
@@ -466,6 +472,26 @@ export default function SetupSyncWizard({
               })}
             </ul>
           )}
+        </div>
+      )}
+
+      {variant === "connect" && connectedPlatform && (
+        <div className="mt-7 border-t border-border pt-6">
+          <p className="text-sm font-semibold text-foreground">
+            {connectedPlatform} &rarr; Etsy
+          </p>
+          <p className="mt-1 text-xs text-muted">
+            You can also publish products you created directly in{" "}
+            {connectedPlatform} as new Etsy listings. Set this up now, or
+            later from your dashboard - either way, you&apos;ll still need
+            to set defaults for new Etsy listings (category, shipping
+            profile, etc.) before anything actually publishes.
+          </p>
+          <StoreProductPicker
+            userId={userId}
+            platform={connectedPlatform}
+            planLabel={plan ? capitalize(plan) : undefined}
+          />
         </div>
       )}
 
