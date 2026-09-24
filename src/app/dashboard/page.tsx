@@ -15,6 +15,7 @@ type TargetStore = {
   lastSyncAt: string | null;
   lastSyncStatus: "never" | "success" | "partial" | "failed";
   syncedProductCount: number;
+  frozenProductCount?: number;
   isSyncing: boolean;
   syncProgress: { current: number; total: number };
 };
@@ -338,6 +339,18 @@ export default function DashboardPage() {
                           </span>
                         </div>
                       </div>
+
+                      {!store.isSyncing && (store.frozenProductCount ?? 0) > 0 && (
+                        <p className="mt-3 rounded-lg border border-amber-400/30 bg-amber-400/5 px-3 py-2 text-xs leading-relaxed text-amber-700">
+                          {store.frozenProductCount} product{store.frozenProductCount === 1 ? " is" : "s are"} over
+                          your plan&apos;s limit, so {store.frozenProductCount === 1 ? "it stays" : "they stay"} in
+                          your store but {store.frozenProductCount === 1 ? "is" : "are"} no longer updated from
+                          Etsy. Prices and details may drift from your Etsy listings.{" "}
+                          <a href="/#pricing" className="font-semibold underline underline-offset-2">
+                            Upgrade to keep them in sync
+                          </a>
+                        </p>
+                      )}
 
                       {store.isSyncing && (
                         <div className="mt-3">
