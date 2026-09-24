@@ -586,6 +586,10 @@ function ClaimForm({ userId }: { userId: string }) {
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // "link" = the merchant already has a MirrorStock account; the same
+  // endpoint then acts as a login and folds this new store into it.
+  const [mode, setMode] = useState<"create" | "link">("create");
+  const isLink = mode === "link";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -602,6 +606,7 @@ function ClaimForm({ userId }: { userId: string }) {
 
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
+      if (body.code === "email-exists") setMode("link");
       setError(body.error || "Could not create your account");
       return;
     }
@@ -614,11 +619,12 @@ function ClaimForm({ userId }: { userId: string }) {
     <Card>
       <form onSubmit={handleSubmit}>
         <h1 className="font-display text-xl font-bold text-foreground">
-          Create your password
+          {isLink ? "Log in to your account" : "Create your password"}
         </h1>
         <p className="mt-1 text-sm text-muted">
-          Your Etsy shop is connected and your choices are saved. Set a
-          password so you can come back to your dashboard anytime.
+          {isLink
+            ? "Enter your existing MirrorStock email and password. This store will be added to that account."
+            : "Your Etsy shop is connected and your choices are saved. Set a password so you can come back to your dashboard anytime."}
         </p>
 
         <div className="mt-6 flex flex-col gap-4 text-left">
@@ -678,7 +684,16 @@ function ClaimForm({ userId }: { userId: string }) {
           disabled={submitting}
           className="mt-6 w-full rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-7 py-3 text-sm font-semibold text-white shadow-[0_0_40px_-10px_rgba(139,92,246,0.6)] transition-transform hover:scale-[1.02] disabled:opacity-60"
         >
-          {submitting ? "Creating account…" : "Create account"}
+          {submitting
+            ? isLink ? "Logging in…" : "Creating account…"
+            : isLink ? "Log in & add this store" : "Create account"}
+        </button>
+        <button
+          type="button"
+          onClick={() => { setMode(isLink ? "create" : "link"); setError(null); }}
+          className="mt-4 w-full text-center text-xs font-medium text-muted hover:text-foreground"
+        >
+          {isLink ? "Create a new account instead" : "Already have an account? Log in"}
         </button>
       </form>
     </Card>

@@ -31,7 +31,10 @@ export async function POST(request: NextRequest) {
   const backendBody = await backendRes.json();
 
   if (!backendRes.ok) {
-    return NextResponse.json({ error: backendBody.error || "Could not create account" }, { status: backendRes.status });
+    return NextResponse.json(
+      { error: backendBody.error || "Could not create account", code: backendBody.code },
+      { status: backendRes.status }
+    );
   }
 
   const response = NextResponse.json({ ok: true });
