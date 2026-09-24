@@ -25,8 +25,14 @@ const FIELDS: { key: string; label: string; hint: string }[] = [
   { key: "convertCurrency", label: "Convert currency", hint: "If your two stores use different currencies" },
 ];
 
-export default function SyncSettings({ embedded = false }: { embedded?: boolean } = {}) {
-  const [stores, setStores] = useState<Store[]>([]);
+export default function SyncSettings({
+  embedded = false,
+  platform,
+}: { embedded?: boolean; platform?: "wix" | "shopify" } = {}) {
+  const [allStores, setStores] = useState<Store[]>([]);
+  // The dashboard's platform switch narrows this to one store, so Wix and
+  // Shopify settings never appear side by side.
+  const stores = platform ? allStores.filter((s) => s.platform === platform) : allStores;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);

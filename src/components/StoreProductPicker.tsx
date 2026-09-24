@@ -47,12 +47,17 @@ export default function StoreProductPicker({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // An Unlimited account can have Wix and Shopify at once, so the dashboard
+  // says which store this picker is for; the onboarding flow only ever has
+  // the one store that was just installed.
+  const platformParam =
+    platform === "Wix" || platform === "Shopify" ? `?platform=${platform.toLowerCase()}` : "";
   const productsUrl = isConnect
     ? `/api/setup-sync/store-products?userId=${encodeURIComponent(userId!)}`
-    : "/api/sync/store-products";
+    : `/api/sync/store-products${platformParam}`;
   const selectionUrl = isConnect
     ? `/api/setup-sync/store-product-selection?userId=${encodeURIComponent(userId!)}`
-    : "/api/sync/store-product-selection";
+    : `/api/sync/store-product-selection${platformParam}`;
 
   useEffect(() => {
     (async () => {

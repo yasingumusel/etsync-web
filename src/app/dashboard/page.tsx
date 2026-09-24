@@ -75,6 +75,10 @@ export default function DashboardPage() {
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [expandedPreviewStore, setExpandedPreviewStore] = useState<string | null>(null);
   const [direction, setDirection] = useState<"from-etsy" | "to-etsy">("from-etsy");
+  // Which connected store the panel below is about. Only an Unlimited account
+  // can have two, and for them everything (settings, picker, sync buttons)
+  // is scoped to the one chosen here so the platforms never mix.
+  const [chosenPlatform, setChosenPlatform] = useState<"wix" | "shopify" | null>(null);
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Tracks wall-clock time since a sync started being observed, purely for
@@ -121,13 +125,28 @@ export default function DashboardPage() {
     };
   }, [loadStatus]);
 
+  const hasWix = Boolean(status?.targetStores.some((s) => s.platform === "wix"));
+  const hasShopify = Boolean(status?.targetStores.some((s) => s.platform === "shopify"));
+  const hasBoth = hasWix && hasShopify;
+  const selectedPlatform: "wix" | "shopify" | null =
+    hasBoth && chosenPlatform ? chosenPlatform : hasWix ? "wix" : hasShopify ? "shopify" : null;
+  const storeLabel = selectedPlatform === "wix" ? "Wix" : selectedPlatform === "shopify" ? "Shopify" : "your store";
+  // Only sent when the account really has both, so single-platform accounts
+  // behave exactly as before.
+  const platformQs = hasBoth && selectedPlatform ? `?platform=${selectedPlatform}` : "";
+  const visibleStores = status
+    ? hasBoth && selectedPlatform
+      ? status.targetStores.filter((s) => s.platform === selectedPlatform)
+      : status.targetStores
+    : [];
+
   async function handlePreview() {
     setPreviewing(true);
     setPreviewError(null);
     setPreviewResult(null);
 
     try {
-      const res = await fetch("/api/sync/preview", { method: "POST" });
+      const res = await fetch(`/api/sync/preview${platformQs}`, { method: "POST" });
       const body = await res.json();
       if (!res.ok) {
         setPreviewError(body.error || "Could not load preview");
@@ -159,7 +178,7 @@ export default function DashboardPage() {
     const finished = { current: false };
     const sawSyncing = { current: false };
 
-    fetch("/api/sync", { method: "POST" })
+    fetch(`/api/sync${platformQs}`, { method: "POST" })
       .then(async (res) => {
         const body = await res.json();
         if (finished.current) return;
@@ -180,7 +199,8 @@ export default function DashboardPage() {
       const data = await loadStatus();
       if (!data || finished.current) return;
 
-      const store = data.targetStores[0];
+      const store =
+        data.targetStores.find((s) => s.platform === selectedPlatform) ?? data.targetStores[0];
       if (store?.isSyncing) sawSyncing.current = true;
 
       if (sawSyncing.current && store && !store.isSyncing) {
@@ -192,10 +212,6 @@ export default function DashboardPage() {
       }
     }, 1500);
   }
-
-  const hasWix = Boolean(status?.targetStores.some((s) => s.platform === "wix"));
-  const hasShopify = Boolean(status?.targetStores.some((s) => s.platform === "shopify"));
-  const storeLabel = hasWix ? "Wix" : hasShopify ? "Shopify" : "your store";
 
   return (
     <div className="min-h-screen bg-grid">
@@ -209,6 +225,27 @@ export default function DashboardPage() {
           <span className="font-medium text-accent-orange">Etsy</span>{" "}
           &rarr; <span className="font-medium text-accent-blue">{storeLabel}</span> product sync.
         </p>
+
+        {hasBoth && (
+          <div className="mt-6 mr-3 inline-flex rounded-full border border-border bg-surface p-1">
+            {(["wix", "shopify"] as const).map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setChosenPlatform(p)}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                  selectedPlatform === p
+                    ? p === "wix"
+                      ? "bg-accent-blue text-white"
+                      : "bg-accent-green text-white"
+                    : "text-muted hover:text-foreground"
+                }`}
+              >
+                Etsy &harr; {p === "wix" ? "Wix" : "Shopify"}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Both directions work on either platform, so the tabs appear as
             soon as a store is connected - only the labels differ. */}
@@ -242,7 +279,7 @@ export default function DashboardPage() {
         {direction === "from-etsy" && (
         <>
         <div className="mt-6 card-glass rounded-2xl p-6">
-          <SyncSettings embedded />
+          <SyncSettings embedded platform={hasBoth ? selectedPlatform ?? undefined : undefined} />
 
           <div className="mt-6 border-t border-border pt-5">
           {loadingStatus ? (
@@ -259,7 +296,7 @@ export default function DashboardPage() {
               )}
 
               <div className="mt-6 grid gap-3">
-                {status.targetStores.map((store) => {
+                {visibleStores.map((store) => {
                   const progress = store.syncProgress;
                   const pct =
                     store.isSyncing && progress?.total
@@ -486,7 +523,12 @@ export default function DashboardPage() {
         </>
         )}
 
-        {direction === "to-etsy" && <EtsyListingDefaults />}
+        {direction === "to-etsy" && (
+          <EtsyListingDefaults
+            key={selectedPlatform ?? "none"}
+            platform={selectedPlatform === "shopify" ? "Shopify" : selectedPlatform === "wix" ? "Wix" : undefined}
+          />
+        )}
 
         <ReviewsSettings />
         <SyncHistory refreshKey={historyKey} />

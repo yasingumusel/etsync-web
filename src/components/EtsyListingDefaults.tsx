@@ -5,7 +5,7 @@ import StoreProductPicker from "@/components/StoreProductPicker";
 import EtsyListingDefaultsFields from "@/components/EtsyListingDefaultsFields";
 import ConnectionBadges, { type ConnectionStatus } from "@/components/ConnectionBadges";
 
-export default function EtsyListingDefaults() {
+export default function EtsyListingDefaults({ platform }: { platform?: "Wix" | "Shopify" } = {}) {
   const [loading, setLoading] = useState(true);
   const [configured, setConfigured] = useState(false);
 
@@ -29,7 +29,9 @@ export default function EtsyListingDefaults() {
     setSyncError(null);
     setSyncResult(null);
 
-    const res = await fetch("/api/sync/sync-to-etsy", { method: "POST" });
+    const res = await fetch(`/api/sync/sync-to-etsy${platform ? `?platform=${platform.toLowerCase()}` : ""}`, {
+      method: "POST",
+    });
     const body = await res.json().catch(() => ({}));
 
     setSyncing(false);
@@ -58,14 +60,15 @@ export default function EtsyListingDefaults() {
             .join(" · ")
         : "Nothing new to sync."
     );
-  }, []);
+  }, [platform]);
 
   if (loading) return null;
 
   // Whichever store this merchant actually sells on - the panel never says
   // "Wix" to a Shopify merchant, or the other way round.
   const storeLabel =
-    connection && connection.targetStores.some((s) => s.platform === "shopify") ? "Shopify" : "Wix";
+    platform ??
+    (connection && connection.targetStores.some((s) => s.platform === "shopify") ? "Shopify" : "Wix");
 
   return (
     <div className="mt-4 card-glass rounded-2xl p-6">
