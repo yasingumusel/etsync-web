@@ -8,6 +8,8 @@ import ReviewsSettings from "@/components/ReviewsSettings";
 import EtsyListingDefaults from "@/components/EtsyListingDefaults";
 import DashboardHeader from "@/components/DashboardHeader";
 import MonthlySummary, { type MonthStats } from "@/components/MonthlySummary";
+import SyncHealth, { type HealthIssue } from "@/components/SyncHealth";
+import ProductMatches from "@/components/ProductMatches";
 
 type TargetStore = {
   platform: string;
@@ -21,6 +23,7 @@ type TargetStore = {
   previousMonthStats?: MonthStats | null;
   isSyncing: boolean;
   syncProgress: { current: number; total: number };
+  health?: HealthIssue[];
 };
 
 type StatusResponse = {
@@ -279,6 +282,17 @@ export default function DashboardPage() {
             </button>
           </div>
         )}
+
+        <SyncHealth
+          issues={visibleStores.flatMap((s) => s.health ?? []).filter((i, n, all) => all.findIndex((x) => x.code === i.code) === n)}
+          platform={selectedPlatform}
+          platformQs={platformQs}
+          onSyncNow={handleSync}
+          onChanged={() => {
+            loadStatus();
+            setHistoryKey((k) => k + 1);
+          }}
+        />
 
         {visibleStores.length > 0 && <MonthlySummary stores={visibleStores} />}
 
@@ -548,6 +562,9 @@ export default function DashboardPage() {
           />
         )}
 
+        {visibleStores.length > 0 && (
+          <ProductMatches platformQs={platformQs} storeLabel={storeLabel} refreshKey={historyKey} />
+        )}
         <ReviewsSettings />
         <SyncHistory refreshKey={historyKey} />
       </main>

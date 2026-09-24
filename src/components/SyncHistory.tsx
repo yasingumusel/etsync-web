@@ -13,7 +13,7 @@ type Run = {
   pushedToEtsy: number;
   createdOnEtsy: number;
   durationMs?: number;
-  errors: { sku?: string; message?: string }[];
+  errors: { sku?: string; title?: string; message?: string }[];
 };
 
 type HistoryResponse = {
@@ -145,7 +145,7 @@ export default function SyncHistory({ refreshKey }: { refreshKey: number }) {
                                 {run.errors.map((e, j) => (
                                   <li key={j} className="text-[11px] leading-relaxed text-muted">
                                     <span className="font-medium text-foreground">
-                                      {e.sku || "unknown product"}
+                                      {e.title || e.sku || "unknown product"}
                                     </span>
                                     {e.message ? ` — ${e.message}` : ""}
                                   </li>

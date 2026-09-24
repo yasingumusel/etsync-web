@@ -39,7 +39,10 @@ function summarize(n: Notification): string {
     n.hidden > 0 && `${n.hidden} hidden`,
     n.failed > 0 && `${n.failed} failed`,
   ].filter(Boolean);
-  return parts.length > 0 ? parts.join(" · ") : "Checked for changes - nothing to update";
+  if (parts.length > 0) return parts.join(" · ");
+  return n.status === "failed"
+    ? "Couldn't run - see the dashboard for what to do"
+    : "Checked for changes - nothing to update";
 }
 
 function timeAgo(iso: string): string {

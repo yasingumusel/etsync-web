@@ -23,7 +23,9 @@ type SyncPath =
   | "etsy-listing-defaults"
   | "sync-to-etsy"
   | "store-products"
-  | "store-product-selection";
+  | "store-product-selection"
+  | "matches"
+  | "restore-deleted";
 
 export type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 
