@@ -16,22 +16,22 @@ const features: Feature[] = [
   },
   {
     title: "Variations, Not Just Products",
-    desc: "Size and colour variations become real Wix product options, each with its own price and SKU — not a single flattened product with one price.",
+    desc: "Size and colour variations become real Wix or Shopify product options, each with its own price and SKU — not a single flattened product with one price.",
     icon: StoreIcon,
   },
   {
-    title: "Edit In Wix, Sync Back To Etsy",
-    desc: "Prefer to edit a product's title or description in Wix? Switch off syncing that field and MirrorStock treats Wix as correct, pushing your edit back to the matching Etsy listing. Outside of that, nothing is ever written to Etsy, and your sales and order data is never read.",
+    title: "Edit In Your Store, Sync Back To Etsy",
+    desc: "Prefer to edit a product's title or description in Wix or Shopify? Switch off syncing that field and MirrorStock treats your store as correct, pushing your edit back to the matching Etsy listing. Products you create in your store can also be published to Etsy as drafts for you to review. Your sales and order data is never read.",
     icon: SyncIcon,
   },
   {
     title: "Automatic Currency Conversion",
-    desc: "If your Etsy shop prices in one currency and your Wix site in another, prices are converted at the live rate instead of being copied across as raw numbers.",
+    desc: "If your Etsy shop prices in one currency and your Wix or Shopify store in another, prices are converted at the live rate instead of being copied across as raw numbers.",
     icon: CurrencyIcon,
   },
   {
     title: "Secure OAuth Connection",
-    desc: "You connect your Etsy shop and your Wix store through each platform's own official login. MirrorStock never sees or stores your password.",
+    desc: "You connect your Etsy shop and your Wix or Shopify store through each platform's own official login. MirrorStock never sees or stores your password.",
     icon: ShieldIcon,
   },
   {
@@ -46,7 +46,7 @@ const features: Feature[] = [
   },
   {
     title: "Your Etsy Reviews, On The Right Product",
-    desc: "Pull your real Etsy reviews — star rating and review text, never the buyer's name or photo — onto the matching product's own Wix page, not just a generic store-wide list. Pick which products show theirs from a simple on/off list in your dashboard.",
+    desc: "Pull your real Etsy reviews — star rating and review text, never the buyer's name or photo — onto the matching product's own Wix page, not just a generic store-wide list (Shopify storefronts coming soon). Pick which products show theirs from a simple on/off list in your dashboard.",
     icon: StarIcon,
     badge: "Pro & Unlimited",
   },

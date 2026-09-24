@@ -2,7 +2,7 @@ const steps = [
   {
     number: "01",
     title: "Connect Your Shops",
-    desc: "You sign in with your Etsy account and your Wix account through each platform's own official login. MirrorStock never sees your password on either side.",
+    desc: "You sign in with your Etsy account and your Wix or Shopify account through each platform's own official login. MirrorStock never sees your password on either side.",
   },
   {
     number: "02",
@@ -12,7 +12,7 @@ const steps = [
   {
     number: "03",
     title: "Your Store Is Brought Up To Date",
-    desc: "Start a sync from your dashboard and watch it work through your catalogue. Products that are already there are updated in place, and if you'd rather edit a title or description in Wix, that flows back to Etsy too.",
+    desc: "Start a sync from your dashboard and watch it work through your catalogue. Products that are already there are updated in place, and if you'd rather edit a title or description in your store, that flows back to Etsy too.",
   },
 ];
 
@@ -29,8 +29,8 @@ export default function HowItWorks() {
           </h2>
           <p className="mt-4 text-lg text-muted">
             No technical knowledge required. Etsy is the default source of
-            truth — edit a title or description in Wix instead, and that
-            change syncs back.
+            truth — edit a title or description in Wix or Shopify instead,
+            and that change syncs back.
           </p>
         </div>
 

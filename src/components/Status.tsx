@@ -1,16 +1,17 @@
 const shipped = [
-  "Sync from Etsy to Wix: products, variants, images, descriptions and prices.",
-  "Edit a product's title or description in Wix instead, and it syncs back to the matching Etsy listing.",
-  "Size and colour variations are rebuilt as real Wix product options, each with its own price and SKU.",
-  "Automatic currency conversion when your Etsy shop and your Wix site are priced in different currencies.",
+  "Sync from Etsy to Wix or Shopify: products, variants, images, descriptions and prices.",
+  "Edit a product's title or description in your store instead, and it syncs back to the matching Etsy listing.",
+  "Publish a product you created in Wix or Shopify to Etsy as a draft listing.",
+  "Size and colour variations are rebuilt as real store product options, each with its own price and SKU.",
+  "Automatic currency conversion when your Etsy shop and your store are priced in different currencies.",
   "Run a sync from your dashboard whenever you want, with live progress as it works.",
   "Scheduled syncs every 4 hours, so your store stays current without you starting one by hand.",
   "A sync history and notification bell that only surface runs where something actually changed.",
 ];
 
 const planned = [
-  "Shopify as a second destination alongside Wix.",
-  "Publishing a brand-new product created in Wix as a new Etsy listing.",
+  "Listing MirrorStock on the Shopify App Store.",
+  "Etsy reviews on Shopify product pages.",
   "Syncing price and variant edits back to Etsy, not just title and description.",
 ];
 

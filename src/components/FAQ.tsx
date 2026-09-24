@@ -9,11 +9,11 @@ const faqs = [
   },
   {
     q: "Does MirrorStock ever write anything to my Etsy shop?",
-    a: "Only one thing, and only if you ask for it: if you switch off syncing a listing's title or description in your dashboard, MirrorStock writes your current Wix value back to that Etsy listing. That's the entire write path — it never creates, deletes, or uploads listings, never touches price, inventory, or images on Etsy, never changes shop settings, and never sends email or messages through Etsy.",
+    a: "Only if you turn it on, in two ways. If you switch off syncing a listing's title or description, MirrorStock writes your store's current value back to that Etsy listing. And if you fill in your defaults for new Etsy listings, products you created in Wix or Shopify are published to Etsy as drafts (title, description, price and variations, no photos) for you to review and activate yourself. It never deletes listings, never changes an existing listing's price, stock or photos, never changes shop settings, and never sends email or messages through Etsy.",
   },
   {
-    q: "Does the sync work the other way, from Wix back to Etsy?",
-    a: "Partially. Turn off syncing a product's title or description and MirrorStock treats your Wix edit as correct, pushing it back to the matching Etsy listing on the next sync. Price, images, and variants still flow one direction only (Etsy to Wix), and publishing a brand-new Wix product as a new Etsy listing isn't available yet.",
+    q: "Does the sync work the other way, from Wix or Shopify back to Etsy?",
+    a: "Yes, in two ways. Turn off syncing a product's title or description and MirrorStock treats your store's edit as correct, pushing it back to the matching Etsy listing on the next sync. And a product you create in Wix or Shopify can be published to Etsy as a new draft listing. For products that came from Etsy, price, images and variants still flow one direction only (Etsy to your store).",
   },
   {
     q: "Will running a sync twice create duplicate products?",
@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "What happens if my two stores use different currencies?",
-    a: "Prices are converted at the live exchange rate before they are written to your store, rather than copied across as raw numbers. A Wix site has a single site-wide currency, so this matters more than it sounds.",
+    a: "Prices are converted at the live exchange rate before they are written to your store, rather than copied across as raw numbers. Wix and Shopify stores each have a single store-wide currency, so this matters more than it sounds.",
   },
   {
     q: "Do you share my shop data with any third party?",

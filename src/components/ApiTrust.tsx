@@ -1,11 +1,11 @@
 const points = [
   {
     title: "Three narrow scopes, nothing more",
-    desc: "MirrorStock requests listings_r and shops_r to read your shop, plus listings_w — used for exactly one thing: writing a title or description back to Etsy when you tell MirrorStock you're editing it in Wix instead. No other Etsy scope is requested — not receipts, not transactions, not shop management.",
+    desc: "MirrorStock requests listings_r and shops_r to read your shop, plus listings_w — used only for two things you switch on yourself: writing a title or description back to Etsy, and publishing products you created in Wix or Shopify as Etsy drafts. No other Etsy scope is requested — not receipts, not transactions, not shop management.",
   },
   {
     title: "Writes are opt-in and narrow",
-    desc: "By default nothing is written to Etsy. Turn off syncing a listing's title or description and MirrorStock pushes your Wix edit back — that's the only write path. It never creates, deletes, or uploads listings, never touches price/inventory/images, never modifies shop settings, and never sends email or messages through Etsy.",
+    desc: "By default nothing is written to Etsy. Turn off syncing a listing's title or description and MirrorStock pushes your store's edit back. Fill in your defaults for new Etsy listings and products you created in your store are added to Etsy as drafts — never activated for you. It never deletes listings, never changes an existing listing's price, stock or photos, never modifies shop settings, and never sends email or messages through Etsy.",
   },
   {
     title: "No sales or payment data",
@@ -39,15 +39,15 @@ export default function ApiTrust() {
               <code className="rounded bg-surface-2 px-1.5 py-0.5 text-[0.85em] text-foreground">
                 shops_r
               </code>{" "}
-              scopes) and syncs them to your connected Wix store, keeping
+              scopes) and syncs them to your connected Wix or Shopify store, keeping
               both catalogues consistent. If you&rsquo;d rather edit a
-              title or description in Wix, MirrorStock can write that one
-              field back to Etsy (using the{" "}
+              title or description in your store, MirrorStock can write it
+              back to Etsy, and it can publish products you created in your
+              store as Etsy drafts (both using the{" "}
               <code className="rounded bg-surface-2 px-1.5 py-0.5 text-[0.85em] text-foreground">
                 listings_w
               </code>{" "}
-              scope) — that&rsquo;s the only thing it&rsquo;s ever used
-              for. It never reads sales or payment data, or sends email
+              scope, and only when you switch them on). It never reads sales or payment data, or sends email
               through Etsy. Every seller connects their own shop through
               Etsy&rsquo;s own authorization screen, and can revoke that
               access at any time.
@@ -72,7 +72,7 @@ export default function ApiTrust() {
                 No sales or payment data, ever
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs font-medium text-muted">
-                Not affiliated with or endorsed by Etsy, Inc. or Wix.com Ltd.
+                Not affiliated with or endorsed by Etsy, Inc., Wix.com Ltd. or Shopify Inc.
               </div>
             </div>
           </div>

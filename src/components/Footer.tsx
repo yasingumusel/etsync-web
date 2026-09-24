@@ -41,7 +41,7 @@ export default function Footer() {
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
               MirrorStock reads your active Etsy listings and keeps the
-              matching products in your Wix store in sync, so you only have
+              matching products in your Wix or Shopify store in sync, so you only have
               to keep one catalogue up to date.
             </p>
           </div>

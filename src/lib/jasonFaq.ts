@@ -170,7 +170,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "push to etsy",
     ],
     answer:
-      "Partially. By default sync runs one direction: Etsy to Wix. But if you switch off syncing a product's title or description (in the dashboard's 'What to sync' settings), MirrorStock treats your Wix edit as correct and pushes it back to the matching Etsy listing. Price, images, and variants are still Etsy-to-Wix only, and creating a brand-new Etsy listing from a Wix-only product isn't available yet.",
+      "Yes, in two ways. If you switch off syncing a product's title or description (in the dashboard's 'What to sync' settings), MirrorStock treats your Wix or Shopify edit as correct and pushes it back to the matching Etsy listing. And products you create in your store can be published to Etsy as drafts once you fill in 'Defaults for new Etsy listings'. For products that came from Etsy, price, images and variants still flow Etsy to your store only.",
   },
   {
     id: "duplicates",
@@ -312,7 +312,7 @@ export const JASON_FAQ: FaqEntry[] = [
     keywords: ["shopify"],
     minScore: 1, // a single, highly distinctive brand keyword - safe at a lower bar
     answer:
-      "Not yet - Wix is the only destination store MirrorStock supports today. Shopify support is on the roadmap.",
+      "Yes. MirrorStock syncs your Etsy listings to a Wix or a Shopify store - connect Shopify from your dashboard. We're not listed on the Shopify App Store yet, and Etsy reviews on Shopify product pages are still coming. The Unlimited plan can connect Wix and Shopify at the same time.",
   },
   {
     id: "etsy-scopes",
@@ -347,7 +347,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "does it edit my etsy",
     ],
     answer:
-      "Only one thing, and only if you turn it on: switching off syncing a listing's title or description lets MirrorStock push your Wix edit back to that Etsy listing. Outside of that, MirrorStock never creates, deletes, or uploads anything on Etsy, never touches price/inventory/images there, never changes your shop settings, and never sends email or messages through Etsy.",
+      "Only if you turn it on, in two ways: switching off syncing a listing's title or description pushes your store's edit back to that Etsy listing, and filling in 'Defaults for new Etsy listings' publishes products you created in Wix or Shopify to Etsy as drafts for you to review. MirrorStock never deletes or activates listings, never changes an existing listing's price, stock or photos, never changes your shop settings, and never sends email or messages through Etsy.",
   },
   {
     id: "sales-data",
@@ -567,7 +567,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "connect to slack",
     ],
     answer:
-      "Today MirrorStock only connects Etsy (as the source) to Wix (as the destination). There's no WordPress, Salesforce, or Slack integration, and Shopify support (as a second destination) is on the roadmap but not available yet.",
+      "Today MirrorStock connects Etsy to Wix and Shopify stores. There's no WordPress, Salesforce, or Slack integration.",
   },
   {
     id: "api-docs",

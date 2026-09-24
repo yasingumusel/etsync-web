@@ -13,7 +13,7 @@ export default function TermsPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1">
-        <LegalLayout title="Terms of Service" updated="September 17, 2026">
+        <LegalLayout title="Terms of Service" updated="September 24, 2026">
           <p>
             These Terms of Service (&ldquo;Terms&rdquo;) govern access to
             and use of MirrorStock&rsquo;s website and product
@@ -25,15 +25,16 @@ export default function TermsPage() {
           <p>
             MirrorStock reads the active listings in your Etsy shop (using
             the <code>listings_r</code> and <code>shops_r</code> scopes) and
-            creates or updates the matching products in your connected Wix
-            store. If you switch off syncing a listing&rsquo;s title or
+            creates or updates the matching products in your connected Wix or
+            Shopify store. If you switch off syncing a listing&rsquo;s title or
             description in your dashboard, MirrorStock instead writes your
-            current Wix value back to the matching Etsy listing (using the{" "}
-            <code>listings_w</code> scope) &mdash; this is the only way the
-            Service ever writes to Etsy, is limited to the title and
-            description fields, and only happens for a field you have
-            explicitly opted out of syncing from Etsy. The Service does not
-            otherwise create, edit, delete, or upload anything on Etsy, does
+            current store value back to the matching Etsy listing (using the{" "}
+            <code>listings_w</code> scope). If you fill in your defaults for
+            new Etsy listings, the Service also publishes products you
+            created in your Wix or Shopify store to Etsy as draft listings,
+            which it never activates for you. These two opt-in writes are
+            the only ways the Service writes to Etsy. It does not otherwise
+            create, edit, delete, or upload anything on Etsy, does
             not read Etsy sales, order, or payment data, and does not send
             email or messages through Etsy.
           </p>
@@ -49,23 +50,24 @@ export default function TermsPage() {
 
           <h2>3. Connecting Accounts</h2>
           <p>
-            Connecting an Etsy or Wix account authorizes MirrorStock,
+            Connecting an Etsy, Wix, or Shopify account authorizes MirrorStock,
             through each platform&rsquo;s official OAuth process, to access
             the specific data described in the{" "}
             <a href="/privacy">Privacy Policy</a>. This remains subject to
-            Etsy&rsquo;s and Wix&rsquo;s own terms of service, and
+            the terms of service of Etsy, Wix, and Shopify, and
             MirrorStock&rsquo;s access is limited to the{" "}
             <code>listings_r</code> and <code>shops_r</code> scopes on
-            Etsy&rsquo;s side.
+            Etsy&rsquo;s side (plus <code>listings_w</code> for the two opt-in
+            writes described above).
           </p>
 
           <h2>4. Acceptable Use</h2>
           <p>MirrorStock is not to be used to:</p>
           <ul>
-            <li>Access, resell, or redistribute Etsy or Wix API data to a third party</li>
+            <li>Access, resell, or redistribute Etsy, Wix, or Shopify API data to a third party</li>
             <li>Act on behalf of a shop you do not own or manage</li>
-            <li>Circumvent rate limits, security controls, or the intended scope of Etsy or Wix API access</li>
-            <li>Serve any unlawful purpose or violate Etsy&rsquo;s or Wix&rsquo;s own terms of use</li>
+            <li>Circumvent rate limits, security controls, or the intended scope of Etsy, Wix, or Shopify API access</li>
+            <li>Serve any unlawful purpose or violate the terms of use of Etsy, Wix, or Shopify</li>
           </ul>
 
           <h2>5. Availability &amp; Changes</h2>
@@ -88,7 +90,7 @@ export default function TermsPage() {
           <p>
             We aim to keep the Service syncing reliably, but sync timing and
             availability may depend on the uptime and rate limits of the
-            Etsy and Wix APIs themselves, which are outside our control.
+            Etsy, Wix, and Shopify APIs themselves, which are outside our control.
           </p>
 
           <h2>8. Termination</h2>
@@ -96,7 +98,7 @@ export default function TermsPage() {
             You can stop using the Service and disconnect your shops at any
             time. We may suspend or remove access that violates these Terms,
             misuses API access, or poses a security risk to the Service,
-            Etsy, or Wix.
+            Etsy, Wix, or Shopify.
           </p>
 
           <h2>9. Disclaimer &amp; Limitation of Liability</h2>

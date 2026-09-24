@@ -256,12 +256,12 @@ export default function Pricing() {
         </div>
 
         <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-muted">
-          Paid plans are billed through the Wix App Market once our listing is
-          published. Early access accounts start on the Free plan, and we will
-          tell you before anything is ever charged. Every paid plan can be
-          cancelled anytime, right from your Wix billing settings — no
-          contracts, no cancellation fees, no risk in locking in launch
-          pricing today.
+          Paid plans for Wix stores are billed through the Wix App Market and
+          can be cancelled anytime from your Wix billing settings — no
+          contracts, no cancellation fees. Billing for Shopify stores will
+          run through Shopify once our Shopify app is listed there; until
+          then, Shopify stores start on the Free plan, and we will tell you
+          before anything is ever charged.
         </p>
       </div>
     </section>
