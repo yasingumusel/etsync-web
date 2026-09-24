@@ -108,7 +108,7 @@ export default async function ConnectEtsyPage({
         {/* Fills what would otherwise be empty space below the card, and
             doubles as a preview of what the merchant is about to set up -
             onboarding is still a marketing moment. */}
-        <SyncPreviewMockup />
+        <SyncPreviewMockup platform={storeLabel ?? "Wix"} />
       </main>
       <Footer />
     </div>

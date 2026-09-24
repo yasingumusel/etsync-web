@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import StoreProductPicker from "@/components/StoreProductPicker";
+import EtsyListingDefaultsFields from "@/components/EtsyListingDefaultsFields";
 
 type EtsyListing = {
   listingId: string;
@@ -85,6 +86,10 @@ export default function SetupSyncWizard({
   const [planLimit, setPlanLimit] = useState<number | null>(null);
   const [existingEmail, setExistingEmail] = useState<string | undefined>();
   const [connectedPlatform, setConnectedPlatform] = useState<"Wix" | "Shopify" | null>(null);
+  // Only meaningful for variant "connect" - "manage" always shows the Etsy
+  // side (its own separate reverse-direction picker lives in
+  // EtsyListingDefaults on the dashboard instead).
+  const [directionTab, setDirectionTab] = useState<"etsy" | "store">("etsy");
   const [step, setStep] = useState<Step>("picker");
   const [mode, setMode] = useState<Selection["mode"]>("all");
   const [includeDrafts, setIncludeDrafts] = useState(false);
@@ -346,152 +351,196 @@ export default function SetupSyncWizard({
         </>
       )}
 
-      {planNote && (
-        <p className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 px-3.5 py-2.5 text-center text-xs font-medium text-amber-700">
-          {planNote}
-        </p>
+      {variant === "connect" && connectedPlatform && (
+        <div className="mt-6 flex justify-center">
+          <div className="inline-flex rounded-full border border-border bg-surface p-1">
+            <button
+              type="button"
+              onClick={() => setDirectionTab("etsy")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                directionTab === "etsy"
+                  ? "bg-accent-orange text-white"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              Etsy &rarr; {connectedPlatform}
+            </button>
+            <button
+              type="button"
+              onClick={() => setDirectionTab("store")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                directionTab === "store"
+                  ? "bg-accent-blue text-white"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              {connectedPlatform} &rarr; Etsy
+            </button>
+          </div>
+        </div>
       )}
 
-      <div className="mt-7">
-        <p className="text-sm font-semibold text-foreground">
-          Which products should we sync?
-        </p>
-        <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
-          <ModeButton
-            label="All active listings"
-            hint="Recommended - new listings sync automatically too"
-            active={mode === "all"}
-            onClick={() => chooseMode("all")}
-          />
-          <ModeButton
-            label="I'll choose specific products"
-            hint={`Pick exactly which listings sync${visibleListings.length ? ` (${visibleListings.length} available)` : ""}`}
-            active={mode === "custom"}
-            onClick={() => chooseMode("custom")}
-          />
-        </div>
-        {mode === "all" && allModeOverLimit && (
-          <p className="mt-2.5 rounded-xl border border-amber-400/30 bg-amber-400/5 px-3.5 py-2.5 text-xs font-medium text-amber-700">
-            You have {visibleListings.length} listings but your plan allows{" "}
-            {planLimit}. We&apos;ll sync your {planLimit} oldest listings
-            until you upgrade or choose specific products.
-          </p>
-        )}
-      </div>
-
-      <label className="mt-5 flex cursor-pointer items-start gap-2.5 rounded-xl border border-border bg-surface px-3.5 py-3">
-        <input
-          type="checkbox"
-          checked={includeDrafts}
-          onChange={(e) => setIncludeDrafts(e.target.checked)}
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
-        />
-        <span>
-          <span className="block text-sm font-medium text-foreground">
-            Also sync draft (unpublished) listings
-          </span>
-          <span className="block text-[11px] leading-relaxed text-muted">
-            They&apos;ll be created as hidden, unpublished products in your
-            store until you publish them there or on Etsy.
-          </span>
-        </span>
-      </label>
-
-      {mode === "custom" && (
-        <div className="mt-5">
-          <div className="flex items-center justify-between">
-            <p className={`text-xs font-medium ${atCustomLimit ? "text-amber-600" : "text-muted"}`}>
-              {visibleSelectedCount} of {visibleListings.length} selected
-              {planLimit !== null ? ` (max ${planLimit} on your plan)` : ""}
+      {(variant === "manage" || !connectedPlatform || directionTab === "etsy") && (
+        <>
+          {planNote && (
+            <p className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 px-3.5 py-2.5 text-center text-xs font-medium text-amber-700">
+              {planNote}
             </p>
-            <div className="flex gap-3 text-xs font-medium text-accent-violet">
-              <button type="button" onClick={selectAll} className="hover:underline">
-                Select all
-              </button>
-              <button type="button" onClick={selectNone} className="hover:underline">
-                Select none
-              </button>
+          )}
+
+          <div className="mt-7">
+            <p className="text-sm font-semibold text-foreground">
+              Which products should we sync?
+            </p>
+            <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+              <ModeButton
+                label="All active listings"
+                hint="Recommended - new listings sync automatically too"
+                active={mode === "all"}
+                onClick={() => chooseMode("all")}
+              />
+              <ModeButton
+                label="I'll choose specific products"
+                hint={`Pick exactly which listings sync${visibleListings.length ? ` (${visibleListings.length} available)` : ""}`}
+                active={mode === "custom"}
+                onClick={() => chooseMode("custom")}
+              />
             </div>
+            {mode === "all" && allModeOverLimit && (
+              <p className="mt-2.5 rounded-xl border border-amber-400/30 bg-amber-400/5 px-3.5 py-2.5 text-xs font-medium text-amber-700">
+                You have {visibleListings.length} listings but your plan allows{" "}
+                {planLimit}. We&apos;ll sync your {planLimit} oldest listings
+                until you upgrade or choose specific products.
+              </p>
+            )}
           </div>
 
-          {hiddenSelectedCount > 0 && (
-            <p className="mt-1.5 text-[11px] text-muted">
-              +{hiddenSelectedCount} more selected but not shown here
-              {includeDrafts ? "" : " - check “Also sync draft listings” to see them"}.
-              They&apos;ll stay selected unless you use &quot;Select none&quot;.
-            </p>
-          )}
+          <label className="mt-5 flex cursor-pointer items-start gap-2.5 rounded-xl border border-border bg-surface px-3.5 py-3">
+            <input
+              type="checkbox"
+              checked={includeDrafts}
+              onChange={(e) => setIncludeDrafts(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
+            />
+            <span>
+              <span className="block text-sm font-medium text-foreground">
+                Also sync draft (unpublished) listings
+              </span>
+              <span className="block text-[11px] leading-relaxed text-muted">
+                They&apos;ll be created as hidden, unpublished products in your
+                store until you publish them there or on Etsy.
+              </span>
+            </span>
+          </label>
 
-          {visibleListings.length === 0 ? (
-            <p className="mt-3 rounded-xl border border-border bg-surface px-3.5 py-3 text-sm text-muted">
-              No listings to show yet.
-            </p>
-          ) : (
-            <ul className="mt-3 max-h-80 space-y-1.5 overflow-y-auto rounded-xl border border-border bg-surface p-2">
-              {visibleListings.map((l) => {
-                const isSelected = selected.has(l.listingId);
-                const disabled = !isSelected && atCustomLimit;
-                return (
-                <li key={l.listingId}>
-                  <label
-                    className={`flex items-center gap-3 rounded-lg px-2 py-2 ${
-                      disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-surface-2"
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      disabled={disabled}
-                      onChange={() => toggleOne(l.listingId)}
-                      className="h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
-                    />
-                    {l.thumbnailUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={l.thumbnailUrl}
-                        alt=""
-                        className="h-10 w-10 shrink-0 rounded-md object-cover"
-                      />
-                    ) : (
-                      <span className="h-10 w-10 shrink-0 rounded-md bg-surface-2" />
-                    )}
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm text-foreground">{l.title}</span>
-                      <span className="block text-[11px] text-muted">
-                        {formatPrice(l.price, l.currency)}
-                        {l.state === "draft" && (
-                          <span className="ml-1.5 rounded-full bg-amber-400/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-600">
-                            Draft
-                          </span>
+          {mode === "custom" && (
+            <div className="mt-5">
+              <div className="flex items-center justify-between">
+                <p className={`text-xs font-medium ${atCustomLimit ? "text-amber-600" : "text-muted"}`}>
+                  {visibleSelectedCount} of {visibleListings.length} selected
+                  {planLimit !== null ? ` (max ${planLimit} on your plan)` : ""}
+                </p>
+                <div className="flex gap-3 text-xs font-medium text-accent-violet">
+                  <button type="button" onClick={selectAll} className="hover:underline">
+                    Select all
+                  </button>
+                  <button type="button" onClick={selectNone} className="hover:underline">
+                    Select none
+                  </button>
+                </div>
+              </div>
+
+              {hiddenSelectedCount > 0 && (
+                <p className="mt-1.5 text-[11px] text-muted">
+                  +{hiddenSelectedCount} more selected but not shown here
+                  {includeDrafts ? "" : " - check “Also sync draft listings” to see them"}.
+                  They&apos;ll stay selected unless you use &quot;Select none&quot;.
+                </p>
+              )}
+
+              {visibleListings.length === 0 ? (
+                <p className="mt-3 rounded-xl border border-border bg-surface px-3.5 py-3 text-sm text-muted">
+                  No listings to show yet.
+                </p>
+              ) : (
+                <ul className="mt-3 max-h-80 space-y-1.5 overflow-y-auto rounded-xl border border-border bg-surface p-2">
+                  {visibleListings.map((l) => {
+                    const isSelected = selected.has(l.listingId);
+                    const disabled = !isSelected && atCustomLimit;
+                    return (
+                    <li key={l.listingId}>
+                      <label
+                        className={`flex items-center gap-3 rounded-lg px-2 py-2 ${
+                          disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-surface-2"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          disabled={disabled}
+                          onChange={() => toggleOne(l.listingId)}
+                          className="h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
+                        />
+                        {l.thumbnailUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={l.thumbnailUrl}
+                            alt=""
+                            className="h-10 w-10 shrink-0 rounded-md object-cover"
+                          />
+                        ) : (
+                          <span className="h-10 w-10 shrink-0 rounded-md bg-surface-2" />
                         )}
-                      </span>
-                    </span>
-                  </label>
-                </li>
-                );
-              })}
-            </ul>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm text-foreground">{l.title}</span>
+                          <span className="block text-[11px] text-muted">
+                            {formatPrice(l.price, l.currency)}
+                            {l.state === "draft" && (
+                              <span className="ml-1.5 rounded-full bg-amber-400/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-600">
+                                Draft
+                              </span>
+                            )}
+                          </span>
+                        </span>
+                      </label>
+                    </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
 
-      {variant === "connect" && connectedPlatform && (
-        <div className="mt-7 border-t border-border pt-6">
+      {variant === "connect" && connectedPlatform && directionTab === "store" && (
+        <div className="mt-7">
           <p className="text-sm font-semibold text-foreground">
             {connectedPlatform} &rarr; Etsy
           </p>
           <p className="mt-1 text-xs text-muted">
-            You can also publish products you created directly in{" "}
-            {connectedPlatform} as new Etsy listings. Set this up now, or
-            later from your dashboard - either way, you&apos;ll still need
-            to set defaults for new Etsy listings (category, shipping
-            profile, etc.) before anything actually publishes.
+            Publish products you created directly in {connectedPlatform} as
+            new Etsy listings. Pick which ones below, then fill in the
+            fields Etsy requires (category, shipping profile, etc.) -
+            nothing publishes until both are done.
           </p>
           <StoreProductPicker
             userId={userId}
             platform={connectedPlatform}
             planLabel={plan ? capitalize(plan) : undefined}
           />
+          <div className="mt-5 rounded-2xl border border-border bg-surface p-5">
+            <p className="text-sm font-medium text-foreground">
+              Defaults for new Etsy listings
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              Etsy requires these for every listing; {connectedPlatform} has
+              no equivalent field for them.
+            </p>
+            <div className="mt-4">
+              <EtsyListingDefaultsFields platform={connectedPlatform} userId={userId} />
+            </div>
+          </div>
         </div>
       )}
 

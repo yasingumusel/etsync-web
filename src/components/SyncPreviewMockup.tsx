@@ -4,7 +4,15 @@
  * marketing-adjacent empty space on the connect-etsy page - onboarding is
  * a marketing moment too, not just the homepage.
  */
-export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?: number }) {
+export default function SyncPreviewMockup({
+  syncedProducts,
+  platform = "Wix",
+}: {
+  syncedProducts?: number;
+  platform?: "Wix" | "Shopify";
+}) {
+  const platformColor =
+    platform === "Shopify" ? "from-accent-green to-accent-green" : "from-accent-blue to-accent-blue";
   // Anonymous visitors (or a page like connect-etsy, reached before any
   // sync has happened yet) see an illustrative example (47/47). A
   // logged-in visitor who's already synced sees their own real, current
@@ -53,8 +61,8 @@ export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?:
           </div>
 
           <StoreCard
-            platform="Wix"
-            color="from-accent-blue to-accent-blue"
+            platform={platform}
+            color={platformColor}
             listings={listings}
             badge="Updated"
           />
@@ -70,7 +78,7 @@ export default function SyncPreviewMockup({ syncedProducts }: { syncedProducts?:
         className="animate-float absolute -right-6 -bottom-6 hidden rounded-xl border border-border bg-surface-2 px-4 py-3 shadow-xl sm:block"
         style={{ animationDelay: "1.5s" }}
       >
-        <p className="text-[11px] text-muted">Edit in Wix instead</p>
+        <p className="text-[11px] text-muted">Edit in {platform} instead</p>
         <p className="font-display text-lg font-bold text-foreground">Syncs back</p>
       </div>
     </div>
