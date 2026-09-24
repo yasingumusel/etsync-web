@@ -7,6 +7,7 @@ import SyncSettings from "@/components/SyncSettings";
 import ReviewsSettings from "@/components/ReviewsSettings";
 import EtsyListingDefaults from "@/components/EtsyListingDefaults";
 import DashboardHeader from "@/components/DashboardHeader";
+import MonthlySummary, { type MonthStats } from "@/components/MonthlySummary";
 
 type TargetStore = {
   platform: string;
@@ -16,6 +17,8 @@ type TargetStore = {
   lastSyncStatus: "never" | "success" | "partial" | "failed";
   syncedProductCount: number;
   frozenProductCount?: number;
+  monthlyStats?: MonthStats | null;
+  previousMonthStats?: MonthStats | null;
   isSyncing: boolean;
   syncProgress: { current: number; total: number };
 };
@@ -276,6 +279,8 @@ export default function DashboardPage() {
             </button>
           </div>
         )}
+
+        {visibleStores.length > 0 && <MonthlySummary stores={visibleStores} />}
 
         {direction === "from-etsy" && (
         <>
