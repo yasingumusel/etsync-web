@@ -81,6 +81,7 @@ const plans: Plan[] = [
       { label: "“View on Etsy” link on every product" },
       { label: "Preview changes before syncing" },
       { label: "Etsy reviews on your product pages" },
+      { label: "Choose which products show reviews" },
       { label: "5 connected stores", soon: true },
       { label: "Priority support" },
     ],

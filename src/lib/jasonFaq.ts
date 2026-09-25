@@ -255,7 +255,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "pro plan feature",
     ],
     answer:
-      "Yes - this is a Pro and Unlimited plan feature. It shows your real Etsy reviews (star rating and review text - Etsy never gives us the buyer's name or photo) on the matching Wix product's own page, not just a generic store-wide list. To turn it on: in the Wix Editor, add the 'Etsy Reviews' element to your product page (either drag it on manually and set the product's SKU, or use the version that adds itself to every product page automatically) - the first time you add it, open its settings panel once so it can identify your site, then publish. After that it updates on its own. You can also choose which specific products show reviews from the Etsy Reviews section of your dashboard.",
+      "Yes - this is a Pro and Unlimited plan feature. It shows your real Etsy reviews (star rating and review text - Etsy never gives us the buyer's name or photo) on the matching Wix product's own page, not just a generic store-wide list. To turn it on: in the Wix Editor, add the 'Etsy Reviews' element to your product page (either drag it on manually and set the product's SKU, or use the version that adds itself to every product page automatically) - the first time you add it, open its settings panel once so it can identify your site, then publish. After that it updates on its own. On Pro every product's reviews are shown; on Unlimited you can also choose which specific products show reviews from the Etsy Reviews section of your dashboard.",
   },
   {
     id: "sync-frequency",

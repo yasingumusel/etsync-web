@@ -30,6 +30,7 @@ function Stars({ rating }: { rating: number }) {
 export default function ReviewsSettings() {
   const [loading, setLoading] = useState(true);
   const [eligible, setEligible] = useState(true);
+  const [canCurate, setCanCurate] = useState(false);
   const [products, setProducts] = useState<ReviewProduct[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -41,6 +42,7 @@ export default function ReviewsSettings() {
         const data = await res.json();
         setProducts(data.products ?? []);
         setEligible(Boolean(data.eligible));
+        setCanCurate(Boolean(data.canCurate));
       }
       setLoading(false);
     })();
@@ -76,16 +78,32 @@ export default function ReviewsSettings() {
     <div className="mt-4 card-glass rounded-2xl p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-base font-semibold text-foreground">Etsy Reviews</h2>
-        {!eligible && (
+        {eligible && !canCurate && products.length > 0 && (
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent-violet/30 bg-accent-violet/5 px-4 py-3.5">
+          <p className="text-xs text-foreground">
+            Want to choose which products show their reviews? That&apos;s an Unlimited plan feature.
+          </p>
+          <a
+            href="/#pricing"
+            className="shrink-0 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-2"
+          >
+            See Unlimited
+          </a>
+        </div>
+      )}
+
+      {!eligible && (
           <span className="rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-muted">
             Pro & Unlimited
           </span>
         )}
       </div>
       <p className="mt-1 text-xs leading-relaxed text-muted">
-        {eligible
-          ? "Reviews show automatically on every product that has them. Switch a product off here if you'd rather not show its reviews."
-          : "This is what your Etsy Reviews panel will look like - upgrade to Pro or Unlimited to actually show reviews on your product pages. Your choices below are saved for when you do."}
+        {!eligible
+          ? "This is what your Etsy Reviews panel will look like - upgrade to Pro or Unlimited to actually show reviews on your product pages."
+          : canCurate
+            ? "Reviews show automatically on every product that has them. Switch a product off here if you'd rather not show its reviews."
+            : "Reviews show automatically on every product that has them."}
       </p>
 
       {error && <p className="mt-3 text-xs font-medium text-red-500">{error}</p>}
@@ -120,11 +138,17 @@ export default function ReviewsSettings() {
                   )}
                 </p>
               </div>
-              <label className="flex shrink-0 cursor-pointer items-center gap-2 text-xs text-muted">
+              <label
+                className={`flex shrink-0 items-center gap-2 text-xs text-muted ${
+                  canCurate ? "cursor-pointer" : "cursor-not-allowed opacity-60"
+                }`}
+                title={canCurate ? undefined : "Choosing which reviews show is an Unlimited feature"}
+              >
                 {savingId === p.listingId ? "Saving…" : p.hidden ? "Hidden" : "Visible"}
                 <input
                   type="checkbox"
                   checked={!p.hidden}
+                  disabled={!canCurate}
                   onChange={(e) => toggle(p.listingId, !e.target.checked)}
                   className="h-4 w-4 shrink-0 rounded border-border accent-accent-violet"
                 />
@@ -132,6 +156,20 @@ export default function ReviewsSettings() {
             </li>
           ))}
         </ul>
+      )}
+
+      {eligible && !canCurate && products.length > 0 && (
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent-violet/30 bg-accent-violet/5 px-4 py-3.5">
+          <p className="text-xs text-foreground">
+            Want to choose which products show their reviews? That&apos;s an Unlimited plan feature.
+          </p>
+          <a
+            href="/#pricing"
+            className="shrink-0 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-2"
+          >
+            See Unlimited
+          </a>
+        </div>
       )}
 
       {!eligible && (
