@@ -68,13 +68,25 @@
       }
     }
 
+    disconnectedCallback() {
+      this._closeModal();
+    }
+
+    // Only a couple of reviews sit next to the product (so "Add to cart"
+    // isn't pushed far down the page); the rest open in a popup via "More".
     _fetchReviews(url) {
-      const max = Number(this.getAttribute("max")) || 5;
+      const preview = Number(this.getAttribute("max")) || 2;
       fetch(url)
         .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
         .then((data) => {
-          const reviews = (data.reviews || []).slice(0, max);
-          this._setBody(this._reviewsHtml(reviews));
+          const reviews = data.reviews || [];
+          this._allReviews = reviews;
+          this._setBody(this._reviewsHtml(reviews.slice(0, preview)));
+          const more = this._root.getElementById("more");
+          if (more) {
+            more.hidden = reviews.length <= preview;
+            more.textContent = `More (${reviews.length})`;
+          }
         })
         .catch(() => {
           this._setBody('<p class="ms-empty">Reviews are unavailable right now.</p>');
@@ -95,6 +107,81 @@
         </li>`
         )
         .join("");
+    }
+
+    _openModal() {
+      this._closeModal();
+      const reviews = this._allReviews || [];
+      const accent = this.getAttribute("accent-color") || "#7c4fe0";
+      const title = this.getAttribute("title") || "Reviews from Etsy";
+
+      // Appended to <body> rather than kept inside this element: Wix wraps
+      // page elements in containers that can use CSS transforms, which would
+      // pin a position:fixed popup to the container instead of the screen.
+      const host = document.createElement("div");
+      host.setAttribute("data-mirrorstock-reviews-modal", "");
+      const shadow = host.attachShadow({ mode: "open" });
+      shadow.innerHTML = `
+        <style>
+          .ms-backdrop {
+            position: fixed; inset: 0; z-index: 2147483000;
+            background: rgba(0,0,0,0.45);
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px; font-family: inherit;
+          }
+          .ms-dialog {
+            background: #fff; color: #1a1a1a; width: 100%; max-width: 560px;
+            max-height: 85vh; border-radius: 16px; display: flex; flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+          }
+          .ms-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.08);
+          }
+          .ms-head h2 { margin: 0; font-size: 17px; font-weight: 700; }
+          .ms-close {
+            border: 0; background: transparent; font-size: 26px; line-height: 1;
+            cursor: pointer; color: inherit; padding: 0 4px;
+          }
+          ul { list-style: none; margin: 0; padding: 16px 20px 20px; display: grid; gap: 14px; overflow-y: auto; }
+          .ms-review { border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 12px 14px; }
+          .ms-stars { color: ${accent}; display: flex; gap: 2px; }
+          .ms-text { margin: 8px 0 4px 0; font-size: 13px; line-height: 1.5; }
+          .ms-date { margin: 0; font-size: 11px; opacity: 0.6; }
+        </style>
+        <div class="ms-backdrop" id="backdrop">
+          <div class="ms-dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}">
+            <div class="ms-head">
+              <h2>${escapeHtml(title)} (${reviews.length})</h2>
+              <button type="button" class="ms-close" id="close" aria-label="Close">&times;</button>
+            </div>
+            <ul>${this._reviewsHtml(reviews)}</ul>
+          </div>
+        </div>
+      `;
+
+      shadow.getElementById("close").addEventListener("click", () => this._closeModal());
+      shadow.getElementById("backdrop").addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) this._closeModal();
+      });
+      this._onKey = (e) => {
+        if (e.key === "Escape") this._closeModal();
+      };
+      document.addEventListener("keydown", this._onKey);
+
+      this._prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      document.body.appendChild(host);
+      this._modal = host;
+      shadow.getElementById("close").focus();
+    }
+
+    _closeModal() {
+      if (!this._modal) return;
+      this._modal.remove();
+      this._modal = null;
+      document.removeEventListener("keydown", this._onKey);
+      document.body.style.overflow = this._prevOverflow || "";
     }
 
     _setBody(innerHtml) {
@@ -122,12 +209,21 @@
           .ms-text { margin: 8px 0 4px 0; font-size: 13px; line-height: 1.5; color: inherit; }
           .ms-date { margin: 0; font-size: 11px; opacity: 0.6; }
           .ms-empty { font-size: 13px; opacity: 0.7; margin: 0; }
+          .ms-more-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+          .ms-more {
+            border: 0; background: transparent; padding: 4px 0; cursor: pointer;
+            font: inherit; font-size: 13px; font-weight: 600; color: ${accent};
+          }
+          .ms-more:hover { text-decoration: underline; }
+          .ms-more[hidden] { display: none; }
         </style>
         <div class="ms-wrap">
           <p class="ms-title">${escapeHtml(title)}</p>
           <ul id="list"><li class="ms-empty">Loading reviews…</li></ul>
+          <div class="ms-more-row"><button type="button" class="ms-more" id="more" hidden>More</button></div>
         </div>
       `;
+      this._root.getElementById("more").addEventListener("click", () => this._openModal());
     }
   }
 
