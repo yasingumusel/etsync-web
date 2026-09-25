@@ -40,6 +40,7 @@ export default function ReviewsSettings() {
   const [loading, setLoading] = useState(true);
   const [eligible, setEligible] = useState(true);
   const [canCurate, setCanCurate] = useState(false);
+  const [shopifyAddBlockUrl, setShopifyAddBlockUrl] = useState<string | null>(null);
   const [products, setProducts] = useState<ReviewProduct[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -53,6 +54,7 @@ export default function ReviewsSettings() {
         setProducts(data.products ?? []);
         setEligible(Boolean(data.eligible));
         setCanCurate(Boolean(data.canCurate));
+        setShopifyAddBlockUrl(data.shopifyAddBlockUrl ?? null);
       }
       setLoading(false);
     })();
@@ -125,6 +127,24 @@ export default function ReviewsSettings() {
             ? "Reviews show automatically on every product that has them. Switch a whole product off, or open a product to hide single reviews."
             : "Reviews show automatically on every product that has them."}
       </p>
+
+      {eligible && shopifyAddBlockUrl && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3.5">
+          <p className="max-w-md text-xs leading-relaxed text-muted">
+            <span className="font-semibold text-foreground">Shopify:</span> add the Etsy Reviews block to your
+            product page once. The button opens your theme editor with the block already placed - just click
+            Save there.
+          </p>
+          <a
+            href={shopifyAddBlockUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-2"
+          >
+            Add to product page
+          </a>
+        </div>
+      )}
 
       {error && <p className="mt-3 text-xs font-medium text-red-500">{error}</p>}
 
