@@ -33,24 +33,8 @@ const plans: Plan[] = [
     ],
   },
   {
-    name: "Starter",
-    limit: "Up to 50 products",
-    monthly: 9.99,
-    yearlyMonthly: 7.99,
-    features: [
-      { label: "Products, variations and images" },
-      { label: "Automatic currency conversion" },
-      { label: "Sync on demand" },
-      { label: "Automatic sync every 4 hours" },
-      { label: "Sync history and notifications" },
-      { label: "“View on Etsy” link on every product" },
-      { label: "Preview changes before syncing" },
-      { label: "Email support" },
-    ],
-  },
-  {
     name: "Growth",
-    limit: "Up to 100 products",
+    limit: "Up to 50 products",
     monthly: 19.99,
     yearlyMonthly: 15.99,
     highlight: true,
@@ -68,8 +52,8 @@ const plans: Plan[] = [
   {
     name: "Pro",
     limit: "Up to 200 products",
-    monthly: 25,
-    yearlyMonthly: 19.99,
+    monthly: 29.99,
+    yearlyMonthly: 23.99,
     features: [
       { label: "Products, variations and images" },
       { label: "Automatic currency conversion" },
@@ -86,8 +70,8 @@ const plans: Plan[] = [
   {
     name: "Unlimited",
     limit: "Unlimited products",
-    monthly: 35,
-    yearlyMonthly: 27.99,
+    monthly: 49.99,
+    yearlyMonthly: 39.99,
     features: [
       { label: "Products, variations and images" },
       { label: "Automatic currency conversion" },
@@ -160,7 +144,7 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {plans.map((p) => {
             const now = yearly ? p.yearlyMonthly : p.monthly;
             const isFree = now === 0;

@@ -455,7 +455,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "cheap",
     ],
     answer:
-      "Five plans, all with product limits: Free (up to 5 products, $0), Starter (up to 50, $9.99/mo or $7.99/mo billed yearly), Growth (up to 100, $19.99/mo or $15.99/mo yearly - most popular), Pro (up to 200, $25/mo or $19.99/mo yearly), and Unlimited ($35/mo or $27.99/mo yearly). Every plan includes automatic currency conversion, automatic sync every 4 hours, and sync history/notifications. There's currently a launch offer of 50% off every plan.",
+      "Four plans, all with product limits: Free (up to 5 products, $0), Growth (up to 50, $19.99/mo or $15.99/mo billed yearly - most popular), Pro (up to 200, $29.99/mo or $23.99/mo yearly), and Unlimited ($49.99/mo or $39.99/mo yearly). Every plan includes automatic currency conversion, automatic sync every 4 hours, and sync history/notifications. There's currently a launch offer of 50% off every plan.",
   },
   {
     id: "billing",
@@ -498,7 +498,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "save money yearly",
     ],
     answer:
-      "Yes - paying yearly instead of monthly is about 20% cheaper on every plan (e.g. Starter is $9.99/mo billed monthly vs $7.99/mo billed yearly). Full breakdown is on the pricing section of the homepage.",
+      "Yes - paying yearly instead of monthly is about 20% cheaper on every plan (e.g. Growth is $19.99/mo billed monthly vs $15.99/mo billed yearly). Full breakdown is on the pricing section of the homepage.",
   },
   {
     id: "free-trial",

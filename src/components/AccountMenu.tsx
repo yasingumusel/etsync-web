@@ -9,7 +9,7 @@ type Plan = "free" | "starter" | "growth" | "pro" | "unlimited";
 const planInfo: Record<Plan, { label: string; limit: string }> = {
   free: { label: "Free plan", limit: "Up to 5 products" },
   starter: { label: "Starter plan", limit: "Up to 50 products" },
-  growth: { label: "Growth plan", limit: "Up to 100 products" },
+  growth: { label: "Growth plan", limit: "Up to 50 products" },
   pro: { label: "Pro plan", limit: "Up to 200 products" },
   unlimited: { label: "Unlimited plan", limit: "Unlimited products" },
 };
