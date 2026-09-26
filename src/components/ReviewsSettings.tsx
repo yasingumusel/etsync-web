@@ -41,6 +41,7 @@ export default function ReviewsSettings() {
   const [eligible, setEligible] = useState(true);
   const [canCurate, setCanCurate] = useState(false);
   const [shopifyAddBlockUrl, setShopifyAddBlockUrl] = useState<string | null>(null);
+  const [shopifyBlockSeenAt, setShopifyBlockSeenAt] = useState<string | null>(null);
   const [products, setProducts] = useState<ReviewProduct[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -55,6 +56,7 @@ export default function ReviewsSettings() {
         setEligible(Boolean(data.eligible));
         setCanCurate(Boolean(data.canCurate));
         setShopifyAddBlockUrl(data.shopifyAddBlockUrl ?? null);
+        setShopifyBlockSeenAt(data.shopifyBlockSeenAt ?? null);
       }
       setLoading(false);
     })();
@@ -130,18 +132,37 @@ export default function ReviewsSettings() {
 
       {eligible && shopifyAddBlockUrl && (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3.5">
-          <p className="max-w-md text-xs leading-relaxed text-muted">
-            <span className="font-semibold text-foreground">Shopify:</span> add the Etsy Reviews block to your
-            product page once. The button opens your theme editor with the block already placed - just click
-            Save there.
-          </p>
+          {shopifyBlockSeenAt ? (
+            <p className="max-w-md text-xs leading-relaxed text-muted">
+              <span className="font-semibold text-emerald-600">&#10003; Live on your Shopify store.</span> The Etsy
+              Reviews block is on your product page and showing reviews.
+            </p>
+          ) : (
+            <div className="max-w-md text-xs leading-relaxed text-muted">
+              <p>
+                <span className="font-semibold text-foreground">Shopify: one step left.</span> Reviews appear once
+                the Etsy Reviews block is on your product page.
+              </p>
+              <ol className="mt-1.5 list-decimal space-y-0.5 pl-4">
+                <li>Click the button - your theme editor opens with the block already added.</li>
+                <li>Click <span className="font-semibold text-foreground">Save</span> in the top-right corner.</li>
+              </ol>
+              <p className="mt-1.5">
+                This turns green after a shopper (or you) opens a product that has Etsy reviews.
+              </p>
+            </div>
+          )}
           <a
             href={shopifyAddBlockUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface-2"
+            className={
+              shopifyBlockSeenAt
+                ? "shrink-0 text-xs font-semibold text-muted underline-offset-2 hover:text-foreground hover:underline"
+                : "shrink-0 rounded-full bg-gradient-to-r from-accent-orange via-accent-pink to-accent-violet px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
+            }
           >
-            Add to product page
+            {shopifyBlockSeenAt ? "Open theme editor" : "Add to product page"}
           </a>
         </div>
       )}
