@@ -7,11 +7,11 @@ const shipped = [
   "Run a sync from your dashboard whenever you want, with live progress as it works.",
   "Scheduled syncs every 4 hours, so your store stays current without you starting one by hand.",
   "A sync history and notification bell that only surface runs where something actually changed.",
+  "Etsy reviews on your Wix or Shopify product pages (Pro and Unlimited plans).",
 ];
 
 const planned = [
   "Listing MirrorStock on the Shopify App Store.",
-  "Etsy reviews on Shopify product pages.",
   "Syncing price and variant edits back to Etsy, not just title and description.",
 ];
 

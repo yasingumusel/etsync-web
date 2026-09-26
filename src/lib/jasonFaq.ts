@@ -239,12 +239,14 @@ export const JASON_FAQ: FaqEntry[] = [
   {
     id: "etsy-reviews-widget",
     category: "Syncing",
-    question: "Can I show my Etsy reviews on my Wix product pages?",
+    question: "Can I show my Etsy reviews on my Wix or Shopify product pages?",
     keywords: [
       "etsy reviews",
       "reviews widget",
       "show reviews",
       "reviews on wix",
+      "reviews on shopify",
+      "shopify reviews",
       "reviews on product page",
       "star rating",
       "customer reviews",
@@ -255,7 +257,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "pro plan feature",
     ],
     answer:
-      "Yes - this is a Pro and Unlimited plan feature. It shows your real Etsy reviews (star rating and review text - Etsy never gives us the buyer's name or photo) on the matching Wix product's own page, not just a generic store-wide list. To turn it on: in the Wix Editor, add the 'Etsy Reviews' element to your product page (either drag it on manually and set the product's SKU, or use the version that adds itself to every product page automatically) - the first time you add it, open its settings panel once so it can identify your site, then publish. After that it updates on its own. On Pro every product's reviews are shown; on Unlimited you can also hide a whole product's reviews or single reviews from the Etsy Reviews section of your dashboard.",
+      "Yes - this is a Pro and Unlimited plan feature. It shows your real Etsy reviews (star rating and review text - Etsy never gives us the buyer's name or photo) on the matching product's own page, not just a generic store-wide list. Only a couple of reviews sit next to the product; shoppers click 'More' to read the rest in a popup. On Wix: in the Wix Editor, add the 'Etsy Reviews' element to your product page (either drag it on manually and set the product's SKU, or use the version that adds itself to every product page automatically) - the first time you add it, open its settings panel once so it can identify your site, then publish. On Shopify: in your dashboard's Etsy Reviews section click 'Add to product page' - your theme editor opens with the block already placed - and click Save; the dashboard shows a green check once it's live. After that it updates on its own. On Pro every product's reviews are shown; on Unlimited you can also hide a whole product's reviews or single reviews from the Etsy Reviews section of your dashboard.",
   },
   {
     id: "sync-frequency",
@@ -312,7 +314,7 @@ export const JASON_FAQ: FaqEntry[] = [
     keywords: ["shopify"],
     minScore: 1, // a single, highly distinctive brand keyword - safe at a lower bar
     answer:
-      "Yes. MirrorStock syncs your Etsy listings to a Wix or a Shopify store - connect Shopify from your dashboard. We're not listed on the Shopify App Store yet, and Etsy reviews on Shopify product pages are still coming. The Unlimited plan can connect Wix and Shopify at the same time.",
+      "Yes. MirrorStock syncs your Etsy listings to a Wix or a Shopify store - connect Shopify from your dashboard. We're not listed on the Shopify App Store yet. Etsy reviews on Shopify product pages work on the Pro and Unlimited plans. The Unlimited plan can connect Wix and Shopify at the same time.",
   },
   {
     id: "etsy-scopes",
