@@ -17,7 +17,7 @@ const sora = Sora({
 export const metadata: Metadata = {
   title: "MirrorStock — Keep Your Storefronts in Sync",
   description:
-    "MirrorStock reads your active Etsy listings — products, variants, images and prices — and keeps the matching products in your Wix store up to date.",
+    "MirrorStock reads your active Etsy listings — products, variants, images and prices — and keeps the matching products in your Wix or Shopify store up to date.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

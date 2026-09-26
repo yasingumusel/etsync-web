@@ -14,7 +14,7 @@ export default function PrivacyPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1">
-        <LegalLayout title="Privacy Policy" updated="September 24, 2026">
+        <LegalLayout title="Privacy Policy" updated="September 26, 2026">
           <p>
             This Privacy Policy explains how MirrorStock
             (&ldquo;MirrorStock&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;)
@@ -48,9 +48,9 @@ export default function PrivacyPage() {
             requests three scopes:
           </p>
           <ul>
-            <li><code>listings_r</code> &mdash; read-only, to read your shop&rsquo;s active listings, including titles, descriptions, SKUs, variations, prices, images, and inventory quantities</li>
-            <li><code>shops_r</code> &mdash; read-only, to read basic shop profile information (shop name, shop ID)</li>
-            <li><code>listings_w</code> &mdash; write, used only for two things you switch on yourself: (1) if you switch off syncing a listing&rsquo;s title or description in your dashboard (telling MirrorStock you now edit that field in your Wix or Shopify store instead), MirrorStock writes your current store value back to the matching Etsy listing; (2) if you fill in your defaults for new Etsy listings, products you created in your Wix or Shopify store are published to your Etsy shop as <em>draft</em> listings (title, description, price, quantity and variations, using the category, shipping and processing profiles you chose) for you to review and activate yourself. This scope is never used to activate or delete a listing, or to change an existing listing&rsquo;s price, inventory, images, shipping, or any other listing or shop setting.</li>
+            <li><code>listings_r</code> &mdash; read-only, to read your shop&rsquo;s active listings (and draft listings, if you choose to include them), including titles, descriptions, SKUs, variations, prices, images, and inventory quantities. MirrorStock also notes which of your listings Etsy has made inactive, only so it never uploads a matching product back to Etsy</li>
+            <li><code>shops_r</code> &mdash; read-only, to read basic shop profile information (shop name, shop ID) and your shop&rsquo;s reviews (star rating, review text and date). Etsy does not include the buyer&rsquo;s name, photo or email in reviews, and MirrorStock does not store the buyer&rsquo;s Etsy user ID</li>
+            <li><code>listings_w</code> &mdash; write, used only for two things you switch on yourself: (1) if you switch off syncing a listing&rsquo;s title or description in your dashboard (telling MirrorStock you now edit that field in your Wix or Shopify store instead), MirrorStock writes your current store value back to the matching Etsy listing; (2) if you fill in your defaults for new Etsy listings, products you created in your Wix or Shopify store are published to your Etsy shop as <em>draft</em> listings (title, description, price, quantity, variations and product images, using the category, shipping and processing profiles you chose) for you to review and activate yourself. This scope is never used to activate or delete a listing, or to change the price, inventory, images, shipping, or any other setting of a listing you created on Etsy.</li>
           </ul>
           <p>
             MirrorStock does not request, and cannot access, your Etsy
@@ -96,6 +96,7 @@ export default function PrivacyPage() {
             <li>Create or update the matching products in your connected store</li>
             <li>Convert prices when your two stores use different currencies</li>
             <li>Hide a product in your store once its Etsy listing is no longer active</li>
+            <li>If you choose to, show your Etsy reviews on the matching product pages of your store, with a link back to the listing on Etsy</li>
             <li>Show you the progress, history and outcome of each sync</li>
             <li>Maintain the security and reliability of the Service</li>
           </ul>
@@ -108,7 +109,10 @@ export default function PrivacyPage() {
             from your dashboard. Etsy&rsquo;s API Terms require that listing
             content displayed outside Etsy is never significantly staler than
             Etsy itself, which is why this runs on a schedule rather than only
-            when you ask for it.
+            when you ask for it. Your shop&rsquo;s reviews are refreshed on
+            the same schedule, and if they could not be refreshed for 24
+            hours (for example because the Etsy connection was removed),
+            MirrorStock stops showing them until they are up to date again.
           </p>
 
           <h2>6. What MirrorStock Does Not Do</h2>

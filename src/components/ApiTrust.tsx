@@ -5,11 +5,11 @@ const points = [
   },
   {
     title: "Writes are opt-in and narrow",
-    desc: "By default nothing is written to Etsy. Turn off syncing a listing's title or description and MirrorStock pushes your store's edit back. Fill in your defaults for new Etsy listings and products you created in your store are added to Etsy as drafts — never activated for you. It never deletes listings, never changes an existing listing's price, stock or photos, never modifies shop settings, and never sends email or messages through Etsy.",
+    desc: "By default nothing is written to Etsy. Turn off syncing a listing's title or description and MirrorStock pushes your store's edit back. Fill in your defaults for new Etsy listings and products you created in your store are added to Etsy as drafts — never activated for you. It never deletes or activates listings, never changes the price, stock or photos of a listing you made on Etsy, never modifies shop settings, and never sends email or messages through Etsy.",
   },
   {
     title: "No sales or payment data",
-    desc: "MirrorStock does not read receipts, transactions, or any sales data from Etsy. It only reads the listing and inventory information needed to rebuild your products elsewhere.",
+    desc: "MirrorStock does not read receipts, transactions, or any sales data from Etsy. It only reads your listings and inventory, to rebuild your products in your store, and your shop's public reviews, if you choose to show them on your product pages. Reviews never include the buyer's name, photo or email.",
   },
   {
     title: "You authorize your own shop",

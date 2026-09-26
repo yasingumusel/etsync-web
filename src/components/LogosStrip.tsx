@@ -5,6 +5,7 @@ const items = [
   "listings_w scope",
   "OAuth 2.0",
   "Wix Stores API",
+  "Shopify Admin API",
   "Two-way sync",
 ];
 
@@ -15,7 +16,7 @@ export default function LogosStrip() {
     <section className="border-y border-border/60 bg-surface/40 py-8">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <p className="mb-6 text-center text-xs font-medium uppercase tracking-widest text-muted">
-          Built directly on the official Etsy Open API and Wix API
+          Built on the Etsy Open API, the Wix API and the Shopify Admin API
         </p>
         <div className="relative overflow-hidden">
           <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent" />

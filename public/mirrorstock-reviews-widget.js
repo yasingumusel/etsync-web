@@ -81,6 +81,12 @@
         .then((data) => {
           const reviews = data.reviews || [];
           this._allReviews = reviews;
+          this._etsyUrl = /^https:\/\/www\.etsy\.com\//.test(data.etsyUrl || "") ? data.etsyUrl : null;
+          const src = this._root.getElementById("source");
+          if (src && this._etsyUrl && reviews.length) {
+            src.href = this._etsyUrl;
+            src.hidden = false;
+          }
           this._setBody(this._reviewsHtml(reviews.slice(0, preview)));
           const more = this._root.getElementById("more");
           if (more) {
@@ -139,6 +145,7 @@
             padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.08);
           }
           .ms-head h2 { margin: 0; font-size: 17px; font-weight: 700; }
+          .ms-src { margin-left: auto; font-size: 12px; color: inherit; opacity: 0.7; }
           .ms-close {
             border: 0; background: transparent; font-size: 26px; line-height: 1;
             cursor: pointer; color: inherit; padding: 0 4px;
@@ -153,6 +160,7 @@
           <div class="ms-dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}">
             <div class="ms-head">
               <h2>${escapeHtml(title)} (${reviews.length})</h2>
+              ${this._etsyUrl ? `<a class="ms-src" href="${escapeHtml(this._etsyUrl)}" target="_blank" rel="noopener">View on Etsy</a>` : ""}
               <button type="button" class="ms-close" id="close" aria-label="Close">&times;</button>
             </div>
             <ul>${this._reviewsHtml(reviews)}</ul>
@@ -209,7 +217,9 @@
           .ms-text { margin: 8px 0 4px 0; font-size: 13px; line-height: 1.5; color: inherit; }
           .ms-date { margin: 0; font-size: 11px; opacity: 0.6; }
           .ms-empty { font-size: 13px; opacity: 0.7; margin: 0; }
-          .ms-more-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+          .ms-more-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+          .ms-source { font-size: 12px; color: inherit; opacity: 0.6; }
+          .ms-source[hidden] { display: none; }
           .ms-more {
             border: 0; background: transparent; padding: 4px 0; cursor: pointer;
             font: inherit; font-size: 13px; font-weight: 600; color: ${accent};
@@ -220,7 +230,10 @@
         <div class="ms-wrap">
           <p class="ms-title">${escapeHtml(title)}</p>
           <ul id="list"><li class="ms-empty">Loading reviews…</li></ul>
-          <div class="ms-more-row"><button type="button" class="ms-more" id="more" hidden>More</button></div>
+          <div class="ms-more-row">
+            <a class="ms-source" id="source" target="_blank" rel="noopener" hidden>View on Etsy</a>
+            <button type="button" class="ms-more" id="more" hidden>More</button>
+          </div>
         </div>
       `;
       this._root.getElementById("more").addEventListener("click", () => this._openModal());

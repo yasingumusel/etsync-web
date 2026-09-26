@@ -10,8 +10,8 @@ type Feature = {
 
 const features: Feature[] = [
   {
-    title: "Read-Only Access",
-    desc: "MirrorStock connects to Etsy using only the listings_r and shops_r scopes — enough to read your shop's active listings. Nothing more is requested.",
+    title: "Narrow Etsy Access",
+    desc: "MirrorStock reads your shop with the listings_r and shops_r scopes, and uses listings_w only for the two writes you switch on yourself. No orders, payments or shop settings.",
     icon: LockIcon,
   },
   {

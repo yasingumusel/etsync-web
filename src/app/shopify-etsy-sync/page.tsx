@@ -8,9 +8,9 @@ import CTA from "@/components/CTA";
 import { getSessionSummary } from "@/lib/backend";
 
 export const metadata: Metadata = {
-  title: "Shopify Etsy Integration — MirrorStock",
+  title: "MirrorStock for Shopify — Sync Your Etsy Listings to Shopify",
   description:
-    "Native Shopify integration for Etsy sellers. MirrorStock syncs your Etsy shop's listings, variations, images and prices to Shopify in the background, built on Shopify's modern GraphQL Admin API.",
+    "MirrorStock syncs your Etsy shop's listings, variations, images and prices to your Shopify store in the background, built on Shopify's GraphQL Admin API.",
 };
 
 function iconProps() {
@@ -80,12 +80,12 @@ function StarIcon(): ReactElement {
 
 const features: GridFeature[] = [
   {
-    title: "Native Shopify Integration",
+    title: "Built On Shopify's Admin API",
     desc: "Built on Shopify's current GraphQL Admin API (not the legacy REST product API Shopify has been retiring) - products, options, variants and media publish through a single call per product.",
     icon: LayersIcon,
   },
   {
-    title: "High-Speed Background Sync",
+    title: "Automatic Background Sync",
     desc: "Connect your Etsy shop and your Shopify store once, then MirrorStock checks for changes automatically - no spreadsheets, no re-uploading product photos by hand.",
     icon: GaugeIcon,
   },
@@ -106,7 +106,7 @@ const features: GridFeature[] = [
   },
   {
     title: "Etsy Reviews On Your Product Pages",
-    desc: "Show your real Etsy star rating and review text on the matching product page - star rating and text only, never the buyer's name or photo.",
+    desc: "Show your real Etsy star rating and review text on the matching product page, with a link back to the listing on Etsy. Star rating and text only, never the buyer's name or photo. Pro and Unlimited plans.",
     icon: StarIcon,
   },
 ];
@@ -119,7 +119,7 @@ export default async function ShopifyEtsySyncPage() {
       <Navbar session={session} />
       <main className="flex-1">
         <HeroSection
-          eyebrow="Native Shopify Integration"
+          eyebrow="For Shopify stores"
           title={
             <>
               Keep your <span className="text-accent-green">Shopify store</span>{" "}

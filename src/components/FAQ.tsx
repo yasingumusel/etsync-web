@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     q: "Does MirrorStock ever write anything to my Etsy shop?",
-    a: "Only if you turn it on, in two ways. If you switch off syncing a listing's title or description, MirrorStock writes your store's current value back to that Etsy listing. And if you fill in your defaults for new Etsy listings, products you created in Wix or Shopify are published to Etsy as drafts (title, description, price and variations, no photos) for you to review and activate yourself. It never deletes listings, never changes an existing listing's price, stock or photos, never changes shop settings, and never sends email or messages through Etsy.",
+    a: "Only if you turn it on, in two ways. If you switch off syncing a listing's title or description, MirrorStock writes your store's current value back to that Etsy listing. And if you fill in your defaults for new Etsy listings, products you created in Wix or Shopify are published to Etsy as drafts (title, description, price, variations and photos) for you to review and activate yourself. It never deletes or activates listings, never changes the price, stock or photos of a listing you made on Etsy, never changes shop settings, and never sends email or messages through Etsy.",
   },
   {
     q: "Does the sync work the other way, from Wix or Shopify back to Etsy?",
@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: "Who can connect a shop today?",
-    a: "Any Etsy seller. MirrorStock completed Etsy's commercial API review, so any shop can connect through Etsy's standard authorization screen — it's no longer limited to a single developer account.",
+    a: "Any Etsy seller. Each shop connects through Etsy's own authorization screen, so you grant access to your own shop directly and can revoke it at any time.",
   },
   {
     q: "How often does MirrorStock check for changes, and will I get spammed with alerts?",

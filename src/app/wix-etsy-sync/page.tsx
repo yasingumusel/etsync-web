@@ -8,9 +8,9 @@ import CTA from "@/components/CTA";
 import { getSessionSummary } from "@/lib/backend";
 
 export const metadata: Metadata = {
-  title: "Wix Etsy Inventory Sync App — MirrorStock",
+  title: "MirrorStock for Wix — Sync Your Etsy Listings to Wix",
   description:
-    "Sync your Etsy shop's listings, variations, images and prices to your Wix store automatically. MirrorStock is a Wix App Market approved Etsy integration - no spreadsheets, no manual re-listing.",
+    "Sync your Etsy shop's listings, variations, images and prices to your Wix store automatically. MirrorStock is available on the Wix App Market - no spreadsheets, no manual re-listing.",
 };
 
 function iconProps() {
@@ -77,7 +77,7 @@ function StarIcon(): ReactElement {
 
 const features: GridFeature[] = [
   {
-    title: "Wix App Market Approved",
+    title: "On the Wix App Market",
     desc: "MirrorStock is reviewed and published on the Wix App Market, installed the same way as any other Wix app - straight from your Wix Editor, no separate account or plugin file.",
     icon: BadgeIcon,
   },
@@ -103,7 +103,7 @@ const features: GridFeature[] = [
   },
   {
     title: "Etsy Reviews On Your Product Pages",
-    desc: "Show your real Etsy star rating and review text on the matching Wix product page - not just a generic store-wide list. Star rating and text only, never the buyer's name or photo.",
+    desc: "Show your real Etsy star rating and review text on the matching Wix product page, with a link back to the listing on Etsy. Star rating and text only, never the buyer's name or photo. Pro and Unlimited plans.",
     icon: StarIcon,
   },
 ];
@@ -116,7 +116,7 @@ export default async function WixEtsySyncPage() {
       <Navbar session={session} />
       <main className="flex-1">
         <HeroSection
-          eyebrow="Wix App Market · Approved App"
+          eyebrow="Available on the Wix App Market"
           title={
             <>
               Keep your <span className="text-accent-blue">Wix store</span>{" "}

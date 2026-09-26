@@ -182,6 +182,10 @@ export default function AuthForm({ mode }: { mode: Mode }) {
             )}
           </p>
         </form>
+        <p className="mt-6 text-center text-[11px] leading-relaxed text-muted">
+          The term &lsquo;Etsy&rsquo; is a trademark of Etsy, Inc. This application uses the Etsy API but is
+          not endorsed or certified by Etsy, Inc.
+        </p>
       </div>
     </div>
   );

@@ -93,7 +93,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "how does syncing work",
     ],
     answer:
-      "Three steps: (1) You connect your Etsy shop and your Wix store through each platform's own official login. (2) MirrorStock reads your active Etsy listings, including variations, images and prices. (3) It creates or updates the matching products in your Wix store - existing products are updated in place, nothing is duplicated. If you switch off syncing a title or description for a product, MirrorStock instead pushes your Wix edit back to that Etsy listing.",
+      "Three steps: (1) You connect your Etsy shop and your Wix or Shopify store through each platform's own official login. (2) MirrorStock reads your active Etsy listings, including variations, images and prices. (3) It creates or updates the matching products in your store - existing products are updated in place, nothing is duplicated. If you switch off syncing a title or description for a product, MirrorStock instead pushes your store's edit back to that Etsy listing.",
   },
   {
     id: "who-can-connect",
@@ -109,7 +109,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "can i use this",
     ],
     answer:
-      "Any Etsy seller. MirrorStock completed Etsy's commercial API review, so any shop can connect through Etsy's standard authorization screen.",
+      "Any Etsy seller. Each shop connects through Etsy's own authorization screen, so you grant access to your own shop directly and can revoke it at any time.",
   },
   {
     id: "login",
@@ -145,7 +145,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "developer skills required",
     ],
     answer:
-      "No coding needed. Setting it up is just logging into Etsy and Wix through their own official screens, then picking which products to sync in a short setup wizard.",
+      "No coding needed. Setting it up is just logging into Etsy and Wix or Shopify through their own official screens, then picking which products to sync in a short setup wizard.",
   },
   {
     id: "one-way",
@@ -349,7 +349,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "does it edit my etsy",
     ],
     answer:
-      "Only if you turn it on, in two ways: switching off syncing a listing's title or description pushes your store's edit back to that Etsy listing, and filling in 'Defaults for new Etsy listings' publishes products you created in Wix or Shopify to Etsy as drafts for you to review. MirrorStock never deletes or activates listings, never changes an existing listing's price, stock or photos, never changes your shop settings, and never sends email or messages through Etsy.",
+      "Only if you turn it on, in two ways: switching off syncing a listing's title or description pushes your store's edit back to that Etsy listing, and filling in 'Defaults for new Etsy listings' publishes products you created in Wix or Shopify to Etsy as drafts for you to review. MirrorStock never deletes or activates listings, never changes the price, stock or photos of a listing you made on Etsy, never changes your shop settings, and never sends email or messages through Etsy.",
   },
   {
     id: "sales-data",
@@ -383,7 +383,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "safe",
     ],
     answer:
-      "You connect your Etsy shop and your Wix store through each platform's own official login (OAuth). MirrorStock never sees or stores your Etsy or Wix password, and you can revoke access from your Etsy account at any time.",
+      "You connect your Etsy shop and your Wix or Shopify store through each platform's own official login (OAuth). MirrorStock never sees or stores your Etsy, Wix or Shopify password, and you can revoke access from your Etsy account at any time.",
   },
   {
     id: "data-security",
@@ -439,7 +439,7 @@ export const JASON_FAQ: FaqEntry[] = [
       "certified",
     ],
     answer:
-      "No - MirrorStock is an independent product, not affiliated with, endorsed by, or certified by Etsy, Inc. or Wix.com Ltd. 'Etsy' is a trademark of Etsy, Inc.; 'Wix' is a trademark of Wix.com Ltd.",
+      "No - MirrorStock is an independent product, not affiliated with, endorsed by, or certified by Etsy, Inc., Wix.com Ltd. or Shopify Inc. 'Etsy' is a trademark of Etsy, Inc.; 'Wix' is a trademark of Wix.com Ltd.; 'Shopify' is a trademark of Shopify Inc.",
   },
   {
     id: "pricing",

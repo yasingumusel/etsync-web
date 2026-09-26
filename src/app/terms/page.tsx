@@ -13,7 +13,7 @@ export default function TermsPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1">
-        <LegalLayout title="Terms of Service" updated="September 24, 2026">
+        <LegalLayout title="Terms of Service" updated="September 26, 2026">
           <p>
             These Terms of Service (&ldquo;Terms&rdquo;) govern access to
             and use of MirrorStock&rsquo;s website and product
@@ -31,12 +31,16 @@ export default function TermsPage() {
             current store value back to the matching Etsy listing (using the{" "}
             <code>listings_w</code> scope). If you fill in your defaults for
             new Etsy listings, the Service also publishes products you
-            created in your Wix or Shopify store to Etsy as draft listings,
-            which it never activates for you. These two opt-in writes are
+            created in your Wix or Shopify store to Etsy as draft listings
+            (including their product images), which it never activates for
+            you. These two opt-in writes are
             the only ways the Service writes to Etsy. It does not otherwise
             create, edit, delete, or upload anything on Etsy, does
             not read Etsy sales, order, or payment data, and does not send
-            email or messages through Etsy.
+            email or messages through Etsy. If you choose to, the Service
+            also shows your shop&rsquo;s Etsy reviews on the matching
+            product pages of your store, with a link back to the listing on
+            Etsy.
           </p>
 
           <h2>2. Eligibility &amp; Account Ownership</h2>
