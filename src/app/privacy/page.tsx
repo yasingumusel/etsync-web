@@ -80,6 +80,7 @@ export default function PrivacyPage() {
             <li><code>read_products</code> &mdash; to find the products MirrorStock has already created and, if you opt in, read a product&rsquo;s title and description so an edit can be written back to Etsy</li>
             <li><code>write_products</code> &mdash; to create and update products, variants, and prices that reflect your Etsy listings</li>
             <li><code>write_files</code> &mdash; to attach your listing images to those products</li>
+            <li><code>write_publications</code> &mdash; to make those products visible in your Online Store sales channel, so shoppers can see and buy them</li>
           </ul>
           <p>
             MirrorStock does not request access to your Shopify orders,
